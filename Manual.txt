@@ -1,0 +1,108 @@
+GENERAL
+********
+
+Leds de steps: Indican el step activo en la secuencia.
+
+Track 1: maneja salidas GATE1, CV y Velocity.
+
+Los 8 potes van a indicar las notas para cada step y GATE1 se disparara por cada step.
+
+Track 2 al 4: Maneja salida GATEx.
+
+Los 8 potes van a indicar probabilidad de disparo del GATEx en dicho step o cantidad de repeats por step de cada gate.
+
+Encoder central: Al moverlo se modifica el tempo del secuencer. De 30 a 255 bpm
+
+
+
+
+BOTONES
+********
+
+
+Boton RUN : Comienza la secuencia. Al presionar de nuevo se detiene.
+
+Boton TRACK: Selecciona el track actual (del 1 al 4) sobre el que se setean los parametros. Al presionar una vez se muestra el numero de track actual en los leds de los steps (parpadeará rapido el actual) Al presionar de nuevo se irá cambiando de 1 al 4. Luego de 2 segundos los leds volverán a mostrar el step activo.
+
+Boton Scale: Solo funciona si estoy parado en el track 1. Selecciona la escala para dicho track. Al presionar una vez se indica la escala actual en los leds de los steps (parpadeará rapido el actual) Al presionar de nuevo se irá cambiando de 1 al 8 que representan las siguientes escalas:
+
+Micro - Fine grained access to 250 note intervals per octave.
+
+Chromatic - 12 step scale with note intervals at 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11.
+
+Major - 7 step scale with note intervals at 0, 2, 4, 5, 7, 9, 11.
+
+Minor - 7 steps per octave scale with note intervals at 0, 2, 3, 5, 7, 8, 10.
+
+Blues - 6 steps per octave scale with note intervals at 0, 3, 5, 6, 7, 10.
+
+Phrygian - 7 steps per octave scale with note intervals at 0, 1, 3, 5, 7, 8, 10.
+
+Lydian - 7 steps per octave scale with note intervals at 0, 2, 4, 6, 7, 9, 11.
+
+Dorian - 7 steps per octave scale with note intervals at 0, 2, 3, 5, 7, 9, 10.
+
+
+
+Boton Direction: Selecciona la direccion para el track actual. Al presionar una vez se indica la direccion actual en los leds de los steps (parpadeará rapido el actual) Al presionar de nuevo se irá cambiando de 1 al 8 que representan las siguientes direcciones:
+
+Forward - The sequence steps between channels 1 to 8 in order. Channel 1 represents step 1.
+
+Reverse - The sequence steps between channels 8 to 1 in reverse order. Channel 8 represents step 1.
+
+Pendulum - The sequence steps between channels 1 to 8 then reverses direction. Channels 1 and 8 are triggered twice to create a 16 step sequence length. Channel 1 represents step 1.
+
+Stagger - The sequence steps between channels 1 to 8 in order with a 25% chance that the sequence will stagger back 1 step or ahead 2 steps. This creates a sequence that staggers back and forth as it steps between channels. Channel 1 represents step 1. Step 1 may be staggered past on any given cycle.
+
+Skip - The sequence steps between channels 1 to 8 in order, skipping a subsequent channel each cycle. This creates a complex sequence of 56 steps. The first time through channel 1 is skipped, the second time through channel 2 is skipped, and so on. Channel 2 represents step 1 because Channel 1 is skipped on the first sequence cycle.
+
+Transpose - Transpose splits the sequencer into two sets (channels 1-4 and channels 5-8). The top sequence (channels 1-4) is transposed by the bottom sequence (channels 5-8) running at 1/4 the rate as the top sequence. Channel 1 and channel 5 active represents step 1.
+
+Random 1 - The active channel is selected randomly. There is no step 1 tied to random. Program changes happen immediately.
+
+
+
+Boton LEN: 
+--Modo lineal:
+Selecciona el largo para el track actual. Al presionar una vez se indica el largo actual en los leds de los steps (parpadeará rapido el actual) Al presionar de nuevo se irá cambiando de 1 al 8.
+-- Modo euclideo:
+Selecciona la cantidad de steps encendidos en el circulo de 1 a 8, se iran encendiendo en forma equidistante.
+
+
+Boton MODE: Selecciona el modo de funcionamiento del sequencer.Al presionar una vez se indica el modo actual en los leds de los steps (parpadeará rapido el actual) Al presionar de nuevo se irá cambiando de 1 al 8.
+
+Modo 1: Secuencer lineal. 4 tracks
+Modo 2: Secuencer euclidean. 4 tracks
+Modo 3: MIDI to CV: Se deshabilita el track 1 del secuencer para que funcione segun la entrada MIDI.
+
+
+Boton CLK: Selecciona la division del clock para el track actual.Al presionar una vez se indica la division actual en los leds de los steps (parpadeará rapido el actual) Al presionar de nuevo se irá cambiando de 1 al 8.
+
+Boton PROB/RPT : Seleciona para los tracks 2 al 4 si los potes de los steps setean probabilidad de ocurrencia del gate o cantidad de veces que se repite el pulso de gate en el mismo step (1 a 4)
+
+
+Boton PROB/RPT + Encoder: En modo euclidean: Rota los steps encendidos
+
+
+Configuraciones extras
+***********************
+
+DIRECTION por 5 segundos: Configura la fuente de clock. Se mostrará en los leds. Mover el encoder para seleccionar:
+1: Interna
+2: Externa
+
+
+TRACK por 5 segundos: Setea el canal MIDI actual. Se indicará el canal de 0 al 8 en los leds de los steps. Mover el encoder para seleccionar.
+
+
+MODE por 5 segundos: Configura el comportamiento de la entrada de reset. Se indicará el modo del 1 al 8 en los leds de los steps. Mover el encoder para seleccionar.
+1. Al llegar un pulso en la entrada de reset se volverá al step 1 en todos los tracks
+2. Al llegar un pulso en la entrada de reset se pausa el secuencer en el step actual mientras el pulso esté en alto
+3. The sequence direction reverses when the incoming gate signal goes high. The sequence returns to normal when the gate goes high a second time. If the direction mode is set to random 1 or random 2, reverse mode enables the sequence to play forward.
+
+
+
+
+
+
+
