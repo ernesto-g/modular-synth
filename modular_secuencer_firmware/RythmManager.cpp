@@ -29,17 +29,23 @@ static unsigned char stepIndex[TRACKS_LEN];
 static unsigned char trackEndStep[TRACKS_LEN];
 static unsigned char currentDirection[TRACKS_LEN];
 static unsigned char pendulumDir[TRACKS_LEN];
+static unsigned char skipCounter[TRACKS_LEN];
+static volatile unsigned char randomSeedCounter=0;
+static unsigned char flagPendingNextDir[TRACKS_LEN]; // change of direction occurs only after step 1
 
 
 // Private functions
 static int calculateNextStep(unsigned char trackIndex);
 static int incStep(unsigned char indexTrack);
 static int subStep(unsigned char indexTrack);
+static void loadNextDirection(int currentTrack);
 
 
 
 void rthm_tick(void)
 {
+    randomSeedCounter++;
+  
     if(tempoCounter>0)
       tempoCounter--;
     
@@ -57,9 +63,9 @@ void rthm_init(void)
       trackEndStep[trackIndex]=8;
       currentDirection[trackIndex]=DIR_FORWARD;
       pendulumDir[trackIndex]=0;
+      skipCounter[trackIndex]=0;
+      flagPendingNextDir[trackIndex]=0;
   }
-
-  randomSeed(analogRead(A7));
   
 }
 
@@ -88,6 +94,8 @@ void rthm_stop(void)
 
 void rthm_play(void)
 {
+  randomSeed(randomSeedCounter);
+
   unsigned char trackIndex;
   for(trackIndex=0; trackIndex<TRACKS_LEN; trackIndex++)
   {
@@ -106,9 +114,7 @@ int rthm_getState(void)
 void rthm_nextDirection(void)
 {
     int currentTrack=track_getCurrentTrack();
-    currentDirection[currentTrack]++;
-    if(currentDirection[currentTrack]>DIR_RAND_2)
-      currentDirection[currentTrack]=DIR_FORWARD;
+    flagPendingNextDir[currentTrack]++;
 }
 
 void rthm_loop(void)
@@ -129,6 +135,20 @@ void rthm_loop(void)
     }
 }
 
+
+static void loadNextDirection(int currentTrack)
+{
+    
+    currentDirection[currentTrack]++;
+    if(currentDirection[currentTrack]>DIR_RAND_2)
+      currentDirection[currentTrack]=DIR_FORWARD;
+
+   switch(currentDirection[currentTrack])
+   {
+        case DIR_PENDULUM:pendulumDir[currentTrack]=0;break;
+        case DIR_SKIP:skipCounter[currentTrack]=0;break;         
+   }
+}
 
 static int calculateNextStep(unsigned char trackIndex)
 {
@@ -175,10 +195,35 @@ static int calculateNextStep(unsigned char trackIndex)
         }
         case DIR_STAGGER:
         {
-            break;  
+          int rndVal = random(0, 100);
+          if(rndVal<25)
+          {
+              // 25% chance to enter here
+              incStep(trackIndex);
+              incStep(trackIndex);
+          }
+          else if(25<=rndVal && rndVal<50)
+          {
+              // 25 % chance to enter here          
+              subStep(trackIndex);
+          }
+          else
+          {
+              // 50% chance to enter here
+              incStep(trackIndex);
+          }
+          break;  
         }
         case DIR_SKIP:
         {
+            incStep(trackIndex);
+            if(stepIndex[trackIndex]==skipCounter[trackIndex])
+            {
+                skipCounter[trackIndex]++;
+                if(skipCounter[trackIndex]>=trackEndStep[trackIndex])
+                  skipCounter[trackIndex]=0;
+                incStep(trackIndex);
+            }
             break;  
         }
         case DIR_RAND_1:
@@ -198,6 +243,18 @@ static int calculateNextStep(unsigned char trackIndex)
             break;  
         }        
     }
+
+    if(stepIndex[trackIndex]==0)
+    {
+        // Sequence started from step 0, check pending changes on direction
+        
+        while(flagPendingNextDir[trackIndex]>0) // Check if there are pending changes on direction
+        {
+            loadNextDirection(trackIndex); // apply pending direction change
+            flagPendingNextDir[trackIndex]--;
+        }
+    }
+    
     return stepIndex[trackIndex];
 }
 

@@ -56,10 +56,9 @@ Stagger - The sequence steps between channels 1 to 8 in order with a 25% chance 
 
 Skip - The sequence steps between channels 1 to 8 in order, skipping a subsequent channel each cycle. This creates a complex sequence of 56 steps. The first time through channel 1 is skipped, the second time through channel 2 is skipped, and so on. Channel 2 represents step 1 because Channel 1 is skipped on the first sequence cycle.
 
-Transpose - Transpose splits the sequencer into two sets (channels 1-4 and channels 5-8). The top sequence (channels 1-4) is transposed by the bottom sequence (channels 5-8) running at 1/4 the rate as the top sequence. Channel 1 and channel 5 active represents step 1.
-
 Random 1 - The active channel is selected randomly. There is no step 1 tied to random. Program changes happen immediately.
 
+Random 2 - The active channel is selected randomly. There is no step 1 tied to random. Program changes happen immediately. Includes silence step.
 
 
 Boton LEN: 
