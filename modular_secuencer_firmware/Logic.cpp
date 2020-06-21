@@ -89,6 +89,7 @@ void logic_loop(void)
           if(flagShift==0)
           {
             Serial.print("LEN\n");
+            rthm_nextLen();
           }
           else
           {

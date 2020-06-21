@@ -11,7 +11,7 @@ Track 2 al 4: Maneja salida GATEx.
 
 Los 8 potes van a indicar probabilidad de disparo del GATEx en dicho step o cantidad de repeats por step de cada gate.
 
-Encoder central: Al moverlo se modifica el tempo del secuencer. De 30 a 255 bpm
+Encoder central: Al moverlo se modifica el tempo del secuencer. De 30 a 600 bpm
 
 
 
@@ -68,11 +68,13 @@ Selecciona el largo para el track actual. Al presionar una vez se indica el larg
 Selecciona la cantidad de steps encendidos en el circulo de 1 a 8, se iran encendiendo en forma equidistante.
 
 
-Boton MODE: Selecciona el modo de funcionamiento del sequencer.Al presionar una vez se indica el modo actual en los leds de los steps (parpadeará rapido el actual) Al presionar de nuevo se irá cambiando de 1 al 8.
+Boton MODE: Selecciona el modo de funcionamiento del sequencer.Al presionar una vez se indica el modo actual en los leds de los steps (parpadeará rapido el actual) Al presionar de nuevo se irá cambiando de 1 al 4.
 
 Modo 1: Secuencer lineal. 4 tracks
 Modo 2: Secuencer euclidean. 4 tracks
 Modo 3: MIDI to CV: Se deshabilita el track 1 del secuencer para que funcione segun la entrada MIDI.
+Modo 4: ARPEGGIATOR: Se deshabilita el track 1 del secuencer para que funcione como arpeggiator segun teclas presionadas por MIDI.
+
 
 
 Boton CLK: Selecciona la division del clock para el track actual.Al presionar una vez se indica la division actual en los leds de los steps (parpadeará rapido el actual) Al presionar de nuevo se irá cambiando de 1 al 8.

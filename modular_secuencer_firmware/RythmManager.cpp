@@ -5,6 +5,8 @@
 
 
 #define SEC_TO_TICK(S)  (S*10000)
+#define SEC_TO_MS(S)  (S*1000)
+
 
 #define TRACKS_LEN      4
 
@@ -82,6 +84,11 @@ int rthm_getCurrentTempo(void)
   return currentTempo;
 }
 
+unsigned int rthm_getCurrentTempoPeriodMs(void)
+{
+    return (unsigned int)SEC_TO_MS( (60.0/currentTempo) );
+}
+
 int rthm_getCurrentStep(unsigned char indexTrack)
 {
   return stepIndex[indexTrack];
@@ -115,6 +122,15 @@ void rthm_nextDirection(void)
 {
     int currentTrack=track_getCurrentTrack();
     flagPendingNextDir[currentTrack]++;
+}
+void rthm_nextLen(void)
+{
+    int currentTrack=track_getCurrentTrack();
+
+    trackEndStep[currentTrack]++;
+    if(trackEndStep[currentTrack]>=9)
+      trackEndStep[currentTrack]=2;
+
 }
 
 void rthm_loop(void)

@@ -9,3 +9,5 @@ void rthm_play(void);
 int rthm_getState(void);
 void rthm_loop(void);
 void rthm_nextDirection(void);
+void rthm_nextLen(void);
+unsigned int rthm_getCurrentTempoPeriodMs(void);
