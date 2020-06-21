@@ -35,6 +35,15 @@ static const PROGMEM unsigned int PHRY_TABLE[35] = {136,144,161,181,203,215,242,
 static const PROGMEM unsigned int LYDI_TABLE[35] = {136,152,171,192,203,228,228,271,304,342,383,406,456,512,542,609,683,767,813,912,1024,1085,1217,1367,1534,1625,1824,2048,2169,2435,2733,3068,3250,3648,4095};
 static const PROGMEM unsigned int DORI_TABLE[35] = {136,152,161,181,203,228,242,271,304,322,362,406,456,483,542,609,645,724,813,912,966,1085,1217,1290,1448,1625,1824,1933,2169,2435,2580,2896,3250,3648,3865};
 
+
+
+void track_tick1ms(void)
+{
+
+  
+}
+
+
 void track_init(void)
 {
     currentTrack=0;
@@ -42,6 +51,11 @@ void track_init(void)
 }
 
 
+void track_silenceStep(int stepIndex, int trackIndex)
+{
+    currentStepInTrack[trackIndex] = stepIndex;
+    
+}
 void track_playStep(int stepIndex, int trackIndex)
 {
     currentStepInTrack[trackIndex] = stepIndex;
@@ -100,6 +114,10 @@ void track_nextScale(void)
     currentScaleMode=0;
 }
 
+int track_getCurrentTrack(void)
+{
+  return currentTrack;
+}
 
 static void updateCVout(void)
 {

@@ -18,11 +18,11 @@
 #define PIN_MUX_B_SR_DATA     12
 #define PIN_MUX_C_SR_CLOCK    13
 
-#define PIN_SW_TRACK_RUN      14
-#define PIN_SW_SCALE_DIR      15
-#define PIN_SW_LEN_MODE       16
-#define PIN_SW_RPT_PROB       17
-#define PIN_ANALOG_SW_SHIFT   A7
+#define PIN_SW_TRACK_RUN      14 // OK
+#define PIN_SW_SCALE_DIR      15 // OK
+#define PIN_SW_RPT_PROB       16 // OK
+#define PIN_SW_SHIFT          17 // OK
+#define PIN_ANALOG_SW_LEN_MODE   A7
 
 #define PIN_ANALOG_MULTIPLEXED  A6
 
@@ -59,15 +59,14 @@ void ios_init(void)
   pinMode(PIN_EXT_RST,INPUT);
   pinMode(PIN_SW_TRACK_RUN,INPUT_PULLUP);
   pinMode(PIN_SW_SCALE_DIR,INPUT);
-  pinMode(PIN_SW_LEN_MODE,INPUT);
+  pinMode(PIN_SW_SHIFT,INPUT);
   pinMode(PIN_SW_RPT_PROB,INPUT);
   
   // configure SW pins pullups
   digitalWrite(PIN_EXT_CLK,HIGH);
   digitalWrite(PIN_EXT_RST,HIGH);
-  //digitalWrite(PIN_SW_TRACK_RUN,HIGH);
   digitalWrite(PIN_SW_SCALE_DIR,HIGH);
-  digitalWrite(PIN_SW_LEN_MODE,HIGH);
+  digitalWrite(PIN_SW_SHIFT,HIGH);
   digitalWrite(PIN_SW_RPT_PROB,HIGH);
 
    // DAC
@@ -112,15 +111,15 @@ int ios_readSw(int input)
       {
           case IO_SW_TRACK_RUN: if(digitalRead(PIN_SW_TRACK_RUN)==LOW)return HIGH;else return LOW; 
           case IO_SW_SCALE_DIR: if(digitalRead(PIN_SW_SCALE_DIR)==LOW)return HIGH;else return LOW; 
-          case IO_SW_LEN_MODE: if(digitalRead(PIN_SW_LEN_MODE)==LOW)return HIGH;else return LOW; 
+          case IO_SW_SHIFT: if(digitalRead(PIN_SW_SHIFT)==LOW)return HIGH;else return LOW; 
           case IO_SW_RPT_PROB: if(digitalRead(PIN_SW_RPT_PROB)==LOW)return HIGH;else return LOW; 
-          case IO_SW_SHIFT:
+          case IO_SW_LEN_MODE:
           { 
-                int v =  analogRead(PIN_ANALOG_SW_SHIFT);
+                unsigned int v =  analogRead(PIN_ANALOG_SW_LEN_MODE);
                 if(v < 512)
-                  return 1;
+                  return HIGH;
                 else
-                  return 0;
+                  return LOW;
             break;
           }
       }
@@ -133,11 +132,11 @@ int ios_readSw(int input)
           case IO_SW_RPT_PROB: return digitalRead(PIN_SW_RPT_PROB); 
           case IO_SW_SHIFT:
           { 
-                int v =  analogRead(PIN_ANALOG_SW_SHIFT);
+                unsigned int v =  analogRead(PIN_ANALOG_SW_SHIFT);
                 if(v < 512)
-                  return 0;
+                  return LOW;
                 else
-                  return 1;
+                  return HIGH;
             break;
           }
       }

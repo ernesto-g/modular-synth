@@ -3,8 +3,8 @@
 #include "FrontPanel.h"
 #include "RythmManager.h"
 #include "TrackManager.h"
+#include "Logic.h"
 
-static volatile int prueba=0;
 
 static volatile unsigned char tickDivider=0;
 //ISR(TIMER1_COMPA_vect) // timer1 interrupt. systick. 100uS
@@ -12,7 +12,6 @@ ISR(TIMER0_COMPA_vect)
 {
     // 100uS base time
     rthm_tick();
-    //inst_tick();
     //_______________
     
     // 1ms base time
@@ -21,8 +20,8 @@ ISR(TIMER0_COMPA_vect)
     {
         tickDivider=0;
         frontp_tick1Ms();
+        track_tick1ms();
         //midi_tickMs();
-        prueba++;
     }
     //_____________
 
@@ -41,6 +40,7 @@ void setup() {
   frontp_init();
   rthm_init();
   track_init();
+  logic_init();
   
   // Configure TIMER0 for systick interrupt
   cli();//stop interrupts
@@ -61,55 +61,13 @@ void setup() {
 
 void loop() {
 
-  int toggle=0;
-
   // main loop
   while(1)
   {
       frontp_loop();
       rthm_loop();
       track_loop();
-
       
-      if(frontp_getSwState(SW_TRACK_RUN)==FRONT_PANEL_SW_STATE_SHORT)
-      {
-          frontp_resetSwState(SW_TRACK_RUN);
-          Serial.print("Se presiono RUN\n");
-          rthm_play();
-      }
-
-      if(frontp_getSwState(SW_SCALE_DIR)==FRONT_PANEL_SW_STATE_SHORT)
-      {
-          frontp_resetSwState(SW_SCALE_DIR);
-          Serial.print("Se presiono SCALE\n");
-          track_nextScale();
-      }
-      
-
-      /*
-      if(prueba>=1000)
-      {
-          prueba=0;
-          if(toggle==0)
-          {
-            toggle=1;
-          }
-          else
-          {
-            toggle=0;
-          }
-          frontp_setLed(7, toggle);   
-
-
-          int analogVal = frontp_readAnalogStepValue(0);
-          Serial.print("Valor analog:");
-          Serial.print(analogVal);
-          Serial.print("\n");
-
-          ios_setCVout(analogVal*4);
-          
-          ios_setVelocityOut(analogVal/8);
-      }
-      */
+      logic_loop(); 
   }
 }

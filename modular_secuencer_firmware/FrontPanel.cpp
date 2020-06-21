@@ -3,6 +3,9 @@
 #include "FrontPanel.h"
 #include "ios.h"
 
+#define PIN_ENCODER_D4          4
+#define PIN_ENCODER_D5          5
+
 
 #define ANALOGS_IN_LEN          8
 
@@ -13,7 +16,7 @@
 
 #define LEN_SW          5
 
-#define TIMEOUT_BOUNCE      20 // 10ms
+#define TIMEOUT_BOUNCE      10 // 10ms
 #define TIMEOUT_SHORT_PRESS 1000  // 1sec
 #define TIMEOUT_LONG_PRESS  2000  // 2sec
 
@@ -26,7 +29,7 @@
 #define STATE_WAIT_BOUNCE_RELEASE   6
 
 
-static RotaryEncoder encoder(A2, A3);
+static RotaryEncoder encoder(PIN_ENCODER_D5, PIN_ENCODER_D4);
 static unsigned char state[LEN_SW];
 static unsigned char switchesState[LEN_SW];
 static volatile unsigned int timeouts[LEN_SW];
@@ -58,18 +61,21 @@ void frontp_tick1Ms(void)
     }
 }
 
-// The Interrupt Service Routine for Pin Change Interrupt 1
-// This routine will only be called on any signal change on A2 and A3: exactly where we need to check.
-ISR(PCINT1_vect) {
+// The Interrupt Service Routine for Pin Change Interrupt 2
+// This routine will only be called on any signal change on D4 and D5: exactly where we need to check.
+ISR(PCINT2_vect) {
   encoder.tick(); // just call tick() to check the state.
 
 }
 
 void frontp_init(void)
 {
-    // Enable interrupts for A2 A3 pins
-    PCICR |= (1 << PCIE1);    // This enables Pin Change Interrupt 1 that covers the Analog input pins or Port C.
-    PCMSK1 |= (1 << PCINT10) | (1 << PCINT11);  // This enables the interrupt for pin 2 and 3 of Port C.
+    pinMode(PIN_ENCODER_D4,INPUT_PULLUP);
+    pinMode(PIN_ENCODER_D5,INPUT_PULLUP);
+   
+    // Enable interrupts for D4 D5 pins
+    PCICR |= (1 << PCIE2);    // This enables Pin Change Interrupt 2 that covers D4 and D5
+    PCMSK2 |= (1 << PCINT20) | (1 << PCINT21);  // This enables the interrupt for pin D4 and D5
 }
 
 int frontp_getEncoderPosition(void)
@@ -84,25 +90,12 @@ void frontp_setEncoderPosition(int pos)
 
 
 void frontp_loop(void)
-{
-    /*
-    static int pos = 0;
-    int newPos = encoder.getPosition();
-    //Serial.println(newPos);
-    if (pos != newPos) {
-      Serial.print(newPos);
-      Serial.println();
-      pos = newPos;
-    }
-    */
-    
+{    
     int i;
     for(i=0;i<LEN_SW; i++)
       swStateMachine(i);
 
-
    analogsStateMachine();
-
 }
 
 int frontp_getSwState(int swIndex)
@@ -127,8 +120,11 @@ void frontp_setLed(int led, int value)
 }
 void frontp_showStepInLed(int stepIndex)
 {
-        stepsLeds = 0;  
+    stepsLeds = 0;
+    if(stepIndex>=0 && stepIndex<=7)
+    {
         stepsLeds|= 1 << stepIndex;    
+    }          
 }
 
 int frontp_readAnalogStepValue(int index)
