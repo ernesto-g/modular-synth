@@ -5,9 +5,12 @@
 #include "RythmManager.h"
 
 
+#define ANALOG_TO_0_100(X)    (((unsigned long)(X/4)*(unsigned long)100UL)/255UL)
+#define ANALOG_TO_0_255(X)    (X/4)
 
 #define TRACK_0     0
 #define TRACK_LEN   4
+#define STEPS_LEN   8
 
 #define SCALE_MODE_MICRO    0
 #define SCALE_MODE_CHROM    1
@@ -31,11 +34,16 @@ static unsigned char currentScaleMode;
 static unsigned char gateState[TRACK_LEN];
 static volatile unsigned int timeoutGate[TRACK_LEN];
 
+static unsigned int currentStepValue[TRACK_LEN][STEPS_LEN]; // Current prob assigned to each step
+static unsigned int analogStepPrevValue[TRACK_LEN][STEPS_LEN]; // Last value read from potentiometer for each step
+
 
 // Private functions
 static void updateCVout(void);
 static int calculateValueForCV(unsigned int val1024);
 static void loadTimeoutForGate(int trackIndex);
+static void loadCurrentAnalogValueForTrack(void);
+static int getChance(int trackNumber);
 
 
 //Scale tables
@@ -64,12 +72,29 @@ void track_tick1ms(void)
 void track_init(void)
 {
     currentTrack=0;
+    
     currentScaleMode=SCALE_MODE_MICRO;
     int i;
+    int j;
     for(i=0; i<TRACK_LEN; i++)
     {
-      gateState[i]=GATE_STATE_IDLE;
-      timeoutGate[i]=0;
+        gateState[i]=GATE_STATE_IDLE;
+        timeoutGate[i]=0;
+
+        if(i==0)
+        {
+            // track 0
+            for(j=0; j<STEPS_LEN; j++)
+            {
+                currentStepValue[0][j] = ANALOG_TO_0_255(frontp_readAnalogStepValue(j));
+                analogStepPrevValue[0][j] = currentStepValue[0][j];
+            }
+        }
+        else
+        {
+          for(j=0; j<STEPS_LEN; j++)
+            currentStepValue[i][j] = 50;
+        }
     }
 }
 
@@ -96,27 +121,37 @@ void track_playStep(int stepIndex, int trackIndex)
             // Set GATE 1
             ios_setHi(IOS_GATE_1);
 
+            loadTimeoutForGate(trackIndex);
             break;
         }  
         case 1:
         {
-            ios_setHi(IOS_GATE_2);
+            if(getChance(IOS_GATE_2))
+            {
+                ios_setHi(IOS_GATE_2);
+                loadTimeoutForGate(trackIndex);
+            }
             break;
         }          
         case 2:
         {
-            ios_setHi(IOS_GATE_3);
+            if(getChance(IOS_GATE_3))
+            {
+              ios_setHi(IOS_GATE_3);
+              loadTimeoutForGate(trackIndex);
+            }
             break;
         }          
         case 3:
         {
-            ios_setHi(IOS_GATE_4);
+            if(getChance(IOS_GATE_4))
+            {
+              ios_setHi(IOS_GATE_4);
+              loadTimeoutForGate(trackIndex);
+            }
             break;
         }          
     }
-    
-    loadTimeoutForGate(trackIndex);
-
 }
 
 
@@ -124,6 +159,25 @@ void track_playStep(int stepIndex, int trackIndex)
 
 void track_loop(void)
 {
+      // Check for changes on analog inputs
+      int stepIndex;
+      for(stepIndex=0; stepIndex<STEPS_LEN; stepIndex++)
+      {
+          unsigned int valueRead;
+          if(currentTrack==0)
+            valueRead = ANALOG_TO_0_255(frontp_readAnalogStepValue(stepIndex));
+          else
+            valueRead = ANALOG_TO_0_100(frontp_readAnalogStepValue(stepIndex));
+          
+          if(analogStepPrevValue[currentTrack][stepIndex] != valueRead)
+          {
+              // Value changed
+              currentStepValue[currentTrack][stepIndex] = valueRead;
+          }
+      }
+      //___________________________________
+
+  
       // show step led
       frontp_showStepInLed(currentStepInTrack[currentTrack]);
 
@@ -166,6 +220,44 @@ void track_loop(void)
 }
 
 
+void track_nextTrack(void)
+{
+    currentTrack++;
+    if(currentTrack>=TRACK_LEN)
+      currentTrack=0;
+
+    loadCurrentAnalogValueForTrack();     
+}
+
+static void loadCurrentAnalogValueForTrack(void)
+{
+    int stepIndex;
+    for(stepIndex=0; stepIndex<STEPS_LEN; stepIndex++)
+    {
+        unsigned int valueRead;
+        if(currentTrack==0)
+          valueRead = ANALOG_TO_0_255(frontp_readAnalogStepValue(stepIndex));
+        else
+          valueRead = ANALOG_TO_0_100(frontp_readAnalogStepValue(stepIndex));
+          
+        analogStepPrevValue[currentTrack][stepIndex] = valueRead;
+    }
+}
+
+static int getChance(int trackNumber)
+{
+    unsigned int prob = currentStepValue[trackNumber][currentStepInTrack[trackNumber]];
+    
+    if(prob>=98)
+      return 1;
+    if(prob<=2)
+      return 0;
+    
+    int val = random(0, 100);
+    if(val < prob )
+        return 1;
+    return 0;
+}
 
 void track_nextScale(void)
 {
@@ -181,29 +273,38 @@ int track_getCurrentTrack(void)
 
 static void updateCVout(void)
 {
-    unsigned int val1024 = frontp_readAnalogStepValue(currentStepInTrack[TRACK_0]);
-    
-    ios_setCVout(calculateValueForCV(val1024));
+    unsigned int val255 = currentStepValue[TRACK_0][currentStepInTrack[TRACK_0]]; //frontp_readAnalogStepValue(currentStepInTrack[TRACK_0]);
+
+    //debug
+    /*
+    Serial.print("los 8 valores del track 0:");
+    Serial.print(currentStepValue[TRACK_0][0]);Serial.print(" ");
+    Serial.print(currentStepValue[TRACK_0][1]);Serial.print(" ");
+    Serial.print(currentStepValue[TRACK_0][2]);Serial.print(" ");
+    Serial.print(currentStepValue[TRACK_0][3]);Serial.print(" ");
+    Serial.print(currentStepValue[TRACK_0][4]);Serial.print(" ");
+    Serial.print(currentStepValue[TRACK_0][5]);Serial.print(" ");
+    Serial.print(currentStepValue[TRACK_0][6]);Serial.print(" ");
+    Serial.print(currentStepValue[TRACK_0][7]);Serial.print("\n");
+    */
+    ios_setCVout(calculateValueForCV(val255));
 }
 
 
-static int calculateValueForCV(unsigned int val1024)
+static int calculateValueForCV(unsigned int val255)
 {    
     switch(currentScaleMode)
     {
         case SCALE_MODE_MICRO: {
-          if(val1024>0)
-            return floor((log(val1024)/log(1023))*4095);
-          else
-            return 0;
+          return val255*16;
         }
-        case SCALE_MODE_CHROM: return pgm_read_word(&(CHROM_TABLE[(val1024*59)/1023])); 
-        case SCALE_MODE_MAJOR: return pgm_read_word(&(MAJOR_TABLE[(val1024*34)/1023])); 
-        case SCALE_MODE_MINOR: return pgm_read_word(&(MINOR_TABLE[(val1024*34)/1023]));
-        case SCALE_MODE_BLUES: return pgm_read_word(&(BLUES_TABLE[(val1024*29)/1023]));
-        case SCALE_MODE_PHRY : return pgm_read_word(&(PHRY_TABLE[(val1024*34)/1023]));
-        case SCALE_MODE_LYDI : return pgm_read_word(&(LYDI_TABLE[(val1024*34)/1023]));
-        case SCALE_MODE_DORI : return pgm_read_word(&(DORI_TABLE[(val1024*34)/1023]));
+        case SCALE_MODE_CHROM: return pgm_read_word(&(CHROM_TABLE[(val255*59)/255])); 
+        case SCALE_MODE_MAJOR: return pgm_read_word(&(MAJOR_TABLE[(val255*34)/255])); 
+        case SCALE_MODE_MINOR: return pgm_read_word(&(MINOR_TABLE[(val255*34)/255]));
+        case SCALE_MODE_BLUES: return pgm_read_word(&(BLUES_TABLE[(val255*29)/255]));
+        case SCALE_MODE_PHRY : return pgm_read_word(&(PHRY_TABLE[(val255*34)/255]));
+        case SCALE_MODE_LYDI : return pgm_read_word(&(LYDI_TABLE[(val255*34)/255]));
+        case SCALE_MODE_DORI : return pgm_read_word(&(DORI_TABLE[(val255*34)/255]));
     }
 
     return 0;

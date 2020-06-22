@@ -34,7 +34,7 @@ static unsigned char state[LEN_SW];
 static unsigned char switchesState[LEN_SW];
 static volatile unsigned int timeouts[LEN_SW];
 static volatile int timeoutAnalogSt=0;
-static int stepAnalogValues[ANALOGS_IN_LEN];
+static unsigned int stepAnalogValues[ANALOGS_IN_LEN];
 static unsigned char stepsLeds=0;
 
 
@@ -127,7 +127,7 @@ void frontp_showStepInLed(int stepIndex)
     }          
 }
 
-int frontp_readAnalogStepValue(int index)
+unsigned int frontp_readAnalogStepValue(int index)
 {
     switch(index) // map physically analog inputs to match leds steps
     {

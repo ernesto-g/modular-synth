@@ -51,7 +51,8 @@ void logic_loop(void)
           }
           else
           {
-            Serial.print("TRACK\n");            
+            Serial.print("TRACK\n"); 
+            track_nextTrack();           
           }
       }
 

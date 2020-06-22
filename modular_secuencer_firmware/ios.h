@@ -26,7 +26,7 @@
 void ios_setLo(int outNumber);
 void ios_setHi(int outNumber);
 int ios_readSw(int swPin);
-int ios_readMuxAnalog(void);
+unsigned int ios_readMuxAnalog(void);
 
 void ios_setCVout(int value);
 void ios_setVelocityOut(unsigned char value);

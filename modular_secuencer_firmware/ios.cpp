@@ -99,7 +99,7 @@ void ios_setVelocityOut(unsigned char value)
     OCR1A = value;
 }
 
-int ios_readMuxAnalog(void)
+unsigned int ios_readMuxAnalog(void)
 {
     return analogRead(PIN_ANALOG_MULTIPLEXED);
 }

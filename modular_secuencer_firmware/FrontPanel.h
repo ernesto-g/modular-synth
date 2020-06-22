@@ -27,4 +27,4 @@ void frontp_setLed(int led, int value);
 void frontp_showStepInLed(int stepIndex);
 
 
-int frontp_readAnalogStepValue(int index);
+unsigned int frontp_readAnalogStepValue(int index);

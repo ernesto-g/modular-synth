@@ -7,8 +7,7 @@
 
 
 static volatile unsigned char tickDivider=0;
-//ISR(TIMER1_COMPA_vect) // timer1 interrupt. systick. 100uS
-ISR(TIMER0_COMPA_vect)
+ISR(TIMER0_COMPA_vect) // timer0 interrupt. systick. 100uS
 {
     // 100uS base time
     rthm_tick();
