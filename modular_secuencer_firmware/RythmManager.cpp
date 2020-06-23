@@ -118,12 +118,30 @@ int rthm_getState(void)
 }
 
 
-void rthm_nextDirection(void)
+int rthm_nextDirection(void)
 {
     int currentTrack=track_getCurrentTrack();
     flagPendingNextDir[currentTrack]++;
+
+    // calculate next dir to return
+    int dirToReturn = currentDirection[currentTrack];
+    int pressNumber = flagPendingNextDir[currentTrack];
+    while(pressNumber>0)
+    {
+        dirToReturn++;
+        pressNumber--;
+        if(dirToReturn>DIR_RAND_2)
+            dirToReturn=DIR_FORWARD;
+    }
+    return dirToReturn;
 }
-void rthm_nextLen(void)
+int rthm_getCurrentDirection(void)
+{
+    int currentTrack=track_getCurrentTrack();
+    return currentDirection[currentTrack];
+}
+
+int rthm_nextLen(void)
 {
     int currentTrack=track_getCurrentTrack();
 
@@ -131,6 +149,12 @@ void rthm_nextLen(void)
     if(trackEndStep[currentTrack]>=9)
       trackEndStep[currentTrack]=2;
 
+    return trackEndStep[currentTrack]-1; // led1 is 0, so I substract 1 to value
+}
+int rthm_getCurrentLen(void)
+{
+    int currentTrack=track_getCurrentTrack();  
+    return trackEndStep[currentTrack]-1; // led1 is 0, so I substract 1 to value  
 }
 
 void rthm_loop(void)

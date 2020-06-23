@@ -6,15 +6,38 @@
 #include "TrackManager.h"
 #include "Logic.h"
 
+#define LOGIC_STATE_SHOW_STEPS    0
+#define LOGIC_STATE_SHOW_OPTION   1
+
+
 #define BPM_MIN   30
 #define BPM_MAX   600
 
+#define TIMEOUT_SHOW_OPTION   3000;
 
+// Private functions
+static void showOption(int optionValue);
+static int imShowingOption(void);
+
+
+// Private variables
 static unsigned char flagShift;
+static unsigned char logicState;
+static volatile unsigned int timeoutShowCurrentOption;
+static int currentOption;
+
+
+void logic_tick1ms(void)
+{
+    if(timeoutShowCurrentOption>0)
+      timeoutShowCurrentOption--;
+  
+}
 
 void logic_init(void)
 {
     flagShift=0;
+    logicState = LOGIC_STATE_SHOW_STEPS;
 
     frontp_setEncoderPosition(rthm_getCurrentTempo());
 }
@@ -51,8 +74,15 @@ void logic_loop(void)
           }
           else
           {
-            Serial.print("TRACK\n"); 
-            track_nextTrack();           
+            Serial.print("TRACK\n");
+            if(imShowingOption())
+            {
+                showOption(track_nextTrack()); 
+            }
+            else
+            {
+                showOption(track_getCurrentTrack());
+            }
           }
       }
 
@@ -62,12 +92,26 @@ void logic_loop(void)
           if(flagShift==0)
           {
             Serial.print("DIR\n");
-            rthm_nextDirection();
+            if(imShowingOption())
+            {
+                showOption(rthm_nextDirection()); 
+            }
+            else
+            {
+                showOption(rthm_getCurrentDirection());
+            }
           }
           else
           {
             Serial.print("SCALE\n");
-            track_nextScale();            
+            if(imShowingOption())
+            {
+                showOption(track_nextScale()); 
+            }
+            else
+            {
+                showOption(track_getCurrentScale());
+            }           
           }
       }
 
@@ -90,7 +134,14 @@ void logic_loop(void)
           if(flagShift==0)
           {
             Serial.print("LEN\n");
-            rthm_nextLen();
+            if(imShowingOption())
+            {
+                showOption(rthm_nextLen()); 
+            }
+            else
+            {
+                showOption(rthm_getCurrentLen());
+            }
           }
           else
           {
@@ -125,4 +176,37 @@ void logic_loop(void)
     }
     //______________
 
+    switch(logicState)
+    {
+        case LOGIC_STATE_SHOW_STEPS:
+        {
+            int stepInTrack = track_getCurrentStepInTrack();
+            // show step led
+            frontp_showStepInLed(stepInTrack,1);            
+            break;
+        }
+        case LOGIC_STATE_SHOW_OPTION:
+        {
+            frontp_showStepInLedBlinking(currentOption,1);
+            if(timeoutShowCurrentOption==0)
+            {
+              logicState = LOGIC_STATE_SHOW_STEPS;
+            }
+            break;
+        }
+    }
+}
+
+static void showOption(int optionValue)
+{
+    currentOption = optionValue;
+    logicState = LOGIC_STATE_SHOW_OPTION;
+    timeoutShowCurrentOption = TIMEOUT_SHOW_OPTION;
+}
+
+static int imShowingOption(void)
+{
+  if(logicState == LOGIC_STATE_SHOW_OPTION)
+      return 1;
+  return 0;
 }

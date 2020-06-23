@@ -15,10 +15,17 @@
 #define ANALOG_STATE_SHOW_LEDS  3
 
 #define LEN_SW          5
+#define LEDS_LEN        8
 
 #define TIMEOUT_BOUNCE      10 // 10ms
 #define TIMEOUT_SHORT_PRESS 1000  // 1sec
 #define TIMEOUT_LONG_PRESS  2000  // 2sec
+#define LED_BLINK_TIMEOUT  200
+
+#define LED_STATE_BLINK   2
+#define LED_STATE_ON      1
+#define LED_STATE_OFF     0
+
 
 #define STATE_IDLE                  0
 #define STATE_PRESSED               1
@@ -28,7 +35,7 @@
 #define STATE_WAIT_RELEASE2         5
 #define STATE_WAIT_BOUNCE_RELEASE   6
 
-
+// Private variables
 static RotaryEncoder encoder(PIN_ENCODER_D5, PIN_ENCODER_D4);
 static unsigned char state[LEN_SW];
 static unsigned char switchesState[LEN_SW];
@@ -36,13 +43,18 @@ static volatile unsigned int timeouts[LEN_SW];
 static volatile int timeoutAnalogSt=0;
 static unsigned int stepAnalogValues[ANALOGS_IN_LEN];
 static unsigned char stepsLeds=0;
+static volatile unsigned char toggleForBlink;
+static volatile unsigned int toggleForBlinkCounter;
+static unsigned char ledsState[LEDS_LEN];
 
 
+// Private functions
 static int getIO(int swIndex);
 static void swStateMachine(int swIndex);
 static void analogsStateMachine(void);
 static void setMuxValue(int val);
 static void showLeds(unsigned char val);
+static void ledsStateMachine(void);
 
 
 
@@ -59,6 +71,17 @@ void frontp_tick1Ms(void)
     {
       timeoutAnalogSt--;
     }
+
+    if(toggleForBlinkCounter==0)
+    {
+        toggleForBlinkCounter=LED_BLINK_TIMEOUT;
+        if(toggleForBlink)
+          toggleForBlink=0;
+        else
+          toggleForBlink=1;
+    }
+    else
+      toggleForBlinkCounter--;
 }
 
 // The Interrupt Service Routine for Pin Change Interrupt 2
@@ -70,6 +93,9 @@ ISR(PCINT2_vect) {
 
 void frontp_init(void)
 {
+    toggleForBlinkCounter=LED_BLINK_TIMEOUT;
+    toggleForBlink=1;
+    
     pinMode(PIN_ENCODER_D4,INPUT_PULLUP);
     pinMode(PIN_ENCODER_D5,INPUT_PULLUP);
    
@@ -95,7 +121,9 @@ void frontp_loop(void)
     for(i=0;i<LEN_SW; i++)
       swStateMachine(i);
 
-   analogsStateMachine();
+    analogsStateMachine();
+
+    ledsStateMachine();
 }
 
 int frontp_getSwState(int swIndex)
@@ -118,13 +146,26 @@ void frontp_setLed(int led, int value)
         stepsLeds&= (~(1 << led));  
     }    
 }
-void frontp_showStepInLed(int stepIndex)
-{
-    stepsLeds = 0;
-    if(stepIndex>=0 && stepIndex<=7)
+
+void frontp_showStepInLed(int stepIndex, int flagTurnOffOthers)
+{ 
+    if(flagTurnOffOthers)
     {
-        stepsLeds|= 1 << stepIndex;    
-    }          
+      int i;
+      for(i=0; i<LEDS_LEN; i++)
+        ledsState[i]=LED_STATE_OFF;
+    }
+    ledsState[stepIndex]=LED_STATE_ON;         
+}
+void frontp_showStepInLedBlinking(int stepIndex, int flagTurnOffOthers)
+{
+    if(flagTurnOffOthers)
+    {
+      int i;
+      for(i=0; i<LEDS_LEN; i++)
+        ledsState[i]=LED_STATE_OFF;
+    }
+    ledsState[stepIndex]=LED_STATE_BLINK;      
 }
 
 unsigned int frontp_readAnalogStepValue(int index)
@@ -160,7 +201,29 @@ static int getIO(int swIndex)
     return -1;
 }
 
+static void ledsStateMachine(void)
+{
+    stepsLeds = 0; // TURN ALL LEDS OFF
 
+    int stepIndex;
+    for(stepIndex=0; stepIndex<LEDS_LEN; stepIndex++)
+    {
+        // TURN SOME LEDS ON
+        if(ledsState[stepIndex]==LED_STATE_BLINK)
+        {
+            // blink led
+            if(toggleForBlink)
+            {
+                frontp_setLed(stepIndex, 1);
+            }
+        }
+        else if(ledsState[stepIndex]==LED_STATE_ON)
+        {
+            frontp_setLed(stepIndex, 1);
+        }
+    }
+      
+}
 
 static void swStateMachine(int swIndex)
 {

@@ -177,9 +177,6 @@ void track_loop(void)
       }
       //___________________________________
 
-  
-      // show step led
-      frontp_showStepInLed(currentStepInTrack[currentTrack]);
 
       // update analog in value and assign to function
       if(currentTrack==0)
@@ -220,13 +217,14 @@ void track_loop(void)
 }
 
 
-void track_nextTrack(void)
+int track_nextTrack(void)
 {
     currentTrack++;
     if(currentTrack>=TRACK_LEN)
       currentTrack=0;
 
     loadCurrentAnalogValueForTrack();     
+    return currentTrack;
 }
 
 static void loadCurrentAnalogValueForTrack(void)
@@ -259,16 +257,28 @@ static int getChance(int trackNumber)
     return 0;
 }
 
-void track_nextScale(void)
+int track_nextScale(void)
 {
   currentScaleMode++;
   if(currentScaleMode>=8)
     currentScaleMode=0;
+
+  return currentScaleMode;
 }
 
 int track_getCurrentTrack(void)
 {
   return currentTrack;
+}
+
+int track_getCurrentStepInTrack(void)
+{
+    return currentStepInTrack[currentTrack];
+}
+
+int track_getCurrentScale(void)
+{
+  return currentScaleMode;
 }
 
 static void updateCVout(void)

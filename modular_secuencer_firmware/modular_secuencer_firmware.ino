@@ -20,6 +20,7 @@ ISR(TIMER0_COMPA_vect) // timer0 interrupt. systick. 100uS
         tickDivider=0;
         frontp_tick1Ms();
         track_tick1ms();
+        logic_tick1ms();
         //midi_tickMs();
     }
     //_____________
