@@ -89,7 +89,7 @@ void ios_init(void)
 
 }
 
-void ios_setCVout(int value)
+void ios_setCVout(unsigned int value)
 {
     dac.setVoltage(value, false);
 }

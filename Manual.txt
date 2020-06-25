@@ -71,9 +71,9 @@ Selecciona la cantidad de steps encendidos en el circulo de 1 a 8, se iran encen
 Boton MODE: Selecciona el modo de funcionamiento del sequencer.Al presionar una vez se indica el modo actual en los leds de los steps (parpadeará rapido el actual) Al presionar de nuevo se irá cambiando de 1 al 4.
 
 Modo 1: Secuencer lineal. 4 tracks
+Modo 2: MIDI to CV: Se deshabilita el track 1 del secuencer para que funcione segun la entrada MIDI.
+Modo 3: ARPEGGIATOR: Se deshabilita el track 1 del secuencer para que funcione como arpeggiator segun teclas presionadas por MIDI.
 Modo 2: Secuencer euclidean. 4 tracks
-Modo 3: MIDI to CV: Se deshabilita el track 1 del secuencer para que funcione segun la entrada MIDI.
-Modo 4: ARPEGGIATOR: Se deshabilita el track 1 del secuencer para que funcione como arpeggiator segun teclas presionadas por MIDI.
 
 
 

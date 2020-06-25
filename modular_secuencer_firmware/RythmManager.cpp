@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "RythmManager.h"
 #include "TrackManager.h"
-
+#include "Logic.h"
 
 
 #define SEC_TO_TICK(S)  (S*10000)
@@ -166,7 +166,14 @@ void rthm_loop(void)
         // Check what tracks should be played
         unsigned char trackIndex;
         for(trackIndex=0; trackIndex<TRACKS_LEN; trackIndex++)
-        {            
+        {   
+            // Track 0 only works on "LOGIC_MODE_0_4TRACKS" mode
+            if(trackIndex==0 && logic_getCurrentMode()!=LOGIC_MODE_0_4TRACKS)
+            {
+                continue;           
+            }
+            //___________________________________________________
+            
             if(calculateNextStep(trackIndex)>=0)
               track_playStep(rthm_getCurrentStep(trackIndex),trackIndex);  
             else      

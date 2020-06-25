@@ -4,6 +4,8 @@
 #include "RythmManager.h"
 #include "TrackManager.h"
 #include "Logic.h"
+#include "MidiManager.h"
+
 
 
 static volatile unsigned char tickDivider=0;
@@ -21,7 +23,7 @@ ISR(TIMER0_COMPA_vect) // timer0 interrupt. systick. 100uS
         frontp_tick1Ms();
         track_tick1ms();
         logic_tick1ms();
-        //midi_tickMs();
+        midi_tickMs();
     }
     //_____________
 
@@ -33,7 +35,7 @@ void setup() {
 
   // Configure serial port for MIDI input
   //Serial.begin(31250); 
-  Serial.begin(57600); // debug
+  //Serial.begin(57600); // debug
   //_____________________________________
 
   ios_init();
@@ -41,6 +43,7 @@ void setup() {
   rthm_init();
   track_init();
   logic_init();
+  midi_init();
   
   // Configure TIMER0 for systick interrupt
   cli();//stop interrupts
@@ -67,7 +70,8 @@ void loop() {
       frontp_loop();
       rthm_loop();
       track_loop();
-      
       logic_loop(); 
+      midi_loop();
   }
+  
 }

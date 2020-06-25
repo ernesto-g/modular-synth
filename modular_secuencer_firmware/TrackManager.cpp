@@ -3,7 +3,7 @@
 #include "ios.h"
 #include "FrontPanel.h"
 #include "RythmManager.h"
-
+#include "Logic.h"
 
 #define ANALOG_TO_0_100(X)    (((unsigned long)(X/4)*(unsigned long)100UL)/255UL)
 #define ANALOG_TO_0_255(X)    (X/4)
@@ -179,7 +179,7 @@ void track_loop(void)
 
 
       // update analog in value and assign to function
-      if(currentTrack==0)
+      if(currentTrack==0 && logic_getCurrentMode()==LOGIC_MODE_0_4TRACKS)
         updateCVout();
 
       // Gate manager

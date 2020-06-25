@@ -1,5 +1,3 @@
-#include <Arduino.h>
-
 #include "ios.h"
 #include "FrontPanel.h"
 #include "RythmManager.h"
@@ -10,6 +8,9 @@
 #define LOGIC_STATE_SHOW_OPTION   1
 
 
+
+
+
 #define BPM_MIN   30
 #define BPM_MAX   600
 
@@ -18,6 +19,7 @@
 // Private functions
 static void showOption(int optionValue);
 static int imShowingOption(void);
+static int nextMode(void);
 
 
 // Private variables
@@ -25,6 +27,7 @@ static unsigned char flagShift;
 static unsigned char logicState;
 static volatile unsigned int timeoutShowCurrentOption;
 static int currentOption;
+static int currentMode;
 
 
 void logic_tick1ms(void)
@@ -39,6 +42,8 @@ void logic_init(void)
     flagShift=0;
     logicState = LOGIC_STATE_SHOW_STEPS;
 
+    currentMode = LOGIC_MODE_0_4TRACKS;
+    
     frontp_setEncoderPosition(rthm_getCurrentTempo());
 }
 
@@ -70,11 +75,9 @@ void logic_loop(void)
             {
                 rthm_stop();
             }
-            Serial.print("RUN\n");
           }
           else
           {
-            Serial.print("TRACK\n");
             if(imShowingOption())
             {
                 showOption(track_nextTrack()); 
@@ -91,7 +94,6 @@ void logic_loop(void)
           frontp_resetSwState(SW_SCALE_DIR);
           if(flagShift==0)
           {
-            Serial.print("DIR\n");
             if(imShowingOption())
             {
                 showOption(rthm_nextDirection()); 
@@ -103,7 +105,6 @@ void logic_loop(void)
           }
           else
           {
-            Serial.print("SCALE\n");
             if(imShowingOption())
             {
                 showOption(track_nextScale()); 
@@ -120,11 +121,11 @@ void logic_loop(void)
           frontp_resetSwState(SW_RPT_PROB);
           if(flagShift==0)
           {
-            Serial.print("CLK\n");
+            //Serial.print("CLK\n");
           }
           else
           {
-            Serial.print("PROB/RPT\n");
+            //Serial.print("PROB/RPT\n");
           }
       }
 
@@ -133,7 +134,6 @@ void logic_loop(void)
           frontp_resetSwState(SW_LEN_MODE);
           if(flagShift==0)
           {
-            Serial.print("LEN\n");
             if(imShowingOption())
             {
                 showOption(rthm_nextLen()); 
@@ -145,7 +145,14 @@ void logic_loop(void)
           }
           else
           {
-            Serial.print("MODE\n");
+            if(imShowingOption())
+            {
+                showOption(nextMode()); 
+            }
+            else
+            {
+                showOption(logic_getCurrentMode());
+            }
           }
       }
 
@@ -195,6 +202,20 @@ void logic_loop(void)
             break;
         }
     }
+}
+
+int logic_getCurrentMode(void)
+{
+  return currentMode;
+}
+static int nextMode(void)
+{
+    currentMode++;
+    if(currentMode>LOGIC_MODE_3_EUCLIDEAN_PLUS_3TRACKS)
+    {
+        currentMode = LOGIC_MODE_0_4TRACKS;
+    }
+    return currentMode;
 }
 
 static void showOption(int optionValue)
