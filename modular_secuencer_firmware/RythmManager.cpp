@@ -34,6 +34,8 @@ static unsigned char pendulumDir[TRACKS_LEN];
 static unsigned char skipCounter[TRACKS_LEN];
 static volatile unsigned char randomSeedCounter=0;
 static unsigned char flagPendingNextDir[TRACKS_LEN]; // change of direction occurs only after step 1
+static unsigned char clockDivisor[TRACKS_LEN];
+static unsigned char clockCounter[TRACKS_LEN];
 
 
 // Private functions
@@ -67,6 +69,8 @@ void rthm_init(void)
       pendulumDir[trackIndex]=0;
       skipCounter[trackIndex]=0;
       flagPendingNextDir[trackIndex]=0;
+      clockDivisor[trackIndex]=1; 
+      clockCounter[trackIndex]=0;
   }
   
 }
@@ -107,9 +111,10 @@ void rthm_play(void)
   for(trackIndex=0; trackIndex<TRACKS_LEN; trackIndex++)
   {
     stepIndex[trackIndex]=-1;
+    clockCounter[trackIndex]=0;
   }
   
-    flagPlay=1;
+  flagPlay=1;
 }
 
 int rthm_getState(void)
@@ -141,6 +146,21 @@ int rthm_getCurrentDirection(void)
     return currentDirection[currentTrack];
 }
 
+int rthm_getCurrentClockDivisor(void)
+{
+    int currentTrack=track_getCurrentTrack();
+    return clockDivisor[currentTrack]-1;
+}
+int rthm_nextClockDivisor(void)
+{
+    int currentTrack=track_getCurrentTrack();
+    clockDivisor[currentTrack]++;
+    if(clockDivisor[currentTrack]>8)
+        clockDivisor[currentTrack]=1;
+        
+    return clockDivisor[currentTrack]-1;
+}
+
 int rthm_nextLen(void)
 {
     int currentTrack=track_getCurrentTrack();
@@ -167,6 +187,16 @@ void rthm_loop(void)
         unsigned char trackIndex;
         for(trackIndex=0; trackIndex<TRACKS_LEN; trackIndex++)
         {   
+            // skip step by clockDivisor
+            clockCounter[trackIndex]++;
+            if(clockCounter[trackIndex]<clockDivisor[trackIndex])
+            {
+                continue;
+            }
+            else
+              clockCounter[trackIndex]=0;
+            //__________________________
+            
             // Track 0 only works on "LOGIC_MODE_0_4TRACKS" mode
             if(trackIndex==0 && logic_getCurrentMode()!=LOGIC_MODE_0_4TRACKS)
             {

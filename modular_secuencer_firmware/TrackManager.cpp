@@ -93,7 +93,7 @@ void track_init(void)
         else
         {
           for(j=0; j<STEPS_LEN; j++)
-            currentStepValue[i][j] = 50;
+            currentStepValue[i][j] = 100;
         }
     }
 }

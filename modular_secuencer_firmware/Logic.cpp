@@ -68,24 +68,16 @@ void logic_loop(void)
           if(flagShift==0)
           {
             if(rthm_getState()==0)
-            {
                 rthm_play();
-            }
             else
-            {
                 rthm_stop();
-            }
           }
           else
           {
             if(imShowingOption())
-            {
                 showOption(track_nextTrack()); 
-            }
             else
-            {
                 showOption(track_getCurrentTrack());
-            }
           }
       }
 
@@ -95,24 +87,16 @@ void logic_loop(void)
           if(flagShift==0)
           {
             if(imShowingOption())
-            {
                 showOption(rthm_nextDirection()); 
-            }
             else
-            {
                 showOption(rthm_getCurrentDirection());
-            }
           }
           else
           {
             if(imShowingOption())
-            {
                 showOption(track_nextScale()); 
-            }
             else
-            {
                 showOption(track_getCurrentScale());
-            }           
           }
       }
 
@@ -121,7 +105,10 @@ void logic_loop(void)
           frontp_resetSwState(SW_RPT_PROB);
           if(flagShift==0)
           {
-            //Serial.print("CLK\n");
+            if(imShowingOption())
+                showOption(rthm_nextClockDivisor()); 
+            else
+                showOption(rthm_getCurrentClockDivisor());
           }
           else
           {
@@ -135,24 +122,16 @@ void logic_loop(void)
           if(flagShift==0)
           {
             if(imShowingOption())
-            {
                 showOption(rthm_nextLen()); 
-            }
             else
-            {
                 showOption(rthm_getCurrentLen());
-            }
           }
           else
           {
             if(imShowingOption())
-            {
                 showOption(nextMode()); 
-            }
             else
-            {
                 showOption(logic_getCurrentMode());
-            }
           }
       }
 
