@@ -15,6 +15,11 @@ typedef struct S_MidiInfo {
   unsigned char vel;
 }MidiInfo;
 
+typedef struct S_KeyPressedInfo {
+  unsigned char note;
+  unsigned char flagFree; 
+}KeyPressedInfo;
+
 
 void midi_stateMachine(unsigned char midiByte);
 void midi_loop(void);
