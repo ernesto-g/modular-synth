@@ -2,6 +2,7 @@
 #include "RythmManager.h"
 #include "TrackManager.h"
 #include "Logic.h"
+#include "ios.h"
 
 
 #define SEC_TO_TICK(S)  (S*10000)
@@ -36,6 +37,8 @@ static volatile unsigned char randomSeedCounter=0;
 static unsigned char flagPendingNextDir[TRACKS_LEN]; // change of direction occurs only after step 1
 static unsigned char clockDivisor[TRACKS_LEN];
 static unsigned char clockCounter[TRACKS_LEN];
+static unsigned char currentClkSrc;
+static volatile unsigned char thereWasRisingEdge=0;
 
 
 // Private functions
@@ -55,11 +58,22 @@ void rthm_tick(void)
     
 }
 
+static void extClkInterrupt(void)
+{
+    if(ios_readClkIn()==0)
+    {
+        thereWasRisingEdge=1;
+    }
+}
+
+
 void rthm_init(void)
 {
   rthm_setTempo(200); 
    
   flagPlay=0;
+
+  currentClkSrc=CONFIG_CLK_SRC_INT;
 
   unsigned char trackIndex;
   for(trackIndex=0; trackIndex<TRACKS_LEN; trackIndex++)
@@ -72,7 +86,9 @@ void rthm_init(void)
       clockDivisor[trackIndex]=1; 
       clockCounter[trackIndex]=0;
   }
-  
+
+  ios_configureInterruptForExtClk(extClkInterrupt);
+
 }
 
 
@@ -115,6 +131,7 @@ void rthm_play(void)
   }
   
   flagPlay=1;
+  tempoCounter=0;
 }
 
 int rthm_getState(void)
@@ -177,12 +194,36 @@ int rthm_getCurrentLen(void)
     return trackEndStep[currentTrack]-1; // led1 is 0, so I substract 1 to value  
 }
 
+
+  
 void rthm_loop(void)
 {  
-    if(tempoCounter==0 && flagPlay==1)
+    unsigned char flagStepEvent=0;
+    
+    if(currentClkSrc == CONFIG_CLK_SRC_INT)
     {
-        tempoCounter = currentTempoTicks;
+        // Internal clock
+        if(tempoCounter==0)
+        {
+            tempoCounter = currentTempoTicks;
+            flagStepEvent=1;
+        }
+    }
+    else
+    {
+        // External clock
+        if(thereWasRisingEdge==1)
+        {
+            thereWasRisingEdge=0;
+            flagStepEvent=1;
+        }
+    }
 
+  
+    if(flagStepEvent==1 && flagPlay==1)
+    {
+        flagStepEvent=0;
+      
         // Check what tracks should be played
         unsigned char trackIndex;
         for(trackIndex=0; trackIndex<TRACKS_LEN; trackIndex++)
@@ -210,6 +251,12 @@ void rthm_loop(void)
               track_silenceStep(-1,trackIndex);
         }        
     }
+}
+
+
+void rthm_setClkSrc(unsigned char clkSrc)
+{
+    currentClkSrc = clkSrc;
 }
 
 

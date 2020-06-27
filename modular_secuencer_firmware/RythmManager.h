@@ -13,6 +13,6 @@ int rthm_nextLen(void);
 int rthm_getCurrentLen(void);
 unsigned int rthm_getCurrentTempoPeriodMs(void);
 int rthm_getCurrentDirection(void);
-
+void rthm_setClkSrc(unsigned char clkSrc);
 int rthm_getCurrentClockDivisor(void);
 int rthm_nextClockDivisor(void);

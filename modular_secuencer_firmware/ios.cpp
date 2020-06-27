@@ -104,6 +104,17 @@ unsigned int ios_readMuxAnalog(void)
     return analogRead(PIN_ANALOG_MULTIPLEXED);
 }
 
+int ios_readClkIn(void)
+{
+  return digitalRead(PIN_EXT_CLK);
+}
+
+void ios_configureInterruptForExtClk( void (*pFnCallback)(void) )
+{
+    attachInterrupt(digitalPinToInterrupt(PIN_EXT_CLK), pFnCallback, CHANGE);
+}
+
+
 int ios_readSw(int input)
 {
     #ifdef SWICTHES_MODE_NC

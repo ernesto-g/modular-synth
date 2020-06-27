@@ -33,17 +33,7 @@ ISR(TIMER0_COMPA_vect) // timer0 interrupt. systick. 100uS
 
 void setup() {
 
-  // Configure serial port for MIDI input
-  //Serial.begin(31250); 
-  //Serial.begin(57600); // debug
-  //_____________________________________
-
-  ios_init();
-  frontp_init();
-  rthm_init();
-  track_init();
   logic_init();
-  midi_init();
   
   // Configure TIMER0 for systick interrupt
   cli();//stop interrupts
@@ -67,11 +57,7 @@ void loop() {
   // main loop
   while(1)
   {
-      frontp_loop();
-      rthm_loop();
-      track_loop();
       logic_loop(); 
-      midi_loop();
   }
   
 }

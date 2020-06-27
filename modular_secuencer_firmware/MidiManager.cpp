@@ -167,7 +167,7 @@ void midi_loop(void)
 
 static void midi_analizeMidiInfo(MidiInfo * pMidiInfo)
 {
-    //if(pMidiInfo->channel==midiChannel)
+    if(pMidiInfo->channel==midiChannel)
     {
         if(pMidiInfo->cmd==MIDI_CMD_NOTE_ON)
         {

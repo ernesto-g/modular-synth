@@ -3,18 +3,15 @@
 #include "RythmManager.h"
 #include "TrackManager.h"
 #include "Logic.h"
+#include "MidiManager.h"
 
+// Defines
 #define LOGIC_STATE_SHOW_STEPS    0
 #define LOGIC_STATE_SHOW_OPTION   1
-
-
-
-
-
 #define BPM_MIN   30
 #define BPM_MAX   600
-
 #define TIMEOUT_SHOW_OPTION   3000;
+
 
 // Private functions
 static void showOption(int optionValue);
@@ -28,6 +25,8 @@ static unsigned char logicState;
 static volatile unsigned int timeoutShowCurrentOption;
 static int currentOption;
 static int currentMode;
+static Config devConfig;
+
 
 
 void logic_tick1ms(void)
@@ -43,13 +42,37 @@ void logic_init(void)
     logicState = LOGIC_STATE_SHOW_STEPS;
 
     currentMode = LOGIC_MODE_0_4TRACKS;
+
+    // Default config
+    devConfig.clkSrc = CONFIG_CLK_SRC_EXT;
+    devConfig.midiChn = CONFIG_MIDI_CHN_0;
+    devConfig.resetBehaviour = CONFIG_RST_BHV_BACK2ONE;
+    //_______________
+
+
+    ios_init();
+    frontp_init();
+    rthm_init();
+    track_init();
+    midi_init();
+
     
     frontp_setEncoderPosition(rthm_getCurrentTempo());
+
+    midi_setMidiChn(devConfig.midiChn);
+    rthm_setClkSrc(devConfig.clkSrc);
+
 }
 
 
 void logic_loop(void)
 {
+      frontp_loop();
+      rthm_loop();
+      track_loop();
+      midi_loop();
+
+
       if(frontp_getSwState(SW_SHIFT)==FRONT_PANEL_SW_STATE_JUST_PRESSED)
       {
           frontp_resetSwState(SW_SHIFT);
@@ -181,6 +204,11 @@ void logic_loop(void)
             break;
         }
     }
+}
+
+Config* logic_getConfig(void)
+{
+    return &devConfig;
 }
 
 int logic_getCurrentMode(void)
