@@ -30,6 +30,8 @@ unsigned int ios_readMuxAnalog(void);
 
 int ios_readClkIn(void);
 void ios_configureInterruptForExtClk( void (*pFnCallback)(void) );
+int ios_readRstIn(void);
+void ios_configureInterruptForExtRst( void (*pFnCallback)(void) );
 
 void ios_setCVout(unsigned int value);
 void ios_setVelocityOut(unsigned char value);

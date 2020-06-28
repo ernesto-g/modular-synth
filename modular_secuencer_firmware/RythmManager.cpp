@@ -31,6 +31,7 @@ static volatile int tempoCounter;
 static unsigned char stepIndex[TRACKS_LEN];
 static unsigned char trackEndStep[TRACKS_LEN];
 static unsigned char currentDirection[TRACKS_LEN];
+static unsigned char prevDirection[TRACKS_LEN];
 static unsigned char pendulumDir[TRACKS_LEN];
 static unsigned char skipCounter[TRACKS_LEN];
 static volatile unsigned char randomSeedCounter=0;
@@ -38,7 +39,11 @@ static unsigned char flagPendingNextDir[TRACKS_LEN]; // change of direction occu
 static unsigned char clockDivisor[TRACKS_LEN];
 static unsigned char clockCounter[TRACKS_LEN];
 static unsigned char currentClkSrc;
-static volatile unsigned char thereWasRisingEdge=0;
+static unsigned char currentRstMode;
+static volatile unsigned char thereWasRisingEdgeClk=0;
+static volatile unsigned char thereWasRisingEdgeRst=0;
+static volatile unsigned char externalRstState=1;
+static unsigned char rstCounter;
 
 
 // Private functions
@@ -46,6 +51,8 @@ static int calculateNextStep(unsigned char trackIndex);
 static int incStep(unsigned char indexTrack);
 static int subStep(unsigned char indexTrack);
 static void loadNextDirection(int currentTrack);
+static void reverseCurrentDirection(unsigned char trackIndex);
+static void restoreCurrentDirection(unsigned char trackIndex);
 
 
 
@@ -62,10 +69,18 @@ static void extClkInterrupt(void)
 {
     if(ios_readClkIn()==0)
     {
-        thereWasRisingEdge=1;
+        thereWasRisingEdgeClk=1;
     }
 }
 
+static void extRstInterrupt(void)
+{
+    externalRstState = ios_readRstIn();
+    if(externalRstState==0)
+    {
+        thereWasRisingEdgeRst=1;         
+    }
+}
 
 void rthm_init(void)
 {
@@ -74,7 +89,9 @@ void rthm_init(void)
   flagPlay=0;
 
   currentClkSrc=CONFIG_CLK_SRC_INT;
-
+  currentRstMode = CONFIG_RST_BHV_BACK2ONE;
+  rstCounter=0;
+  
   unsigned char trackIndex;
   for(trackIndex=0; trackIndex<TRACKS_LEN; trackIndex++)
   {
@@ -88,7 +105,7 @@ void rthm_init(void)
   }
 
   ios_configureInterruptForExtClk(extClkInterrupt);
-
+  ios_configureInterruptForExtRst(extRstInterrupt);
 }
 
 
@@ -199,7 +216,8 @@ int rthm_getCurrentLen(void)
 void rthm_loop(void)
 {  
     unsigned char flagStepEvent=0;
-    
+
+    // Clock Management
     if(currentClkSrc == CONFIG_CLK_SRC_INT)
     {
         // Internal clock
@@ -212,14 +230,68 @@ void rthm_loop(void)
     else
     {
         // External clock
-        if(thereWasRisingEdge==1)
+        if(thereWasRisingEdgeClk==1)
         {
-            thereWasRisingEdge=0;
+            thereWasRisingEdgeClk=0;
             flagStepEvent=1;
         }
     }
+    //____________________________________________
+    
 
-  
+    // Reset management
+    switch(currentRstMode)
+    {
+        case CONFIG_RST_BHV_BACK2ONE:
+        {
+            if(thereWasRisingEdgeRst==1)
+            {
+                thereWasRisingEdgeRst=0;
+                // back to step one in all tracks
+                unsigned char trackIndex;
+                for(trackIndex=0; trackIndex<TRACKS_LEN; trackIndex++)
+                {
+                   stepIndex[trackIndex]=-1;
+                   clockCounter[trackIndex]=0;
+                }
+            }
+            break;
+        }
+        case CONFIG_RST_BHV_HOLD_WHILE_HI:
+        {
+            if(externalRstState==0)
+            {
+                return ; // skip code "Play steps"
+            }
+            break;
+        }
+        case CONFIG_RST_BHV_INVER_DIR:
+        {
+            if(thereWasRisingEdgeRst==1)
+            {
+                thereWasRisingEdgeRst=0;
+                rstCounter++;
+                if(rstCounter==1)
+                {
+                    unsigned char trackIndex;
+                    for(trackIndex=0; trackIndex<TRACKS_LEN; trackIndex++)              
+                        reverseCurrentDirection(trackIndex);
+                }
+                else if(rstCounter==2)
+                {
+                    rstCounter=0;
+                    unsigned char trackIndex;
+                    for(trackIndex=0; trackIndex<TRACKS_LEN; trackIndex++)              
+                        restoreCurrentDirection(trackIndex);
+                }
+            }
+            break;
+        }
+    }
+    //____________________________________________
+
+
+    // Play steps
     if(flagStepEvent==1 && flagPlay==1)
     {
         flagStepEvent=0;
@@ -251,6 +323,8 @@ void rthm_loop(void)
               track_silenceStep(-1,trackIndex);
         }        
     }
+    //____________________________________________-
+
 }
 
 
@@ -258,7 +332,10 @@ void rthm_setClkSrc(unsigned char clkSrc)
 {
     currentClkSrc = clkSrc;
 }
-
+void rthm_setRstMode(unsigned char mode)
+{
+    currentRstMode = mode;
+}
 
 static void loadNextDirection(int currentTrack)
 {
@@ -272,6 +349,62 @@ static void loadNextDirection(int currentTrack)
         case DIR_PENDULUM:pendulumDir[currentTrack]=0;break;
         case DIR_SKIP:skipCounter[currentTrack]=0;break;         
    }
+}
+
+static void reverseCurrentDirection(unsigned char trackIndex)
+{
+    prevDirection[trackIndex] = currentDirection[trackIndex]; // save current direction before change it
+    switch(currentDirection[trackIndex])
+    {
+        case DIR_FORWARD:
+        {
+            currentDirection[trackIndex] = DIR_REVERSE;
+            break;  
+        }
+        case DIR_REVERSE:
+        {
+            currentDirection[trackIndex] = DIR_FORWARD;
+            break;  
+        }
+        case DIR_PENDULUM:
+        {
+            break;
+        }
+        case DIR_STAGGER:
+        {
+            currentDirection[trackIndex] = DIR_REVERSE;
+            break;
+        }
+        case DIR_SKIP:
+        {
+            currentDirection[trackIndex] = DIR_REVERSE;
+            break;
+        }
+        case DIR_RAND_1:
+        {
+            currentDirection[trackIndex] = DIR_FORWARD;
+            break;  
+        }
+        case DIR_RAND_2:
+        {
+            currentDirection[trackIndex] = DIR_FORWARD;
+            break;
+        }        
+    }
+   switch(currentDirection[trackIndex])
+   {
+        case DIR_PENDULUM:pendulumDir[trackIndex]=0;break;
+        case DIR_SKIP:skipCounter[trackIndex]=0;break;         
+   }    
+}
+static void restoreCurrentDirection(unsigned char trackIndex)
+{
+    currentDirection[trackIndex] = prevDirection[trackIndex]; // restore current direction
+    switch(currentDirection[trackIndex])
+    {
+        case DIR_PENDULUM:pendulumDir[trackIndex]=0;break;
+        case DIR_SKIP:skipCounter[trackIndex]=0;break;         
+    }    
 }
 
 static int calculateNextStep(unsigned char trackIndex)

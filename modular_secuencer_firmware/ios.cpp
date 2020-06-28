@@ -108,10 +108,19 @@ int ios_readClkIn(void)
 {
   return digitalRead(PIN_EXT_CLK);
 }
-
 void ios_configureInterruptForExtClk( void (*pFnCallback)(void) )
 {
     attachInterrupt(digitalPinToInterrupt(PIN_EXT_CLK), pFnCallback, CHANGE);
+}
+
+
+int ios_readRstIn(void)
+{
+  return digitalRead(PIN_EXT_RST);
+}
+void ios_configureInterruptForExtRst( void (*pFnCallback)(void) )
+{
+    attachInterrupt(digitalPinToInterrupt(PIN_EXT_RST), pFnCallback, CHANGE);
 }
 
 

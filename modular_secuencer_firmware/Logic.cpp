@@ -44,9 +44,9 @@ void logic_init(void)
     currentMode = LOGIC_MODE_0_4TRACKS;
 
     // Default config
-    devConfig.clkSrc = CONFIG_CLK_SRC_EXT;
+    devConfig.clkSrc = CONFIG_CLK_SRC_INT;
     devConfig.midiChn = CONFIG_MIDI_CHN_0;
-    devConfig.resetBehaviour = CONFIG_RST_BHV_BACK2ONE;
+    devConfig.resetBehaviour = CONFIG_RST_BHV_INVER_DIR; //CONFIG_RST_BHV_HOLD_WHILE_HI; //CONFIG_RST_BHV_BACK2ONE;
     //_______________
 
 
@@ -61,6 +61,7 @@ void logic_init(void)
 
     midi_setMidiChn(devConfig.midiChn);
     rthm_setClkSrc(devConfig.clkSrc);
+    rthm_setRstMode(devConfig.resetBehaviour);
 
 }
 

@@ -16,3 +16,4 @@ int rthm_getCurrentDirection(void);
 void rthm_setClkSrc(unsigned char clkSrc);
 int rthm_getCurrentClockDivisor(void);
 int rthm_nextClockDivisor(void);
+void rthm_setRstMode(unsigned char mode);
