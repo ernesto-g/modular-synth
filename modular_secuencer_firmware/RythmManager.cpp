@@ -332,10 +332,36 @@ void rthm_setClkSrc(unsigned char clkSrc)
 {
     currentClkSrc = clkSrc;
 }
+unsigned char rthm_getClkSrc(void)
+{
+    return currentClkSrc;
+}
+unsigned char rthm_nextClkSrc(void)
+{
+    currentClkSrc++;
+    if(currentClkSrc>CONFIG_CLK_SRC_EXT)
+        currentClkSrc=CONFIG_CLK_SRC_INT;
+
+    return currentClkSrc;
+}
+
+
 void rthm_setRstMode(unsigned char mode)
 {
     currentRstMode = mode;
 }
+unsigned char rthm_getRstMode(void)
+{
+    return currentRstMode;
+}
+unsigned char rthm_nextRstMode(void)
+{
+    currentRstMode++;
+    if(currentRstMode>CONFIG_RST_BHV_INVER_DIR)
+        currentRstMode = CONFIG_RST_BHV_BACK2ONE;
+    return currentRstMode;
+}
+
 
 static void loadNextDirection(int currentTrack)
 {

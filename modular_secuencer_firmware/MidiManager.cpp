@@ -104,6 +104,16 @@ unsigned char midi_getMidiChn(void)
     return midiChannel;
 }
 
+unsigned char midi_nextMidiChn(void)
+{
+    midiChannel++;
+    if(midiChannel>=9)
+      midiChannel=0;
+      
+    return midiChannel;
+}
+
+
 void midi_stateMachine(unsigned char midiByte)
 {
   timeout=MIDI_BYTE_TIMEOUT;

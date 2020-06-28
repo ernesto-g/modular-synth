@@ -1,0 +1,5 @@
+2) repeat en gates, modo prob/rpt
+3) guardar config en eeprom
+4) modo arpegiador
+5) modo euclideano
+

@@ -165,7 +165,8 @@ void frontp_showStepInLedBlinking(int stepIndex, int flagTurnOffOthers)
       for(i=0; i<LEDS_LEN; i++)
         ledsState[i]=LED_STATE_OFF;
     }
-    ledsState[stepIndex]=LED_STATE_BLINK;      
+    if(stepIndex>=0 && stepIndex<LEDS_LEN)
+      ledsState[stepIndex]=LED_STATE_BLINK;      
 }
 
 unsigned int frontp_readAnalogStepValue(int index)

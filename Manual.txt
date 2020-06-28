@@ -88,20 +88,21 @@ Boton PROB/RPT + Encoder: En modo euclidean: Rota los steps encendidos
 Configuraciones extras
 ***********************
 
-DIRECTION por 5 segundos: Configura la fuente de clock. Se mostrará en los leds. Mover el encoder para seleccionar:
+CLK por 5 segundos: Configura la fuente de clock. Se mostrará en los leds. Presionar el boton CLK para seleccionar la opcion
 1: Interna
 2: Externa
 
 
-TRACK por 5 segundos: Setea el canal MIDI actual. Se indicará el canal de 0 al 8 en los leds de los steps. Mover el encoder para seleccionar.
+RUN por 5 segundos: Setea el canal MIDI actual. Se indicará el canal de 0 al 8 en los leds de los steps (0 es todos los leds apagados). Presionar el boton RUN para ir cambiando de canal
 
 
-MODE por 5 segundos: Configura el comportamiento de la entrada de reset. Se indicará el modo del 1 al 8 en los leds de los steps. Mover el encoder para seleccionar.
+LEN por 5 segundos: Configura el comportamiento de la entrada de reset. Se indicará el modo del 1 al 8 en los leds de los steps. Presionar el boton LEN para seleccionar:
+
 1. Al llegar un pulso en la entrada de reset se volverá al step 1 en todos los tracks
 2. Al llegar un pulso en la entrada de reset se pausa el secuencer en el step actual mientras el pulso esté en alto
 3. The sequence direction reverses when the incoming gate signal goes high. The sequence returns to normal when the gate goes high a second time. If the direction mode is set to random 1 or random 2, reverse mode enables the sequence to play forward.
 
-
+DIRECTION por 5 segundos: libre
 
 
 

@@ -27,3 +27,4 @@ void midi_init(void);
 void midi_tickMs(void);
 void midi_setMidiChn(unsigned char val);
 unsigned char midi_getMidiChn(void);
+unsigned char midi_nextMidiChn(void);

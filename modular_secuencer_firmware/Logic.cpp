@@ -26,6 +26,9 @@ static volatile unsigned int timeoutShowCurrentOption;
 static int currentOption;
 static int currentMode;
 static Config devConfig;
+static unsigned char flagConfiguringMidiChannel=0;
+static unsigned char flagConfiguringClkSrc=0;
+static unsigned char flagConfiguringRstMode=0;
 
 
 
@@ -46,7 +49,7 @@ void logic_init(void)
     // Default config
     devConfig.clkSrc = CONFIG_CLK_SRC_INT;
     devConfig.midiChn = CONFIG_MIDI_CHN_0;
-    devConfig.resetBehaviour = CONFIG_RST_BHV_INVER_DIR; //CONFIG_RST_BHV_HOLD_WHILE_HI; //CONFIG_RST_BHV_BACK2ONE;
+    devConfig.resetBehaviour = CONFIG_RST_BHV_BACK2ONE;
     //_______________
 
 
@@ -89,19 +92,32 @@ void logic_loop(void)
       if(frontp_getSwState(SW_TRACK_RUN)==FRONT_PANEL_SW_STATE_SHORT)
       {
           frontp_resetSwState(SW_TRACK_RUN);
-          if(flagShift==0)
+          if(flagConfiguringMidiChannel==1)
           {
-            if(rthm_getState()==0)
-                rthm_play();
-            else
-                rthm_stop();
+              // change midi channel
+              int ch = midi_nextMidiChn();
+              if(ch==0)
+                ch=255;
+              else
+                ch=ch-1;
+              showOption(ch);
           }
           else
           {
-            if(imShowingOption())
-                showOption(track_nextTrack()); 
-            else
-                showOption(track_getCurrentTrack());
+              if(flagShift==0)
+              {
+                if(rthm_getState()==0)
+                    rthm_play();
+                else
+                    rthm_stop();
+              }
+              else
+              {
+                if(imShowingOption())
+                    showOption(track_nextTrack()); 
+                else
+                    showOption(track_getCurrentTrack());
+              }
           }
       }
 
@@ -127,37 +143,82 @@ void logic_loop(void)
       if(frontp_getSwState(SW_RPT_PROB)==FRONT_PANEL_SW_STATE_SHORT)
       {
           frontp_resetSwState(SW_RPT_PROB);
-          if(flagShift==0)
+          if(flagConfiguringClkSrc==1)
           {
-            if(imShowingOption())
-                showOption(rthm_nextClockDivisor()); 
-            else
-                showOption(rthm_getCurrentClockDivisor());
+              // Configure clk source
+              showOption(rthm_nextClkSrc());
           }
           else
           {
-            //Serial.print("PROB/RPT\n");
+              if(flagShift==0)
+              {
+                if(imShowingOption())
+                    showOption(rthm_nextClockDivisor()); 
+                else
+                    showOption(rthm_getCurrentClockDivisor());
+              }
+              else
+              {
+                //Serial.print("PROB/RPT\n");
+              }
           }
       }
 
       if(frontp_getSwState(SW_LEN_MODE)==FRONT_PANEL_SW_STATE_SHORT)
       {
           frontp_resetSwState(SW_LEN_MODE);
-          if(flagShift==0)
+          if(flagConfiguringRstMode==1)
           {
-            if(imShowingOption())
-                showOption(rthm_nextLen()); 
-            else
-                showOption(rthm_getCurrentLen());
+              // Set rst in mode
+              showOption(rthm_nextRstMode());          
           }
           else
           {
-            if(imShowingOption())
-                showOption(nextMode()); 
-            else
-                showOption(logic_getCurrentMode());
+              if(flagShift==0)
+              {
+                if(imShowingOption())
+                    showOption(rthm_nextLen()); 
+                else
+                    showOption(rthm_getCurrentLen());
+              }
+              else
+              {
+                if(imShowingOption())
+                    showOption(nextMode()); 
+                else
+                    showOption(logic_getCurrentMode());
+              }
           }
       }
+
+      // Advance Configurations (long press buttons)
+      if(frontp_getSwState(SW_TRACK_RUN)==FRONT_PANEL_SW_STATE_LONG)
+      {
+          frontp_resetSwState(SW_TRACK_RUN);
+          // Set midi channel
+          flagConfiguringMidiChannel=1;
+          int ch = midi_getMidiChn();
+          if(ch==0)
+            showOption(255);
+          else
+            showOption(ch-1);        
+      }
+      if(frontp_getSwState(SW_RPT_PROB)==FRONT_PANEL_SW_STATE_LONG)
+      {
+          frontp_resetSwState(SW_RPT_PROB);
+          // set clock source (ext/int)
+          flagConfiguringClkSrc=1;
+          showOption(rthm_getClkSrc());
+      }
+      if(frontp_getSwState(SW_LEN_MODE)==FRONT_PANEL_SW_STATE_LONG)
+      {
+          frontp_resetSwState(SW_LEN_MODE);
+          // Set reset in mode
+          flagConfiguringRstMode=1;
+          showOption(rthm_getRstMode());          
+      }
+      //____________________________________________
+      
 
     // Encoder manager
     static int pos = 0;
@@ -201,6 +262,10 @@ void logic_loop(void)
             if(timeoutShowCurrentOption==0)
             {
               logicState = LOGIC_STATE_SHOW_STEPS;
+              // reset all config states
+              flagConfiguringMidiChannel=0;
+              flagConfiguringClkSrc=0;
+              flagConfiguringRstMode=0;
             }
             break;
         }
