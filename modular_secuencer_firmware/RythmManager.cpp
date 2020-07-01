@@ -84,7 +84,7 @@ static void extRstInterrupt(void)
 
 void rthm_init(void)
 {
-  rthm_setTempo(200); 
+  rthm_setTempo(50); 
    
   flagPlay=0;
 

@@ -25,7 +25,9 @@
 #define GATE_STATE_IDLE         0
 #define GATE_STATE_WAIT_FOR_LOW 1
 #define GATE_STATE_LOW_FINISHED 2
-
+#define GATE_STATE_WAIT_FOR_HI  3
+#define GATE_STATE_HI_FINISHED  4
+              
 
 // Private variables
 static unsigned char currentTrack;
@@ -33,10 +35,12 @@ static unsigned char currentStepInTrack[TRACK_LEN];
 static unsigned char currentScaleMode;
 static unsigned char gateState[TRACK_LEN];
 static volatile unsigned int timeoutGate[TRACK_LEN];
+static unsigned char gateRepeatitionsCounter[TRACK_LEN];
 
-static unsigned int currentStepValue[TRACK_LEN][STEPS_LEN]; // Current prob assigned to each step
+static unsigned int currentStepValue[TRACK_LEN][STEPS_LEN]; // Current prob assigned to each step CAMBIAR NOMBRE A PROBABILITY!!!!!!!!!!!!!!!!
 static unsigned int analogStepPrevValue[TRACK_LEN][STEPS_LEN]; // Last value read from potentiometer for each step
-
+static unsigned int currentRepeatitionsValue[TRACK_LEN][STEPS_LEN];
+static unsigned char gateRepeatitionsMax[TRACK_LEN];
 
 // Private functions
 static void updateCVout(void);
@@ -44,6 +48,9 @@ static int calculateValueForCV(unsigned int val1024);
 static void loadTimeoutForGate(int trackIndex);
 static void loadCurrentAnalogValueForTrack(void);
 static int getChance(int trackNumber);
+static unsigned int calculateHiTimeoutForRepeatitions(int trackIndex);
+static unsigned char getMaxRepeatitions(int trackIndex);
+static unsigned int calculateLoTimeoutForRepeatitions(int trackIndex);
 
 
 //Scale tables
@@ -80,6 +87,7 @@ void track_init(void)
     {
         gateState[i]=GATE_STATE_IDLE;
         timeoutGate[i]=0;
+        gateRepeatitionsCounter[i]=0;
 
         if(i==0)
         {
@@ -88,12 +96,15 @@ void track_init(void)
             {
                 currentStepValue[0][j] = ANALOG_TO_0_255(frontp_readAnalogStepValue(j));
                 analogStepPrevValue[0][j] = currentStepValue[0][j];
+                currentRepeatitionsValue[0][j]=1;
             }
         }
         else
         {
-          for(j=0; j<STEPS_LEN; j++)
+          for(j=0; j<STEPS_LEN; j++){
             currentStepValue[i][j] = 100;
+            currentRepeatitionsValue[i][j]=1;
+          }
         }
     }
 }
@@ -122,6 +133,7 @@ void track_playStep(int stepIndex, int trackIndex)
             ios_setHi(IOS_GATE_1);
 
             loadTimeoutForGate(trackIndex);
+            gateRepeatitionsCounter[trackIndex] = 0;
             break;
         }  
         case 1:
@@ -130,6 +142,7 @@ void track_playStep(int stepIndex, int trackIndex)
             {
                 ios_setHi(IOS_GATE_2);
                 loadTimeoutForGate(trackIndex);
+                gateRepeatitionsCounter[trackIndex] = 0;
             }
             break;
         }          
@@ -139,6 +152,7 @@ void track_playStep(int stepIndex, int trackIndex)
             {
               ios_setHi(IOS_GATE_3);
               loadTimeoutForGate(trackIndex);
+              gateRepeatitionsCounter[trackIndex] = 0;
             }
             break;
         }          
@@ -148,6 +162,7 @@ void track_playStep(int stepIndex, int trackIndex)
             {
               ios_setHi(IOS_GATE_4);
               loadTimeoutForGate(trackIndex);
+              gateRepeatitionsCounter[trackIndex] = 0;
             }
             break;
         }          
@@ -209,12 +224,40 @@ void track_loop(void)
               }
               case GATE_STATE_LOW_FINISHED:
               {
-                  gateState[i] = GATE_STATE_IDLE;
+                  gateRepeatitionsCounter[i]++;
+                  if(gateRepeatitionsCounter[i]>=gateRepeatitionsMax[i])
+                    gateState[i] = GATE_STATE_IDLE;
+                  else
+                  {
+                      // reload gate pulse
+                      gateState[i] = GATE_STATE_WAIT_FOR_HI; // used on repeatitions
+                      timeoutGate[i]=calculateHiTimeoutForRepeatitions(i);
+                  }
                   break;
               }
-          }
-      }    
-}
+              case GATE_STATE_WAIT_FOR_HI:
+              {
+                  if(timeoutGate[i]<=0)
+                  {
+                      switch(i)
+                      {
+                          case 0: ios_setHi(IOS_GATE_1);break;
+                          case 1: ios_setHi(IOS_GATE_2);break;
+                          case 2: ios_setHi(IOS_GATE_3);break;
+                          case 3: ios_setHi(IOS_GATE_4);break;
+                      }
+                      gateState[i] = GATE_STATE_HI_FINISHED;
+                  }
+                  break;
+              }
+              case GATE_STATE_HI_FINISHED:
+              {
+                  loadTimeoutForGate(i);   
+                  break;
+              }
+          }// switch
+      } // for    
+} // fn
 
 
 int track_nextTrack(void)
@@ -320,10 +363,49 @@ static int calculateValueForCV(unsigned int val255)
     return 0;
 }
 
+
+static unsigned char getMaxRepeatitions(int trackIndex)
+{
+    unsigned char currentStep = currentStepInTrack[trackIndex];
+    unsigned char repMax = currentRepeatitionsValue[trackIndex][currentStep]; // CAMBIAR ESCALA !!!! de 1 a 8
+    if(repMax<1)
+      repMax=1;
+    else if(repMax>8)
+      repMax=8;
+      
+    return repMax;
+}
+static unsigned int calculateHiTimeoutForRepeatitions(int trackIndex)
+{
+    unsigned int gateTimeout;
+    gateTimeout = rthm_getCurrentTempoPeriodMs() / 2; // Gate timeout = 50% tempo period. No Repeatitions
+    
+    if(gateRepeatitionsMax[trackIndex]>1)
+    {
+        // Repeatitions enabled
+        gateTimeout = gateTimeout / 8; 
+    }
+    
+    return gateTimeout;    
+}
+static unsigned int calculateLoTimeoutForRepeatitions(int trackIndex)
+{
+    unsigned int gateTimeout;
+    gateTimeout = rthm_getCurrentTempoPeriodMs() / 2; // Gate timeout = 50% tempo period.
+    
+    if(gateRepeatitionsMax[trackIndex]>1)
+    {
+        // Repeatitions enabled
+        gateTimeout = gateTimeout / (gateRepeatitionsMax[trackIndex]+1); 
+    }
+    
+    return gateTimeout;  
+}
+
 static void loadTimeoutForGate(int trackIndex)
 {
-      unsigned int gateTimeout = rthm_getCurrentTempoPeriodMs() / 2; // Gate timeout = 50% tempo period
+      gateRepeatitionsMax[trackIndex] = getMaxRepeatitions(trackIndex);
       
-      timeoutGate[trackIndex] = gateTimeout;
-      gateState[trackIndex] = GATE_STATE_WAIT_FOR_LOW; 
+      timeoutGate[trackIndex] = calculateLoTimeoutForRepeatitions(trackIndex);
+      gateState[trackIndex] = GATE_STATE_WAIT_FOR_LOW;       
 }

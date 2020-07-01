@@ -1,4 +1,4 @@
-2) repeat en gates, modo prob/rpt
+2) repeat en gates, modo prob/rpt : falta setear los valores desde los potes
 3) guardar config en eeprom
 4) modo arpegiador
 5) modo euclideano
