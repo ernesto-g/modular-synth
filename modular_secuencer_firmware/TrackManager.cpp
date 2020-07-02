@@ -7,6 +7,7 @@
 
 #define ANALOG_TO_0_100(X)    (((unsigned long)(X/4)*(unsigned long)100UL)/255UL)
 #define ANALOG_TO_0_255(X)    (X/4)
+#define SCALE_100_TO_8(X)     ( (X*(unsigned int)8)/100 )
 
 #define TRACK_0     0
 #define TRACK_LEN   4
@@ -37,10 +38,11 @@ static unsigned char gateState[TRACK_LEN];
 static volatile unsigned int timeoutGate[TRACK_LEN];
 static unsigned char gateRepeatitionsCounter[TRACK_LEN];
 
-static unsigned int currentStepValue[TRACK_LEN][STEPS_LEN]; // Current prob assigned to each step CAMBIAR NOMBRE A PROBABILITY!!!!!!!!!!!!!!!!
+static unsigned int currentNoteProbValue[TRACK_LEN][STEPS_LEN]; // Current prob assigned to each step CAMBIAR NOMBRE A PROBABILITY!!!!!!!!!!!!!!!!
 static unsigned int analogStepPrevValue[TRACK_LEN][STEPS_LEN]; // Last value read from potentiometer for each step
 static unsigned int currentRepeatitionsValue[TRACK_LEN][STEPS_LEN];
 static unsigned char gateRepeatitionsMax[TRACK_LEN];
+static unsigned char flagRepeatProbability;
 
 // Private functions
 static void updateCVout(void);
@@ -79,7 +81,7 @@ void track_tick1ms(void)
 void track_init(void)
 {
     currentTrack=0;
-    
+    flagRepeatProbability=0; // init on probability mode    
     currentScaleMode=SCALE_MODE_MICRO;
     int i;
     int j;
@@ -94,15 +96,15 @@ void track_init(void)
             // track 0
             for(j=0; j<STEPS_LEN; j++)
             {
-                currentStepValue[0][j] = ANALOG_TO_0_255(frontp_readAnalogStepValue(j));
-                analogStepPrevValue[0][j] = currentStepValue[0][j];
-                currentRepeatitionsValue[0][j]=1;
+                currentNoteProbValue[0][j] = ANALOG_TO_0_255(frontp_readAnalogStepValue(j));
+                analogStepPrevValue[0][j] = currentNoteProbValue[0][j];
+                currentRepeatitionsValue[0][j]=1; // for track 0 repetitions are always 1
             }
         }
         else
         {
           for(j=0; j<STEPS_LEN; j++){
-            currentStepValue[i][j] = 100;
+            currentNoteProbValue[i][j] = 100; // tracks 1 to 3, probability=100, repetitions=1
             currentRepeatitionsValue[i][j]=1;
           }
         }
@@ -186,8 +188,19 @@ void track_loop(void)
           
           if(analogStepPrevValue[currentTrack][stepIndex] != valueRead)
           {
+              analogStepPrevValue[currentTrack][stepIndex] = valueRead;
+            
               // Value changed
-              currentStepValue[currentTrack][stepIndex] = valueRead;
+              if(currentTrack==0)
+                currentNoteProbValue[currentTrack][stepIndex] = valueRead;
+              else
+              {
+                if(flagRepeatProbability==1)
+                  currentRepeatitionsValue[currentTrack][stepIndex]=SCALE_100_TO_8(valueRead);
+                else
+                  currentNoteProbValue[currentTrack][stepIndex] = valueRead;
+              }
+              //
           }
       }
       //___________________________________
@@ -287,7 +300,7 @@ static void loadCurrentAnalogValueForTrack(void)
 
 static int getChance(int trackNumber)
 {
-    unsigned int prob = currentStepValue[trackNumber][currentStepInTrack[trackNumber]];
+    unsigned int prob = currentNoteProbValue[trackNumber][currentStepInTrack[trackNumber]];
     
     if(prob>=98)
       return 1;
@@ -324,9 +337,26 @@ int track_getCurrentScale(void)
   return currentScaleMode;
 }
 
+int track_nextProbRptMode(void)
+{
+    if(flagRepeatProbability==0)
+      flagRepeatProbability=1;
+    else
+      flagRepeatProbability=0;
+
+    loadCurrentAnalogValueForTrack();  
+
+    return flagRepeatProbability;
+}
+
+int track_getCurrentProbRptMode(void)
+{
+    return flagRepeatProbability;
+}
+
 static void updateCVout(void)
 {
-    unsigned int val255 = currentStepValue[TRACK_0][currentStepInTrack[TRACK_0]]; //frontp_readAnalogStepValue(currentStepInTrack[TRACK_0]);
+    unsigned int val255 = currentNoteProbValue[TRACK_0][currentStepInTrack[TRACK_0]]; //frontp_readAnalogStepValue(currentStepInTrack[TRACK_0]);
 
     //debug
     /*
@@ -367,7 +397,7 @@ static int calculateValueForCV(unsigned int val255)
 static unsigned char getMaxRepeatitions(int trackIndex)
 {
     unsigned char currentStep = currentStepInTrack[trackIndex];
-    unsigned char repMax = currentRepeatitionsValue[trackIndex][currentStep]; // CAMBIAR ESCALA !!!! de 1 a 8
+    unsigned char repMax = currentRepeatitionsValue[trackIndex][currentStep];
     if(repMax<1)
       repMax=1;
     else if(repMax>8)

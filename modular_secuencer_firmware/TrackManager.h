@@ -8,3 +8,6 @@ void track_silenceStep(int stepIndex, int trackIndex);
 int track_nextTrack(void);
 int track_getCurrentStepInTrack(void);
 int track_getCurrentScale(void);
+
+int track_nextProbRptMode(void);
+int track_getCurrentProbRptMode(void);

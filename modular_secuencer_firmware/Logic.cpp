@@ -159,7 +159,10 @@ void logic_loop(void)
               }
               else
               {
-                //Serial.print("PROB/RPT\n");
+                if(imShowingOption())
+                    showOption(track_nextProbRptMode()); 
+                else
+                    showOption(track_getCurrentProbRptMode());
               }
           }
       }
