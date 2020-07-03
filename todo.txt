@@ -1,4 +1,3 @@
-3) guardar config en eeprom
-4) modo arpegiador
-5) modo euclideano
+1) guardar config en eeprom
+2) modo euclideano
 

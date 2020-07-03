@@ -311,10 +311,11 @@ void rthm_loop(void)
             //__________________________
             
             // Track 0 only works on "LOGIC_MODE_0_4TRACKS" mode
+            /*
             if(trackIndex==0 && logic_getCurrentMode()!=LOGIC_MODE_0_4TRACKS)
             {
                 continue;           
-            }
+            }*/
             //___________________________________________________
             
             if(calculateNextStep(trackIndex)>=0)

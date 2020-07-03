@@ -4,6 +4,8 @@
 #include "FrontPanel.h"
 #include "RythmManager.h"
 #include "Logic.h"
+#include "MidiManager.h"
+
 
 #define ANALOG_TO_0_100(X)    (((unsigned long)(X/4)*(unsigned long)100UL)/255UL)
 #define ANALOG_TO_0_255(X)    (X/4)
@@ -53,6 +55,7 @@ static int getChance(int trackNumber);
 static unsigned int calculateHiTimeoutForRepeatitions(int trackIndex);
 static unsigned char getMaxRepeatitions(int trackIndex);
 static unsigned int calculateLoTimeoutForRepeatitions(int trackIndex);
+static void arpeggiatorManager(void);
 
 
 //Scale tables
@@ -114,11 +117,29 @@ void track_init(void)
 
 void track_silenceStep(int stepIndex, int trackIndex)
 {
+    if(trackIndex==0 & (logic_getCurrentMode()==LOGIC_MODE_1_MIDI_PLUS_3TRACKS))
+    {
+        return; // ignore event. track 0 works with midi input 
+    }
+    
     currentStepInTrack[trackIndex] = stepIndex;
     
 }
 void track_playStep(int stepIndex, int trackIndex)
 {
+    if(trackIndex==0 && (logic_getCurrentMode()==LOGIC_MODE_1_MIDI_PLUS_3TRACKS))
+    {
+        return; // ignore event. track 0 works with midi input 
+    }
+
+    if(trackIndex==0 && (logic_getCurrentMode()==LOGIC_MODE_2_ARP_PLUS_3TRACKS))
+    {
+        if(midi_thereAreNoKeysPressed()==1)
+        {
+            return; // in arpeggiator mode, if there are no keys pressed, gate is not triggered
+        }
+    }
+  
     currentStepInTrack[trackIndex] = stepIndex;
   
     switch(trackIndex)
@@ -209,6 +230,8 @@ void track_loop(void)
       // update analog in value and assign to function
       if(currentTrack==0 && logic_getCurrentMode()==LOGIC_MODE_0_4TRACKS)
         updateCVout();
+      //______________________________________________
+
 
       // Gate manager
       int i;
@@ -356,21 +379,20 @@ int track_getCurrentProbRptMode(void)
 
 static void updateCVout(void)
 {
-    unsigned int val255 = currentNoteProbValue[TRACK_0][currentStepInTrack[TRACK_0]]; //frontp_readAnalogStepValue(currentStepInTrack[TRACK_0]);
-
-    //debug
-    /*
-    Serial.print("los 8 valores del track 0:");
-    Serial.print(currentStepValue[TRACK_0][0]);Serial.print(" ");
-    Serial.print(currentStepValue[TRACK_0][1]);Serial.print(" ");
-    Serial.print(currentStepValue[TRACK_0][2]);Serial.print(" ");
-    Serial.print(currentStepValue[TRACK_0][3]);Serial.print(" ");
-    Serial.print(currentStepValue[TRACK_0][4]);Serial.print(" ");
-    Serial.print(currentStepValue[TRACK_0][5]);Serial.print(" ");
-    Serial.print(currentStepValue[TRACK_0][6]);Serial.print(" ");
-    Serial.print(currentStepValue[TRACK_0][7]);Serial.print("\n");
-    */
-    ios_setCVout(calculateValueForCV(val255));
+    unsigned int val255;
+    
+    if(logic_getCurrentMode()==LOGIC_MODE_2_ARP_PLUS_3TRACKS)
+    {
+        // Arpeggiator mode,          
+        unsigned char keyNote = midi_getNextKeyForRepeat();
+        if(keyNote!=0xFF)
+            ios_setCVout(midi_calculateValueForCV(keyNote));
+    }
+    else
+    {
+        val255 = currentNoteProbValue[TRACK_0][currentStepInTrack[TRACK_0]];
+        ios_setCVout(calculateValueForCV(val255));
+    }    
 }
 
 

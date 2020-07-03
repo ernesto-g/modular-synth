@@ -28,3 +28,6 @@ void midi_tickMs(void);
 void midi_setMidiChn(unsigned char val);
 unsigned char midi_getMidiChn(void);
 unsigned char midi_nextMidiChn(void);
+unsigned char midi_getNextKeyForRepeat(void);
+unsigned int midi_calculateValueForCV(unsigned char key);
+unsigned char midi_thereAreNoKeysPressed(void);

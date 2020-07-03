@@ -18,11 +18,11 @@ volatile unsigned char bufferRxIndex[5]={0,0,0,0,0};
 volatile unsigned char bufferRxNewPacket[5]={0,0,0,0,0};
 volatile unsigned char currentBufferIndex=0;
 static KeyPressedInfo keysPressed[KEYS_PRESSED_LEN];
+static unsigned char repeatKeyIndex;
 
 
 // Private functions
 static void midi_analizeMidiInfo(MidiInfo * pMidiInfo);
-static unsigned char thereAreNoKeysPressed(void);
 static unsigned char deleteKey(unsigned char note);
 static unsigned char getIndexOfPressedKey(unsigned char note);
 static unsigned char saveKey(unsigned char note);
@@ -63,6 +63,7 @@ void midi_init(void)
     
     midiChannel = 0; //mem_loadMidiChn();
     timeout=0;
+    repeatKeyIndex=0;
 
     // Configure serial port for MIDI input
     UBRR0L = (uint8_t)(BAUD_PRESCALE & 0xff);
@@ -160,7 +161,8 @@ void midi_loop(void)
     {
       if(bufferRxNewPacket[index])
       {       
-          if(logic_getCurrentMode()==LOGIC_MODE_1_MIDI_PLUS_3TRACKS)
+          if(logic_getCurrentMode()==LOGIC_MODE_1_MIDI_PLUS_3TRACKS ||
+             logic_getCurrentMode()==LOGIC_MODE_2_ARP_PLUS_3TRACKS)
           {
             midi_stateMachine(bufferRx[index][0]);
             midi_stateMachine(bufferRx[index][1]);
@@ -187,12 +189,15 @@ static void midi_analizeMidiInfo(MidiInfo * pMidiInfo)
               unsigned char noteTableIndex = pMidiInfo->note-36;
               if( noteTableIndex < 60)
               {
-                  // SET Velocity output
-                  ios_setVelocityOut(pMidiInfo->vel);
-                  // SET CV voltage for note
-                  ios_setCVout(pgm_read_word(&(CHROM_TABLE[noteTableIndex])));                          
-                  // Set GATE 1
-                  ios_setHi(IOS_GATE_1);
+                  if(logic_getCurrentMode()==LOGIC_MODE_1_MIDI_PLUS_3TRACKS)
+                  {
+                    // SET Velocity output
+                    ios_setVelocityOut(pMidiInfo->vel);
+                    // SET CV voltage for note
+                    ios_setCVout(pgm_read_word(&(CHROM_TABLE[noteTableIndex])));                          
+                    // Set GATE 1
+                    ios_setHi(IOS_GATE_1);
+                  }
               }
               saveKey(pMidiInfo->note);
             }
@@ -202,10 +207,13 @@ static void midi_analizeMidiInfo(MidiInfo * pMidiInfo)
             
             // NOTE OFF
             deleteKey(pMidiInfo->note);
-            if(thereAreNoKeysPressed()==1)
+            if(midi_thereAreNoKeysPressed()==1)
             {
-              // GATE OFF
-              ios_setLo(IOS_GATE_1);
+                if(logic_getCurrentMode()==LOGIC_MODE_1_MIDI_PLUS_3TRACKS)
+                {
+                  // GATE OFF
+                  ios_setLo(IOS_GATE_1);
+                }
             }
         }
         else if(pMidiInfo->cmd==MIDI_CMD_CONTROL_CHANGE)
@@ -219,6 +227,12 @@ static void midi_analizeMidiInfo(MidiInfo * pMidiInfo)
     }     
 }
 
+
+unsigned int midi_calculateValueForCV(unsigned char key)
+{
+    unsigned char noteTableIndex = key-36;
+    return pgm_read_word(&(CHROM_TABLE[noteTableIndex]));
+}
 
 static unsigned char saveKey(unsigned char note)
 {
@@ -258,7 +272,7 @@ static unsigned char deleteKey(unsigned char note)
     return 0;
 }
 
-static unsigned char thereAreNoKeysPressed(void)
+unsigned char midi_thereAreNoKeysPressed(void)
 {
   unsigned char i;
   for(i=0; i<KEYS_PRESSED_LEN; i++)
@@ -269,4 +283,39 @@ static unsigned char thereAreNoKeysPressed(void)
     }
   }
   return 1; 
+}
+
+
+unsigned char midi_getNextKeyForRepeat(void)
+{
+    unsigned char i;
+    unsigned char found=0;
+    unsigned char ret=0xFF;
+    for(i=repeatKeyIndex; i<KEYS_PRESSED_LEN; i++)
+    {
+        if(keysPressed[i].flagFree==0)
+        {
+          ret = keysPressed[i].note;
+          found = 1;
+          break;
+        }
+    }
+    if(found==0)
+    {
+        repeatKeyIndex = 0;
+        for(i=repeatKeyIndex; i<KEYS_PRESSED_LEN; i++)
+        {
+            if(keysPressed[i].flagFree==0)
+            {
+              ret = keysPressed[i].note;
+              break;
+            }
+        }        
+    }
+    
+    repeatKeyIndex = i+1;
+    if(repeatKeyIndex>=KEYS_PRESSED_LEN)
+      repeatKeyIndex = 0;
+
+   return ret;
 }
