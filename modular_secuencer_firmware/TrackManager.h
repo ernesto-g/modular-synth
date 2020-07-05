@@ -1,4 +1,4 @@
-void track_init(void);
+void track_init(unsigned char initTrack,unsigned char initScale);
 void track_playStep(int indexStep,int trackIndex);
 void track_loop(void);
 int track_nextScale(void);

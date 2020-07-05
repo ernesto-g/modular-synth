@@ -81,13 +81,22 @@ void track_tick1ms(void)
 }
 
 
-void track_init(void)
+void track_init(unsigned char initTrack,unsigned char initScale)
 {
-    currentTrack=0;
-    flagRepeatProbability=0; // init on probability mode    
-    currentScaleMode=SCALE_MODE_MICRO;
     int i;
     int j;
+
+    if(initTrack<TRACK_LEN)
+      currentTrack=initTrack;
+    else
+      currentTrack=0;
+
+    if(initScale>SCALE_MODE_DORI)
+      initScale = SCALE_MODE_MICRO;
+  
+    flagRepeatProbability=0; // init on probability mode    
+    currentScaleMode=initScale;
+    
     for(i=0; i<TRACK_LEN; i++)
     {
         gateState[i]=GATE_STATE_IDLE;

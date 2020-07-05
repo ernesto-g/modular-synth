@@ -22,14 +22,6 @@
 #define CONFIG_RST_BHV_INVER_DIR        2
 
 
-struct S_Config
-{
-    unsigned char clkSrc;
-    unsigned char midiChn;
-    unsigned char resetBehaviour;
-};
-
-typedef struct S_Config Config;
 //___________________________________________
  
 
@@ -39,5 +31,4 @@ int logic_getCurrentMode(void);
 void logic_init(void);
 void logic_loop(void);
 void logic_tick1ms(void);
-Config* logic_getConfig(void);
 //_________________

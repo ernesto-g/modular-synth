@@ -4,6 +4,7 @@
 #include "TrackManager.h"
 #include "Logic.h"
 #include "MidiManager.h"
+#include "Memory.h"
 
 // Defines
 #define LOGIC_STATE_SHOW_STEPS    0
@@ -25,12 +26,17 @@ static unsigned char logicState;
 static volatile unsigned int timeoutShowCurrentOption;
 static int currentOption;
 static int currentMode;
-static Config devConfig;
 static unsigned char flagConfiguringMidiChannel=0;
 static unsigned char flagConfiguringClkSrc=0;
 static unsigned char flagConfiguringRstMode=0;
 
+/*
 
+
+
+void mem_saveClkDiv(unsigned char clkDiv,unsigned char trackIndex);
+
+ */
 
 void logic_tick1ms(void)
 {
@@ -42,29 +48,22 @@ void logic_tick1ms(void)
 void logic_init(void)
 {
     flagShift=0;
+    
     logicState = LOGIC_STATE_SHOW_STEPS;
-
-    currentMode = LOGIC_MODE_0_4TRACKS;
-
-    // Default config
-    devConfig.clkSrc = CONFIG_CLK_SRC_INT;
-    devConfig.midiChn = CONFIG_MIDI_CHN_0;
-    devConfig.resetBehaviour = CONFIG_RST_BHV_BACK2ONE;
-    //_______________
-
+    currentMode = mem_getMode();
 
     ios_init();
     frontp_init();
     rthm_init();
-    track_init();
+    track_init(mem_getCurrentTrack(),mem_getScale());
     midi_init();
 
     
     frontp_setEncoderPosition(rthm_getCurrentTempo());
 
-    midi_setMidiChn(devConfig.midiChn);
-    rthm_setClkSrc(devConfig.clkSrc);
-    rthm_setRstMode(devConfig.resetBehaviour);
+    midi_setMidiChn(mem_getMidiChn());
+    rthm_setClkSrc(mem_getClockMode());
+    rthm_setRstMode(mem_getResetBehaviour());
 
 }
 
@@ -96,6 +95,7 @@ void logic_loop(void)
           {
               // change midi channel
               int ch = midi_nextMidiChn();
+              mem_saveMidiChn(ch);
               if(ch==0)
                 ch=255;
               else
@@ -114,7 +114,11 @@ void logic_loop(void)
               else
               {
                 if(imShowingOption())
-                    showOption(track_nextTrack()); 
+                {
+                    unsigned char t = track_nextTrack();
+                    mem_saveCurrentTrack(t);
+                    showOption(t);
+                } 
                 else
                     showOption(track_getCurrentTrack());
               }
@@ -134,7 +138,11 @@ void logic_loop(void)
           else
           {
             if(imShowingOption())
-                showOption(track_nextScale()); 
+            {
+                unsigned char scale = track_nextScale();
+                mem_saveScale(scale);
+                showOption(scale); 
+            }
             else
                 showOption(track_getCurrentScale());
           }
@@ -146,7 +154,9 @@ void logic_loop(void)
           if(flagConfiguringClkSrc==1)
           {
               // Configure clk source
-              showOption(rthm_nextClkSrc());
+              unsigned char clkSrc = rthm_nextClkSrc();
+              mem_saveClockMode(clkSrc);
+              showOption(clkSrc);
           }
           else
           {
@@ -173,7 +183,9 @@ void logic_loop(void)
           if(flagConfiguringRstMode==1)
           {
               // Set rst in mode
-              showOption(rthm_nextRstMode());          
+              unsigned char rstBhv = rthm_nextRstMode();
+              mem_saveResetBehaviour(rstBhv);
+              showOption(rstBhv);          
           }
           else
           {
@@ -275,10 +287,6 @@ void logic_loop(void)
     }
 }
 
-Config* logic_getConfig(void)
-{
-    return &devConfig;
-}
 
 int logic_getCurrentMode(void)
 {
@@ -291,6 +299,8 @@ static int nextMode(void)
     {
         currentMode = LOGIC_MODE_0_4TRACKS;
     }
+    // save new mode
+    mem_saveMode(currentMode);
     return currentMode;
 }
 

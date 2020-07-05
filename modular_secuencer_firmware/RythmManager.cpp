@@ -3,6 +3,8 @@
 #include "TrackManager.h"
 #include "Logic.h"
 #include "ios.h"
+#include "Memory.h"
+
 
 
 #define SEC_TO_TICK(S)  (S*10000)
@@ -95,13 +97,18 @@ void rthm_init(void)
   unsigned char trackIndex;
   for(trackIndex=0; trackIndex<TRACKS_LEN; trackIndex++)
   {
-      trackEndStep[trackIndex]=8;
-      currentDirection[trackIndex]=DIR_FORWARD;
+      // load initial values from eeprom
+      currentDirection[trackIndex]=mem_getDirection(trackIndex); //DIR_FORWARD;
+      clockDivisor[trackIndex]= mem_getClkDiv(trackIndex); //1; 
+      trackEndStep[trackIndex]=mem_getLen(trackIndex); //8;
+      //_________________________________
+      
+      // init aux arrays
       pendulumDir[trackIndex]=0;
       skipCounter[trackIndex]=0;
       flagPendingNextDir[trackIndex]=0;
-      clockDivisor[trackIndex]=1; 
       clockCounter[trackIndex]=0;
+      //________________
   }
 
   ios_configureInterruptForExtClk(extClkInterrupt);
@@ -172,6 +179,8 @@ int rthm_nextDirection(void)
         if(dirToReturn>DIR_RAND_2)
             dirToReturn=DIR_FORWARD;
     }
+
+    mem_saveDirection(dirToReturn,currentTrack);    
     return dirToReturn;
 }
 int rthm_getCurrentDirection(void)
@@ -191,6 +200,8 @@ int rthm_nextClockDivisor(void)
     clockDivisor[currentTrack]++;
     if(clockDivisor[currentTrack]>8)
         clockDivisor[currentTrack]=1;
+
+    mem_saveClkDiv(clockDivisor[currentTrack],currentTrack);
         
     return clockDivisor[currentTrack]-1;
 }
@@ -202,6 +213,8 @@ int rthm_nextLen(void)
     trackEndStep[currentTrack]++;
     if(trackEndStep[currentTrack]>=9)
       trackEndStep[currentTrack]=2;
+
+    mem_saveLen(trackEndStep[currentTrack],currentTrack);
 
     return trackEndStep[currentTrack]-1; // led1 is 0, so I substract 1 to value
 }
