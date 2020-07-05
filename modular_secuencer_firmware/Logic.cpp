@@ -235,6 +235,26 @@ void logic_loop(void)
 
     // Encoder manager
     static int pos = 0;
+    static int flagShift0=-1;
+
+    if(flagShift0!=flagShift)
+    {
+      flagShift0=flagShift;
+      if(flagShift==0)
+      {
+          // load bpm in encoder
+          pos = rthm_getCurrentTempo();
+          frontp_setEncoderPosition(pos);
+      }
+      else
+      {
+          // load euclidean steps on in encoder
+          pos = track_getCurrentEuclideanStepsOn();
+          frontp_setEncoderPosition(pos);         
+      }      
+    }
+
+    
     if(flagShift==0)
     {
       // BPM control
@@ -258,7 +278,18 @@ void logic_loop(void)
     else
     {
       // Euclidean offset control
-      // TODO
+      if(currentMode==LOGIC_MODE_3_EUCLIDEAN_PLUS_3TRACKS)
+      {
+        int newPos = frontp_getEncoderPosition();
+        if(newPos!=pos)
+        {
+            if (newPos > pos)
+              track_nextEuclideanStep();
+            else
+              track_prevEuclideanStep(); 
+            pos=newPos;
+        }
+      }
     }
     //______________
 
@@ -267,8 +298,15 @@ void logic_loop(void)
         case LOGIC_STATE_SHOW_STEPS:
         {
             int stepInTrack = track_getCurrentStepInTrack();
-            // show step led
-            frontp_showStepInLed(stepInTrack,1);            
+            if(currentMode==LOGIC_MODE_3_EUCLIDEAN_PLUS_3TRACKS)
+            {
+                frontp_showEuclideanStateInLeds(stepInTrack,track_getEuclideanStepsState());
+            }
+            else
+            {
+                // show step led
+                frontp_showStepInLed(stepInTrack,1);
+            }            
             break;
         }
         case LOGIC_STATE_SHOW_OPTION:

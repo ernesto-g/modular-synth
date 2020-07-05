@@ -29,3 +29,5 @@ void frontp_showStepInLedBlinking(int stepIndex, int flagTurnOffOthers);
 
 
 unsigned int frontp_readAnalogStepValue(int index);
+
+void frontp_showEuclideanStateInLeds(unsigned char stepInTrack,unsigned char* euclideanSteps);

@@ -46,6 +46,11 @@ static unsigned int currentRepeatitionsValue[TRACK_LEN][STEPS_LEN];
 static unsigned char gateRepeatitionsMax[TRACK_LEN];
 static unsigned char flagRepeatProbability;
 
+static unsigned char euclideanSteps[STEPS_LEN];
+static unsigned char euclideanStepsOn;
+static int euclideanStepsOffset;
+
+
 // Private functions
 static void updateCVout(void);
 static int calculateValueForCV(unsigned int val1024);
@@ -56,6 +61,13 @@ static unsigned int calculateHiTimeoutForRepeatitions(int trackIndex);
 static unsigned char getMaxRepeatitions(int trackIndex);
 static unsigned int calculateLoTimeoutForRepeatitions(int trackIndex);
 static void arpeggiatorManager(void);
+
+static void euclideanInit(void);
+static unsigned char hasToPlayStepInEuclideanMode(unsigned char trackIndex,unsigned char stepIndex);
+static void rotateEuclideanStepsLeft (void);
+static void rotateEuclideanStepsRight (void);
+static void reloadEuclideanSteps(void);
+
 
 
 //Scale tables
@@ -86,10 +98,12 @@ void track_init(unsigned char initTrack,unsigned char initScale)
     int i;
     int j;
 
+    euclideanInit();
+
     if(initTrack<TRACK_LEN)
       currentTrack=initTrack;
     else
-      currentTrack=0;
+      currentTrack=TRACK_0;
 
     if(initScale>SCALE_MODE_DORI)
       initScale = SCALE_MODE_MICRO;
@@ -126,7 +140,7 @@ void track_init(unsigned char initTrack,unsigned char initScale)
 
 void track_silenceStep(int stepIndex, int trackIndex)
 {
-    if(trackIndex==0 & (logic_getCurrentMode()==LOGIC_MODE_1_MIDI_PLUS_3TRACKS))
+    if(trackIndex==TRACK_0 & (logic_getCurrentMode()==LOGIC_MODE_1_MIDI_PLUS_3TRACKS))
     {
         return; // ignore event. track 0 works with midi input 
     }
@@ -136,12 +150,12 @@ void track_silenceStep(int stepIndex, int trackIndex)
 }
 void track_playStep(int stepIndex, int trackIndex)
 {
-    if(trackIndex==0 && (logic_getCurrentMode()==LOGIC_MODE_1_MIDI_PLUS_3TRACKS))
+    if(trackIndex==TRACK_0 && (logic_getCurrentMode()==LOGIC_MODE_1_MIDI_PLUS_3TRACKS))
     {
         return; // ignore event. track 0 works with midi input 
     }
 
-    if(trackIndex==0 && (logic_getCurrentMode()==LOGIC_MODE_2_ARP_PLUS_3TRACKS))
+    if(trackIndex==TRACK_0 && (logic_getCurrentMode()==LOGIC_MODE_2_ARP_PLUS_3TRACKS))
     {
         if(midi_thereAreNoKeysPressed()==1)
         {
@@ -150,6 +164,15 @@ void track_playStep(int stepIndex, int trackIndex)
     }
   
     currentStepInTrack[trackIndex] = stepIndex;
+
+    // euclidean mode
+    if((logic_getCurrentMode()==LOGIC_MODE_3_EUCLIDEAN_PLUS_3TRACKS))
+    {
+        if(hasToPlayStepInEuclideanMode(trackIndex,stepIndex)==0)
+          return; 
+    }
+    //_______________
+    
   
     switch(trackIndex)
     {
@@ -470,3 +493,162 @@ static void loadTimeoutForGate(int trackIndex)
       timeoutGate[trackIndex] = calculateLoTimeoutForRepeatitions(trackIndex);
       gateState[trackIndex] = GATE_STATE_WAIT_FOR_LOW;       
 }
+
+
+
+
+
+//************************************ EUCLIDEAN MODE **************************************************************************************
+
+unsigned char* track_getEuclideanStepsState(void)
+{
+    return euclideanSteps;
+}
+
+unsigned char track_getCurrentEuclideanStepsOn(void)
+{
+    return euclideanStepsOn;
+}
+
+unsigned char track_nextEuclideanStep(void)
+{
+    euclideanStepsOn++;
+    if(euclideanStepsOn>=9)
+      euclideanStepsOn=8; 
+
+    reloadEuclideanSteps();
+    return euclideanStepsOn;
+}
+
+unsigned char track_prevEuclideanStep(void)
+{
+    euclideanStepsOn--;
+    if(euclideanStepsOn==0)
+      euclideanStepsOn=1; 
+
+    reloadEuclideanSteps();
+    return euclideanStepsOn;
+}
+
+static void euclideanInit(void)
+{
+  euclideanStepsOn=1;
+  
+  euclideanStepsOffset=0;
+
+  euclideanSteps[0]=1;
+  euclideanSteps[1]=0;
+  euclideanSteps[2]=0;
+  euclideanSteps[3]=0;
+  euclideanSteps[4]=0;
+  euclideanSteps[5]=0;
+  euclideanSteps[6]=0;
+  euclideanSteps[7]=0;
+}
+
+static unsigned char hasToPlayStepInEuclideanMode(unsigned char trackIndex,unsigned char stepIndex)
+{
+    if(trackIndex==0)
+    {
+        if(euclideanSteps[stepIndex]==1)
+          return 1;
+        else
+          return 0;        
+    }
+    return 1;
+}
+
+static void reloadEuclideanSteps(void)
+{
+  int i;
+  euclideanSteps[0]=0;
+  euclideanSteps[1]=0;
+  euclideanSteps[2]=0;
+  euclideanSteps[3]=0;
+  euclideanSteps[4]=0;
+  euclideanSteps[5]=0;
+  euclideanSteps[6]=0;
+  euclideanSteps[7]=0;
+  
+  switch(euclideanStepsOn)
+  {
+      case 1:  euclideanSteps[0]=1;break;
+      case 2:  euclideanSteps[0]=1;euclideanSteps[4]=1;break;
+      case 3:  euclideanSteps[0]=1;euclideanSteps[3]=1;euclideanSteps[6]=1;break;
+      case 4:  euclideanSteps[0]=1;euclideanSteps[2]=1;euclideanSteps[4]=1;euclideanSteps[6]=1;break;
+      case 5:  
+        euclideanSteps[0]=1;
+        euclideanSteps[1]=1;
+        euclideanSteps[2]=1;
+        euclideanSteps[4]=1;
+        euclideanSteps[6]=1;
+        break;
+      case 6:  
+        euclideanSteps[0]=1;
+        euclideanSteps[1]=1;
+        euclideanSteps[2]=1;
+        euclideanSteps[4]=1;
+        euclideanSteps[5]=1;
+        euclideanSteps[6]=1;
+        break;
+      case 7:  
+        euclideanSteps[0]=1;
+        euclideanSteps[1]=1;
+        euclideanSteps[2]=1;
+        euclideanSteps[3]=1;
+        euclideanSteps[4]=1;
+        euclideanSteps[5]=1;
+        euclideanSteps[6]=1;
+        break;
+      case 8:  
+        euclideanSteps[0]=1;
+        euclideanSteps[1]=1;
+        euclideanSteps[2]=1;
+        euclideanSteps[3]=1;
+        euclideanSteps[4]=1;
+        euclideanSteps[5]=1;
+        euclideanSteps[6]=1;
+        euclideanSteps[7]=1;
+      break;
+  }  
+  if(euclideanStepsOffset>0)
+  {
+      // right rotation
+      for(i=0; i<euclideanStepsOffset; i++)
+        rotateEuclideanStepsRight();
+  }
+  else if(euclideanStepsOffset<0)
+  {
+      // left rotation
+      for(i=0; i<(euclideanStepsOffset*(-1)); i++)
+        rotateEuclideanStepsLeft();
+  }  
+}
+
+static void rotateEuclideanStepsRight (void)
+{
+    unsigned char aux;
+    unsigned char i;
+    
+    aux = euclideanSteps[7];
+    for (i=7; i>0; i--)
+    {
+        euclideanSteps[i] = euclideanSteps[i-1];
+    }
+    euclideanSteps[0] = aux;
+}
+
+static void rotateEuclideanStepsLeft (void)
+{
+    unsigned char aux;
+    unsigned char i;
+    
+    aux = euclideanSteps[0];
+    for (i=0; i>7; i++)
+    {
+        euclideanSteps[i] = euclideanSteps[i+1];
+    }
+    euclideanSteps[7] = aux;
+}
+
+//___________________________________________________________________________________________________________________________________________

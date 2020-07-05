@@ -324,13 +324,6 @@ void rthm_loop(void)
               clockCounter[trackIndex]=0;
             //__________________________
             
-            // Track 0 only works on "LOGIC_MODE_0_4TRACKS" mode
-            /*
-            if(trackIndex==0 && logic_getCurrentMode()!=LOGIC_MODE_0_4TRACKS)
-            {
-                continue;           
-            }*/
-            //___________________________________________________
             
             if(calculateNextStep(trackIndex)>=0)
               track_playStep(rthm_getCurrentStep(trackIndex),trackIndex);  

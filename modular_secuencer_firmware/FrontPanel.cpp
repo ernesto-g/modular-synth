@@ -21,10 +21,15 @@
 #define TIMEOUT_SHORT_PRESS 1000  // 1sec
 #define TIMEOUT_LONG_PRESS  2000  // 2sec
 #define LED_BLINK_TIMEOUT  200
+#define LED_BLINK_TIMEOUT_FAST_OFF  10
+#define LED_BLINK_TIMEOUT_FAST_ON  8
 
-#define LED_STATE_BLINK   2
-#define LED_STATE_ON      1
-#define LED_STATE_OFF     0
+
+#define LED_STATE_BLINK_FAST    3
+#define LED_STATE_BLINK         2
+#define LED_STATE_ON            1
+#define LED_STATE_OFF           0
+
 
 
 #define STATE_IDLE                  0
@@ -46,6 +51,10 @@ static unsigned char stepsLeds=0;
 static volatile unsigned char toggleForBlink;
 static volatile unsigned int toggleForBlinkCounter;
 static unsigned char ledsState[LEDS_LEN];
+
+static volatile unsigned char toggleForBlinkFast;
+static volatile unsigned int toggleForBlinkCounterFast;
+
 
 
 // Private functions
@@ -82,6 +91,22 @@ void frontp_tick1Ms(void)
     }
     else
       toggleForBlinkCounter--;
+
+    
+    
+    if(toggleForBlinkCounterFast==0)
+    {
+        if(toggleForBlinkFast){
+          toggleForBlinkFast=0;
+          toggleForBlinkCounterFast=LED_BLINK_TIMEOUT_FAST_OFF;
+        }
+        else{
+          toggleForBlinkFast=1;
+          toggleForBlinkCounterFast=LED_BLINK_TIMEOUT_FAST_ON;
+        }
+    }
+    else
+      toggleForBlinkCounterFast--;
 }
 
 // The Interrupt Service Routine for Pin Change Interrupt 2
@@ -185,6 +210,23 @@ unsigned int frontp_readAnalogStepValue(int index)
     return  stepAnalogValues[index];
 }
 
+void frontp_showEuclideanStateInLeds(unsigned char stepInTrack,unsigned char* euclideanSteps)
+{
+    int i;
+    for(i=0; i<LEDS_LEN; i++)
+    {
+        if(euclideanSteps[i]==1)
+          ledsState[i]= LED_STATE_ON;
+        else
+          ledsState[i]= LED_STATE_OFF;   
+    }
+
+    ledsState[stepInTrack]= LED_STATE_BLINK_FAST;
+}
+
+
+
+
 
 
 
@@ -221,6 +263,14 @@ static void ledsStateMachine(void)
         else if(ledsState[stepIndex]==LED_STATE_ON)
         {
             frontp_setLed(stepIndex, 1);
+        }
+        else if(ledsState[stepIndex]==LED_STATE_BLINK_FAST)
+        {
+            // blink led
+            if(toggleForBlinkFast)
+            {
+                frontp_setLed(stepIndex, 1);
+            }          
         }
     }
       
