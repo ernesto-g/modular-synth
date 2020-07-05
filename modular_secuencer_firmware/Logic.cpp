@@ -29,20 +29,18 @@ static int currentMode;
 static unsigned char flagConfiguringMidiChannel=0;
 static unsigned char flagConfiguringClkSrc=0;
 static unsigned char flagConfiguringRstMode=0;
+static volatile unsigned int timeoutPendingWriteTempoInMemory=0;
+static volatile unsigned char flagPendingWriteTempoInMemory=0;
 
-/*
-
-
-
-void mem_saveClkDiv(unsigned char clkDiv,unsigned char trackIndex);
-
- */
 
 void logic_tick1ms(void)
 {
     if(timeoutShowCurrentOption>0)
       timeoutShowCurrentOption--;
-  
+
+    if(timeoutPendingWriteTempoInMemory>0)
+      timeoutPendingWriteTempoInMemory--;
+ 
 }
 
 void logic_init(void)
@@ -54,7 +52,7 @@ void logic_init(void)
 
     ios_init();
     frontp_init();
-    rthm_init();
+    rthm_init(mem_getTempo());
     track_init(mem_getCurrentTrack(),mem_getScale());
     midi_init();
 
@@ -253,6 +251,8 @@ void logic_loop(void)
       if (pos != newPos) {
         pos = newPos;
         rthm_setTempo(newPos);
+        timeoutPendingWriteTempoInMemory=30000; // 30sec
+        flagPendingWriteTempoInMemory=1;
       }
     }
     else
@@ -285,6 +285,14 @@ void logic_loop(void)
             break;
         }
     }
+
+
+    // write tempo in eeprom
+    if(timeoutPendingWriteTempoInMemory==0 && flagPendingWriteTempoInMemory==1)
+    {
+        flagPendingWriteTempoInMemory=0;
+        mem_saveTempo(rthm_getCurrentTempo());
+    }  
 }
 
 

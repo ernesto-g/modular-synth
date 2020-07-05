@@ -84,14 +84,14 @@ static void extRstInterrupt(void)
     }
 }
 
-void rthm_init(void)
+void rthm_init(unsigned int initTempo)
 {
-  rthm_setTempo(50); 
+  rthm_setTempo(initTempo); 
    
   flagPlay=0;
 
-  currentClkSrc=CONFIG_CLK_SRC_INT;
-  currentRstMode = CONFIG_RST_BHV_BACK2ONE;
+  currentClkSrc= mem_getClockMode(); //CONFIG_CLK_SRC_INT;
+  currentRstMode = mem_getResetBehaviour(); //CONFIG_RST_BHV_BACK2ONE;
   rstCounter=0;
   
   unsigned char trackIndex;
@@ -121,6 +121,7 @@ void rthm_setTempo(int tempo)
 {
     currentTempo = tempo;
     currentTempoTicks = (unsigned int)SEC_TO_TICK( (60.0/tempo) );
+
 }
 
 int rthm_getCurrentTempo(void)

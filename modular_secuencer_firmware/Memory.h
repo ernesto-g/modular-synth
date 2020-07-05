@@ -10,6 +10,9 @@ unsigned char mem_getCurrentTrack(void);
 void mem_saveCurrentTrack(unsigned char track);
 unsigned char mem_getScale(void);
 void mem_saveScale(unsigned char scale);
+void mem_saveTempo(unsigned int tempo);
+unsigned int mem_getTempo(void);
+
 
 void mem_saveDirection(unsigned char dir,unsigned char trackIndex);
 unsigned char mem_getDirection(unsigned char trackIndex);

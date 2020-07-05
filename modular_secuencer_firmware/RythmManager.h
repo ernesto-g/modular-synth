@@ -1,7 +1,7 @@
 
 
 void rthm_tick(void);
-void rthm_init(void);
+void rthm_init(unsigned int initTempo);
 void rthm_loop(void);
 unsigned int rthm_getCurrentTempoPeriodMs(void);
 int rthm_getState(void);

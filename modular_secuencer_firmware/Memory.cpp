@@ -9,6 +9,9 @@
 #define MEM_ADDR_CURRENT_TRACK          5
 #define MEM_ADDR_CURRENT_SCALE          6
 
+#define MEM_ADDR_TEMPO_H                7
+#define MEM_ADDR_TEMPO_L                8
+
 
 #define MEM_ADDR_CURRENT_DIR_0          10
 #define MEM_ADDR_CURRENT_DIR_1          11
@@ -109,6 +112,25 @@ unsigned char mem_getDirection(unsigned char trackIndex)
     return 0;
 }
 
+
+
+void mem_saveTempo(unsigned int tempo)
+{
+    EEPROM.update(MEM_ADDR_TEMPO_H, (tempo<<8)&0xFF);
+    EEPROM.update(MEM_ADDR_TEMPO_L, (tempo)&0xFF);
+}
+
+unsigned int mem_getTempo(void)
+{
+    unsigned int val=0;
+    val=EEPROM.read(MEM_ADDR_TEMPO_H);
+    val = val <<8;
+    val = val & 0xFF00;
+    val = val | EEPROM.read(MEM_ADDR_TEMPO_L);
+    if(val<=600)
+      return val;
+    return 300; // default value
+}
 
 
 
