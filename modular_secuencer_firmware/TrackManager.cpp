@@ -5,6 +5,8 @@
 #include "RythmManager.h"
 #include "Logic.h"
 #include "MidiManager.h"
+#include "Memory.h"
+
 
 
 #define ANALOG_TO_0_100(X)    (((unsigned long)(X/4)*(unsigned long)100UL)/255UL)
@@ -499,6 +501,13 @@ static void loadTimeoutForGate(int trackIndex)
 
 
 //************************************ EUCLIDEAN MODE **************************************************************************************
+static void euclideanInit(void)
+{
+  euclideanStepsOn=mem_getEuclideanStepsOn();
+  euclideanStepsOffset=mem_getEuclideanStepsOffset();
+
+  reloadEuclideanSteps();
+}
 
 unsigned char* track_getEuclideanStepsState(void)
 {
@@ -510,6 +519,32 @@ unsigned char track_getCurrentEuclideanStepsOn(void)
     return euclideanStepsOn;
 }
 
+int track_getCurrentEuclideanOffset(void)
+{
+    return euclideanStepsOffset;
+}
+
+int track_nextEuclideanOffset(void)
+{
+    euclideanStepsOffset++;
+    if(euclideanStepsOffset>=8)
+      euclideanStepsOffset=7;
+      
+    reloadEuclideanSteps();
+    mem_saveEuclideanStepsOffset(euclideanStepsOffset);
+    return euclideanStepsOffset;
+}
+int track_prevEuclideanOffset(void)
+{
+    euclideanStepsOffset--;
+    if(euclideanStepsOffset<=-8)
+      euclideanStepsOffset=-7;
+
+    reloadEuclideanSteps();
+    mem_saveEuclideanStepsOffset(euclideanStepsOffset);
+    return euclideanStepsOffset;
+}
+
 unsigned char track_nextEuclideanStep(void)
 {
     euclideanStepsOn++;
@@ -517,6 +552,7 @@ unsigned char track_nextEuclideanStep(void)
       euclideanStepsOn=8; 
 
     reloadEuclideanSteps();
+    mem_saveEuclideanStepsOn(euclideanStepsOn);
     return euclideanStepsOn;
 }
 
@@ -527,24 +563,11 @@ unsigned char track_prevEuclideanStep(void)
       euclideanStepsOn=1; 
 
     reloadEuclideanSteps();
+    mem_saveEuclideanStepsOn(euclideanStepsOn);
     return euclideanStepsOn;
 }
 
-static void euclideanInit(void)
-{
-  euclideanStepsOn=1;
-  
-  euclideanStepsOffset=0;
 
-  euclideanSteps[0]=1;
-  euclideanSteps[1]=0;
-  euclideanSteps[2]=0;
-  euclideanSteps[3]=0;
-  euclideanSteps[4]=0;
-  euclideanSteps[5]=0;
-  euclideanSteps[6]=0;
-  euclideanSteps[7]=0;
-}
 
 static unsigned char hasToPlayStepInEuclideanMode(unsigned char trackIndex,unsigned char stepIndex)
 {
@@ -620,7 +643,8 @@ static void reloadEuclideanSteps(void)
   else if(euclideanStepsOffset<0)
   {
       // left rotation
-      for(i=0; i<(euclideanStepsOffset*(-1)); i++)
+      int maxI = euclideanStepsOffset*(-1);
+      for(i=0; i<maxI; i++)
         rotateEuclideanStepsLeft();
   }  
 }
@@ -644,7 +668,7 @@ static void rotateEuclideanStepsLeft (void)
     unsigned char i;
     
     aux = euclideanSteps[0];
-    for (i=0; i>7; i++)
+    for (i=0; i<7; i++)
     {
         euclideanSteps[i] = euclideanSteps[i+1];
     }

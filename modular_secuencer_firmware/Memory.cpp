@@ -28,6 +28,8 @@
 #define MEM_ADDR_CURRENT_CLK_DIV_2      20
 #define MEM_ADDR_CURRENT_CLK_DIV_3      21
 
+#define MEM_ADDR_EUCLID_STEPS_ON        22
+#define MEM_ADDR_EUCLID_STEPS_OFFSET    23
 
 
 void mem_saveClkDiv(unsigned char clkDiv,unsigned char trackIndex)
@@ -222,3 +224,39 @@ unsigned char mem_getMode(void)
       return mode;
     return 0;    
 } 
+
+
+
+
+unsigned char mem_getEuclideanStepsOn(void)
+{
+    unsigned char steps = EEPROM.read(MEM_ADDR_EUCLID_STEPS_ON);
+    if(steps<=8)
+      return steps;
+    return 1;  
+}
+void mem_saveEuclideanStepsOn(unsigned char steps)
+{
+     EEPROM.update(MEM_ADDR_EUCLID_STEPS_ON, steps);
+}
+
+void mem_saveEuclideanStepsOffset(int offset)
+{
+    unsigned char offsetu=(unsigned char)offset;
+    EEPROM.update(MEM_ADDR_EUCLID_STEPS_OFFSET, offsetu );
+}
+
+int mem_getEuclideanStepsOffset(void)
+{
+    unsigned char valu=0;
+    int val;
+    valu=EEPROM.read(MEM_ADDR_EUCLID_STEPS_OFFSET);
+    if(valu>=128)
+      val = ((int)(256 -valu))*(-1);
+    else
+      val = (int)valu;
+    
+    if(val<=7 && val >=-7)
+      return val;
+    return 0; // default value
+}

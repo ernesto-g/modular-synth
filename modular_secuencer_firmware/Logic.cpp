@@ -22,6 +22,7 @@ static int nextMode(void);
 
 // Private variables
 static unsigned char flagShift;
+static unsigned char dirBtnPressed;
 static unsigned char logicState;
 static volatile unsigned int timeoutShowCurrentOption;
 static int currentOption;
@@ -46,6 +47,7 @@ void logic_tick1ms(void)
 void logic_init(void)
 {
     flagShift=0;
+    dirBtnPressed=0;
     
     logicState = LOGIC_STATE_SHOW_STEPS;
     currentMode = mem_getMode();
@@ -83,6 +85,15 @@ void logic_loop(void)
       {
           frontp_resetSwState(SW_SHIFT);
           flagShift=0;
+      }
+
+      if(frontp_getSwState(SW_SCALE_DIR)==FRONT_PANEL_SW_STATE_JUST_PRESSED)
+      {
+          dirBtnPressed=1;
+      }
+      if(frontp_getSwState(SW_SCALE_DIR)==FRONT_PANEL_SW_STATE_JUST_RELEASED)
+      {
+          dirBtnPressed=0;
       }
       
 
@@ -128,10 +139,13 @@ void logic_loop(void)
           frontp_resetSwState(SW_SCALE_DIR);
           if(flagShift==0)
           {
-            if(imShowingOption())
-                showOption(rthm_nextDirection()); 
-            else
-                showOption(rthm_getCurrentDirection());
+            if(currentMode!=LOGIC_MODE_3_EUCLIDEAN_PLUS_3TRACKS)
+            {
+              if(imShowingOption())
+                  showOption(rthm_nextDirection()); 
+              else
+                  showOption(rthm_getCurrentDirection());
+            }
           }
           else
           {
@@ -236,7 +250,8 @@ void logic_loop(void)
     // Encoder manager
     static int pos = 0;
     static int flagShift0=-1;
-
+    static unsigned char dirBtnPressed0=-1;
+    
     if(flagShift0!=flagShift)
     {
       flagShift0=flagShift;
@@ -253,27 +268,63 @@ void logic_loop(void)
           frontp_setEncoderPosition(pos);         
       }      
     }
-
+    if(dirBtnPressed0!=dirBtnPressed)
+    {
+      dirBtnPressed0=dirBtnPressed;
+      if(dirBtnPressed==1)
+      {
+          // load euclidean offset in encoder
+          pos = track_getCurrentEuclideanOffset();
+          frontp_setEncoderPosition(pos);                 
+      }
+      else
+      {
+          // load bpm in encoder
+          pos = rthm_getCurrentTempo();
+          frontp_setEncoderPosition(pos);
+      }
+    }
     
     if(flagShift==0)
     {
-      // BPM control
-      int newPos = frontp_getEncoderPosition();
-      if(newPos<BPM_MIN){
-          newPos=BPM_MIN;
-          frontp_setEncoderPosition(BPM_MIN);
-      }
-      if(newPos>=BPM_MAX)
-      {
-         newPos=BPM_MAX;
-         frontp_setEncoderPosition(BPM_MAX);          
-      }
-      if (pos != newPos) {
-        pos = newPos;
-        rthm_setTempo(newPos);
-        timeoutPendingWriteTempoInMemory=30000; // 30sec
-        flagPendingWriteTempoInMemory=1;
-      }
+        if(dirBtnPressed==1)
+        {
+            // OFFSET control for euclidean mode
+            if(currentMode==LOGIC_MODE_3_EUCLIDEAN_PLUS_3TRACKS)
+            {
+                int newPos = frontp_getEncoderPosition();
+                if(newPos!=pos)
+                {
+                  if (newPos > pos)
+                    track_nextEuclideanOffset();
+                  else
+                    track_prevEuclideanOffset();
+                
+                  pos=newPos;
+                  frontp_resetSwState(SW_SCALE_DIR); // clean action for dir button
+                }
+            }              
+        }
+        else
+        {
+            // BPM control
+            int newPos = frontp_getEncoderPosition();
+            if(newPos<BPM_MIN){
+                newPos=BPM_MIN;
+                frontp_setEncoderPosition(BPM_MIN);
+            }
+            if(newPos>=BPM_MAX)
+            {
+               newPos=BPM_MAX;
+               frontp_setEncoderPosition(BPM_MAX);          
+            }
+            if (pos != newPos) {
+              pos = newPos;
+              rthm_setTempo(newPos);
+              timeoutPendingWriteTempoInMemory=30000; // 30sec
+              flagPendingWriteTempoInMemory=1;
+            }
+        }
     }
     else
     {
@@ -286,7 +337,8 @@ void logic_loop(void)
             if (newPos > pos)
               track_nextEuclideanStep();
             else
-              track_prevEuclideanStep(); 
+              track_prevEuclideanStep();
+
             pos=newPos;
         }
       }

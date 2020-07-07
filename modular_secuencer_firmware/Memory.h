@@ -20,3 +20,8 @@ void mem_saveLen(unsigned char len,unsigned char trackIndex);
 unsigned char mem_getLen(unsigned char trackIndex);
 void mem_saveClkDiv(unsigned char clkDiv,unsigned char trackIndex);
 unsigned char mem_getClkDiv(unsigned char trackIndex);
+
+int mem_getEuclideanStepsOffset(void);
+void mem_saveEuclideanStepsOffset(int offset);
+void mem_saveEuclideanStepsOn(unsigned char steps);
+unsigned char mem_getEuclideanStepsOn(void);

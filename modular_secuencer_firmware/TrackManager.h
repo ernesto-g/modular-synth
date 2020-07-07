@@ -16,3 +16,7 @@ unsigned char track_prevEuclideanStep(void);
 unsigned char track_nextEuclideanStep(void);
 unsigned char track_getCurrentEuclideanStepsOn(void);
 unsigned char* track_getEuclideanStepsState(void);
+
+int track_getCurrentEuclideanOffset(void);
+int track_nextEuclideanOffset(void);
+int track_prevEuclideanOffset(void);
