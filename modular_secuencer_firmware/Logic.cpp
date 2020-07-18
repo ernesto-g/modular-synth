@@ -97,11 +97,13 @@ void logic_loop(void)
       {
           frontp_resetSwState(SW_SHIFT);
           flagShift=1;
+          //Serial.print("SHON\n");
       }
       if(frontp_getSwState(SW_SHIFT)==FRONT_PANEL_SW_STATE_JUST_RELEASED)
       {
           frontp_resetSwState(SW_SHIFT);
           flagShift=0;
+          //Serial.print("SHOFF\n");
       }
 
       if(frontp_getSwState(SW_SCALE_DIR)==FRONT_PANEL_SW_STATE_JUST_PRESSED)

@@ -82,27 +82,28 @@ void midi_init(void)
     timeout=0;
     repeatKeyIndex=0;
 
+    
     // Configure serial port for MIDI input
     UBRR0L = (uint8_t)(BAUD_PRESCALE & 0xff);
     UBRR0H = (uint8_t)(BAUD_PRESCALE >> 8);
     UCSR0B =
-        /* interrupt on receive */
+        // interrupt on receive
         //(1 << RXCIE0) | (1 << TXEN0) |
         (1 << RXCIE0) |
         (1 << RXEN0);
     UCSR0C =
-        /* no parity bit */
+        // no parity bit
         (0 << UPM01) |
         (0 << UPM00) |
-        /* asyncrounous USART */
+        // asyncrounous USART 
         (0 << UMSEL01) |
         (0 << UMSEL00) |
-        /* one stop bit */
+        // one stop bit 
         (0 << USBS0) |
-        /* 8-bits of data */
+        // 8-bits of data 
         (1 << UCSZ01) |
         (1 << UCSZ00);
-
+    
     //_____________________________________
 }
 

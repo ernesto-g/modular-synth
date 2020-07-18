@@ -135,6 +135,8 @@ ISR(PCINT2_vect) {
 
 void frontp_init(void)
 {
+    //Serial.begin(115200); // debug
+    //Serial.print("INICIO\n");
     toggleForBlinkCounter=LED_BLINK_TIMEOUT;
     toggleForBlink=1;
     
@@ -303,6 +305,7 @@ static void swStateMachine(int swIndex)
             {
                 // sw pressed
                 state[swIndex] = STATE_PRESSED;
+                //if(swIndex==4) Serial.print("1\n");
             }
             break; 
         }
@@ -310,6 +313,7 @@ static void swStateMachine(int swIndex)
         {
             timeouts[swIndex]=0;
             state[swIndex] = STATE_WAIT_BOUNCE;            
+            //if(swIndex==4) Serial.print("2\n");
             break;
         }
         case STATE_WAIT_BOUNCE:
@@ -318,15 +322,21 @@ static void swStateMachine(int swIndex)
             {
                 if(ios_readSw(getIO(swIndex))==LOW)
                 {
-                    state[swIndex] = STATE_PRESS_CONFIRMED;             
+                    state[swIndex] = STATE_PRESS_CONFIRMED;
+                    //if(swIndex==4) Serial.print("3\n");
+             
                 }
-                else
-                    state[swIndex] = STATE_IDLE;  
+                else{
+                    state[swIndex] = STATE_IDLE;
+                    //if(swIndex==4) Serial.print("3B\n");
+                }  
             }
             else
             {
-                if(ios_readSw(getIO(swIndex))==HIGH)
-                    state[swIndex] = STATE_IDLE; // bouncing   
+                if(ios_readSw(getIO(swIndex))==HIGH){
+                    state[swIndex] = STATE_IDLE; // bouncing
+                    //if(swIndex==4) Serial.print("3C\n");
+                }   
             }
             break;
         }
@@ -336,12 +346,14 @@ static void swStateMachine(int swIndex)
             timeouts[swIndex]=0;
             state[swIndex] = STATE_WAIT_RELEASE;
             switchesState[swIndex] = FRONT_PANEL_SW_STATE_JUST_PRESSED;
+            //if(swIndex==4) Serial.print("4\n");
             break;
         }
         case STATE_WAIT_RELEASE:
         {
             if(ios_readSw(getIO(swIndex))==HIGH) // released
             {
+                //if(swIndex==4) Serial.print("5\n");
                 // released, check time
                 if(timeouts[swIndex]<TIMEOUT_SHORT_PRESS)
                     switchesState[swIndex] = FRONT_PANEL_SW_STATE_SHORT;
@@ -355,6 +367,7 @@ static void swStateMachine(int swIndex)
             {
                 switchesState[swIndex] = FRONT_PANEL_SW_STATE_LONG;
                 state[swIndex] = STATE_WAIT_RELEASE2;
+                //if(swIndex==4) Serial.print("6\n");
             }
             
             break;
@@ -366,6 +379,7 @@ static void swStateMachine(int swIndex)
                 // wait bounce again
                 timeouts[swIndex]=0;
                 state[swIndex] = STATE_WAIT_BOUNCE_RELEASE;
+                //if(swIndex==4) Serial.print("7\n");
             }          
             break; 
         }
@@ -375,6 +389,7 @@ static void swStateMachine(int swIndex)
             {
               switchesState[swIndex] = FRONT_PANEL_SW_STATE_JUST_RELEASED;
               state[swIndex] = STATE_IDLE;
+              //if(swIndex==4) Serial.print("8\n");
             }    
             break;
         }

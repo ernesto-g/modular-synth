@@ -165,11 +165,11 @@ int ios_readSw(int input)
       {
           case IO_SW_TRACK_RUN: return digitalRead(PIN_SW_TRACK_RUN); 
           case IO_SW_SCALE_DIR: return digitalRead(PIN_SW_SCALE_DIR); 
-          case IO_SW_LEN_MODE: return digitalRead(PIN_SW_LEN_MODE); 
+          case IO_SW_SHIFT: return digitalRead(PIN_SW_SHIFT); 
           case IO_SW_RPT_PROB: return digitalRead(PIN_SW_RPT_PROB); 
-          case IO_SW_SHIFT:
+          case IO_SW_LEN_MODE:
           { 
-                unsigned int v =  analogRead(PIN_ANALOG_SW_SHIFT);
+                unsigned int v =  analogRead(PIN_ANALOG_SW_LEN_MODE);
                 if(v < 512)
                   return LOW;
                 else
