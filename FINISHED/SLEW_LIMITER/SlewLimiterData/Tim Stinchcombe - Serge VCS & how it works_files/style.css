@@ -1,0 +1,13 @@
+p,a,h2,h3 {font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size:small}
+table, td {font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size:small}
+p.tex_t{margin: 0}
+p.tex_i{margin: 0; text-align: center}
+p.listp{text-indent:-1.15em; margin:0 0 0 2em}
+h2 {font-family: "Verdana", "Arial", "Helvetica", sans-serif; font-size:medium}
+#banner {background: #bc7aac;}
+@media all {
+  .page-break { display: none; }
+}
+@media print {
+  .page-break { display: block; page-break-before: always; }
+}

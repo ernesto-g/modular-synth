@@ -1,0 +1,599 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Regulator_Linear:LM7812_TO220 U1
+U 1 1 5F136673
+P 5050 1250
+F 0 "U1" H 5050 1492 50  0000 C CNN
+F 1 "LM7812_TO220" H 5050 1401 50  0000 C CNN
+F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 5050 1475 50  0001 C CIN
+F 3 "http://www.fairchildsemi.com/ds/LM/LM7805.pdf" H 5050 1200 50  0001 C CNN
+	1    5050 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Regulator_Linear:LM7912_TO220 U2
+U 1 1 5F136E4D
+P 5050 2450
+F 0 "U2" H 5050 2301 50  0000 C CNN
+F 1 "LM7912_TO220" H 5050 2210 50  0000 C CNN
+F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 5050 2250 50  0001 C CIN
+F 3 "http://www.fairchildsemi.com/ds/LM/LM7905.pdf" H 5050 2450 50  0001 C CNN
+	1    5050 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C5
+U 1 1 5F137B00
+P 5600 1450
+F 0 "C5" H 5715 1496 50  0000 L CNN
+F 1 "100nF" H 5715 1405 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 5638 1300 50  0001 C CNN
+F 3 "~" H 5600 1450 50  0001 C CNN
+	1    5600 1450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP C1
+U 1 1 5F1381DE
+P 3750 1500
+F 0 "C1" H 3868 1546 50  0000 L CNN
+F 1 "2200uFx25V" H 3800 1400 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D13.0mm_P5.00mm" H 3788 1350 50  0001 C CNN
+F 3 "~" H 3750 1500 50  0001 C CNN
+	1    3750 1500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x03_Female J1
+U 1 1 5F139CBF
+P 1700 1900
+F 0 "J1" H 1592 1575 50  0000 C CNN
+F 1 "AC INPUT 12+12 1.5A" H 1950 1650 50  0000 C CNN
+F 2 "Terminal_Blocks:TerminalBlock_Altech_AK300-3_P5.00mm" H 1700 1900 50  0001 C CNN
+F 3 "~" H 1700 1900 50  0001 C CNN
+	1    1700 1900
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR01
+U 1 1 5F13A9D2
+P 2100 1950
+F 0 "#PWR01" H 2100 1700 50  0001 C CNN
+F 1 "GND" H 2105 1777 50  0000 C CNN
+F 2 "" H 2100 1950 50  0001 C CNN
+F 3 "" H 2100 1950 50  0001 C CNN
+	1    2100 1950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1900 1900 2100 1900
+Wire Wire Line
+	2800 2200 1900 2200
+Wire Wire Line
+	1900 2200 1900 2000
+Wire Wire Line
+	2800 1600 2800 1550
+Wire Wire Line
+	2800 1550 1900 1550
+Wire Wire Line
+	1900 1550 1900 1800
+Wire Wire Line
+	2100 1900 2100 1950
+$Comp
+L Device:CP C2
+U 1 1 5F13E119
+P 3750 2200
+F 0 "C2" H 3868 2246 50  0000 L CNN
+F 1 "2200uFx25V" H 3800 2100 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D13.0mm_P5.00mm" H 3788 2050 50  0001 C CNN
+F 3 "~" H 3750 2200 50  0001 C CNN
+	1    3750 2200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3750 2350 3750 2450
+Wire Wire Line
+	3750 2450 2400 2450
+Wire Wire Line
+	2400 2450 2400 1900
+Wire Wire Line
+	2400 1900 2500 1900
+Wire Wire Line
+	3100 1900 3200 1900
+Wire Wire Line
+	3200 1900 3200 1250
+Wire Wire Line
+	3200 1250 3750 1250
+Wire Wire Line
+	3750 1250 3750 1350
+Wire Wire Line
+	3750 1650 3750 1850
+$Comp
+L power:GND #PWR02
+U 1 1 5F13F862
+P 4100 1900
+F 0 "#PWR02" H 4100 1650 50  0001 C CNN
+F 1 "GND" H 4105 1727 50  0000 C CNN
+F 2 "" H 4100 1900 50  0001 C CNN
+F 3 "" H 4100 1900 50  0001 C CNN
+	1    4100 1900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4100 1900 4100 1850
+Wire Wire Line
+	4100 1850 3750 1850
+Connection ~ 3750 1850
+Wire Wire Line
+	3750 1850 3750 2050
+$Comp
+L Device:C C3
+U 1 1 5F13FE98
+P 4400 1500
+F 0 "C3" H 4515 1546 50  0000 L CNN
+F 1 "220nF" H 4515 1455 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Disc_D11.0mm_W5.0mm_P7.50mm" H 4438 1350 50  0001 C CNN
+F 3 "~" H 4400 1500 50  0001 C CNN
+	1    4400 1500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C4
+U 1 1 5F1405BC
+P 4400 2200
+F 0 "C4" H 4515 2246 50  0000 L CNN
+F 1 "220nF" H 4515 2155 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Disc_D11.0mm_W5.0mm_P7.50mm" H 4438 2050 50  0001 C CNN
+F 3 "~" H 4400 2200 50  0001 C CNN
+	1    4400 2200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4400 2050 4400 1850
+Wire Wire Line
+	4400 1350 4400 1250
+Wire Wire Line
+	4400 1250 3750 1250
+Connection ~ 3750 1250
+Wire Wire Line
+	4400 2350 4400 2450
+Wire Wire Line
+	4400 2450 3750 2450
+Connection ~ 3750 2450
+Wire Wire Line
+	4400 1850 4100 1850
+Connection ~ 4400 1850
+Wire Wire Line
+	4400 1850 4400 1650
+Connection ~ 4100 1850
+Wire Wire Line
+	4750 1250 4400 1250
+Connection ~ 4400 1250
+Wire Wire Line
+	4750 2450 4400 2450
+Connection ~ 4400 2450
+$Comp
+L power:GND #PWR03
+U 1 1 5F14A9EA
+P 5250 1850
+F 0 "#PWR03" H 5250 1600 50  0001 C CNN
+F 1 "GND" H 5255 1677 50  0000 C CNN
+F 2 "" H 5250 1850 50  0001 C CNN
+F 3 "" H 5250 1850 50  0001 C CNN
+	1    5250 1850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5050 1550 5050 1850
+Wire Wire Line
+	5250 1850 5050 1850
+Connection ~ 5050 1850
+Wire Wire Line
+	5050 1850 5050 2150
+$Comp
+L Device:C C6
+U 1 1 5F14BD9D
+P 5600 2200
+F 0 "C6" H 5715 2246 50  0000 L CNN
+F 1 "100nF" H 5715 2155 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 5638 2050 50  0001 C CNN
+F 3 "~" H 5600 2200 50  0001 C CNN
+	1    5600 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP C7
+U 1 1 5F14C358
+P 6050 1450
+F 0 "C7" H 6168 1496 50  0000 L CNN
+F 1 "1000uFx16V" H 6168 1405 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D8.0mm_P3.50mm" H 6088 1300 50  0001 C CNN
+F 3 "~" H 6050 1450 50  0001 C CNN
+	1    6050 1450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP C8
+U 1 1 5F14C5E8
+P 6050 2200
+F 0 "C8" H 6168 2246 50  0000 L CNN
+F 1 "1000uFx16V" H 6168 2155 50  0000 L CNN
+F 2 "Capacitors_ThroughHole:CP_Radial_D8.0mm_P3.50mm" H 6088 2050 50  0001 C CNN
+F 3 "~" H 6050 2200 50  0001 C CNN
+	1    6050 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Diode:1N4007 D2
+U 1 1 5F14CD98
+P 6750 1450
+F 0 "D2" V 6704 1530 50  0000 L CNN
+F 1 "1N4007" V 6795 1530 50  0000 L CNN
+F 2 "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal" H 6750 1275 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/88503/1n4001.pdf" H 6750 1450 50  0001 C CNN
+	1    6750 1450
+	0    1    1    0   
+$EndComp
+$Comp
+L Diode:1N4007 D3
+U 1 1 5F14DDC0
+P 6750 2200
+F 0 "D3" V 6704 2280 50  0000 L CNN
+F 1 "1N4007" V 6795 2280 50  0000 L CNN
+F 2 "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal" H 6750 2025 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/88503/1n4001.pdf" H 6750 2200 50  0001 C CNN
+	1    6750 2200
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5350 1250 5600 1250
+Wire Wire Line
+	6750 1250 6750 1300
+Wire Wire Line
+	6050 1300 6050 1250
+Wire Wire Line
+	5600 1300 5600 1250
+Connection ~ 5600 1250
+Wire Wire Line
+	5600 1250 6050 1250
+Wire Wire Line
+	5350 2450 5600 2450
+Wire Wire Line
+	6750 2450 6750 2350
+Wire Wire Line
+	6050 2350 6050 2450
+Wire Wire Line
+	5600 2350 5600 2450
+Connection ~ 5600 2450
+Wire Wire Line
+	5600 2450 6050 2450
+Wire Wire Line
+	5600 1600 5600 1850
+Wire Wire Line
+	6050 1600 6050 1850
+Wire Wire Line
+	6750 1600 6750 1850
+$Comp
+L power:GND #PWR09
+U 1 1 5F1521AC
+P 7000 1850
+F 0 "#PWR09" H 7000 1600 50  0001 C CNN
+F 1 "GND" H 7005 1677 50  0000 C CNN
+F 2 "" H 7000 1850 50  0001 C CNN
+F 3 "" H 7000 1850 50  0001 C CNN
+	1    7000 1850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7000 1850 6750 1850
+Connection ~ 6750 1850
+Wire Wire Line
+	6750 1850 6750 2050
+Connection ~ 6050 1850
+Wire Wire Line
+	6050 1850 6050 2050
+Wire Wire Line
+	6050 1850 5600 1850
+Connection ~ 5600 1850
+Wire Wire Line
+	5600 1850 5600 2050
+$Comp
+L Connector:Conn_01x03_Female J2
+U 1 1 5F154F90
+P 2050 4300
+F 0 "J2" V 2150 4150 50  0000 C CNN
+F 1 "OUT1" V 2150 4350 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_KK-6410-03_03x2.54mm_Straight" H 2050 4300 50  0001 C CNN
+F 3 "~" H 2050 4300 50  0001 C CNN
+	1    2050 4300
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+12V #PWR07
+U 1 1 5F1561DB
+P 6750 1150
+F 0 "#PWR07" H 6750 1000 50  0001 C CNN
+F 1 "+12V" H 6765 1323 50  0000 C CNN
+F 2 "" H 6750 1150 50  0001 C CNN
+F 3 "" H 6750 1150 50  0001 C CNN
+	1    6750 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:-12V #PWR08
+U 1 1 5F1566D7
+P 6750 2550
+F 0 "#PWR08" H 6750 2650 50  0001 C CNN
+F 1 "-12V" H 6765 2723 50  0000 C CNN
+F 2 "" H 6750 2550 50  0001 C CNN
+F 3 "" H 6750 2550 50  0001 C CNN
+	1    6750 2550
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6750 2450 6750 2550
+Connection ~ 6750 2450
+Wire Wire Line
+	6750 1150 6750 1250
+Connection ~ 6750 1250
+Wire Wire Line
+	6050 1250 6750 1250
+Connection ~ 6050 1250
+Wire Wire Line
+	6050 1850 6750 1850
+Wire Wire Line
+	6050 2450 6750 2450
+Connection ~ 6050 2450
+$Comp
+L Connector:Conn_01x03_Female J3
+U 1 1 5F1694A3
+P 2450 4300
+F 0 "J3" V 2550 4150 50  0000 C CNN
+F 1 "OUT2" V 2550 4350 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_KK-6410-03_03x2.54mm_Straight" H 2450 4300 50  0001 C CNN
+F 3 "~" H 2450 4300 50  0001 C CNN
+	1    2450 4300
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:Conn_01x03_Female J4
+U 1 1 5F1698E5
+P 2850 4300
+F 0 "J4" V 2950 4150 50  0000 C CNN
+F 1 "OUT3" V 2950 4350 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_KK-6410-03_03x2.54mm_Straight" H 2850 4300 50  0001 C CNN
+F 3 "~" H 2850 4300 50  0001 C CNN
+	1    2850 4300
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:Conn_01x03_Female J5
+U 1 1 5F16A062
+P 3250 4300
+F 0 "J5" V 3350 4150 50  0000 C CNN
+F 1 "OUT4" V 3350 4350 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_KK-6410-03_03x2.54mm_Straight" H 3250 4300 50  0001 C CNN
+F 3 "~" H 3250 4300 50  0001 C CNN
+	1    3250 4300
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:Conn_01x03_Female J6
+U 1 1 5F16A663
+P 4000 4300
+F 0 "J6" V 4100 4150 50  0000 C CNN
+F 1 "OUT5" V 4100 4350 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_KK-6410-03_03x2.54mm_Straight" H 4000 4300 50  0001 C CNN
+F 3 "~" H 4000 4300 50  0001 C CNN
+	1    4000 4300
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:Conn_01x03_Female J7
+U 1 1 5F16AA31
+P 4400 4300
+F 0 "J7" V 4500 4150 50  0000 C CNN
+F 1 "OUT6" V 4500 4350 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_KK-6410-03_03x2.54mm_Straight" H 4400 4300 50  0001 C CNN
+F 3 "~" H 4400 4300 50  0001 C CNN
+	1    4400 4300
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:Conn_01x03_Female J8
+U 1 1 5F16AECD
+P 4800 4300
+F 0 "J8" V 4900 4150 50  0000 C CNN
+F 1 "OUT7" V 4900 4350 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_KK-6410-03_03x2.54mm_Straight" H 4800 4300 50  0001 C CNN
+F 3 "~" H 4800 4300 50  0001 C CNN
+	1    4800 4300
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:Conn_01x03_Female J9
+U 1 1 5F16B31F
+P 5200 4300
+F 0 "J9" V 5300 4150 50  0000 C CNN
+F 1 "OUT8" V 5300 4350 50  0000 C CNN
+F 2 "Connectors_Molex:Molex_KK-6410-03_03x2.54mm_Straight" H 5200 4300 50  0001 C CNN
+F 3 "~" H 5200 4300 50  0001 C CNN
+	1    5200 4300
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2050 4100 2050 3900
+Wire Wire Line
+	2050 3900 2450 3900
+Wire Wire Line
+	5200 3900 5200 4100
+Wire Wire Line
+	4800 4100 4800 3900
+Connection ~ 4800 3900
+Wire Wire Line
+	4800 3900 5200 3900
+Wire Wire Line
+	4400 4100 4400 3900
+Connection ~ 4400 3900
+Wire Wire Line
+	4400 3900 4800 3900
+Wire Wire Line
+	4000 4100 4000 3900
+Connection ~ 4000 3900
+Wire Wire Line
+	4000 3900 4400 3900
+Wire Wire Line
+	3250 4100 3250 3900
+Connection ~ 3250 3900
+Wire Wire Line
+	3250 3900 4000 3900
+Wire Wire Line
+	2850 4100 2850 3900
+Connection ~ 2850 3900
+Wire Wire Line
+	2850 3900 3250 3900
+Wire Wire Line
+	2450 4100 2450 3900
+Connection ~ 2450 3900
+Wire Wire Line
+	2450 3900 2850 3900
+$Comp
+L power:GND #PWR06
+U 1 1 5F172F98
+P 5900 3900
+F 0 "#PWR06" H 5900 3650 50  0001 C CNN
+F 1 "GND" H 5905 3727 50  0000 C CNN
+F 2 "" H 5900 3900 50  0001 C CNN
+F 3 "" H 5900 3900 50  0001 C CNN
+	1    5900 3900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5900 3900 5200 3900
+Connection ~ 5200 3900
+Wire Wire Line
+	1950 4100 1950 3750
+Wire Wire Line
+	5100 3750 5100 4100
+Wire Wire Line
+	4700 4100 4700 3750
+Connection ~ 4700 3750
+Wire Wire Line
+	4700 3750 5100 3750
+Wire Wire Line
+	4300 4100 4300 3750
+Connection ~ 4300 3750
+Wire Wire Line
+	4300 3750 4700 3750
+Wire Wire Line
+	3900 4100 3900 3750
+Connection ~ 3900 3750
+Wire Wire Line
+	3900 3750 4300 3750
+Wire Wire Line
+	3150 4100 3150 3750
+Connection ~ 3150 3750
+Wire Wire Line
+	3150 3750 3900 3750
+Wire Wire Line
+	2750 4100 2750 3750
+Connection ~ 2750 3750
+Wire Wire Line
+	2750 3750 3150 3750
+Wire Wire Line
+	2350 4100 2350 3750
+Wire Wire Line
+	1950 3750 2350 3750
+Connection ~ 2350 3750
+Wire Wire Line
+	2350 3750 2750 3750
+$Comp
+L power:+12V #PWR05
+U 1 1 5F186F87
+P 5900 3750
+F 0 "#PWR05" H 5900 3600 50  0001 C CNN
+F 1 "+12V" H 5915 3923 50  0000 C CNN
+F 2 "" H 5900 3750 50  0001 C CNN
+F 3 "" H 5900 3750 50  0001 C CNN
+	1    5900 3750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5900 3750 5100 3750
+Connection ~ 5100 3750
+Wire Wire Line
+	2150 4100 2150 3600
+Wire Wire Line
+	5300 3600 5300 4100
+Wire Wire Line
+	4900 4100 4900 3600
+Wire Wire Line
+	2150 3600 2550 3600
+Connection ~ 4900 3600
+Wire Wire Line
+	4900 3600 5300 3600
+Wire Wire Line
+	4500 4100 4500 3600
+Connection ~ 4500 3600
+Wire Wire Line
+	4500 3600 4900 3600
+Wire Wire Line
+	4100 4100 4100 3600
+Connection ~ 4100 3600
+Wire Wire Line
+	4100 3600 4500 3600
+Wire Wire Line
+	3350 4100 3350 3600
+Connection ~ 3350 3600
+Wire Wire Line
+	3350 3600 4100 3600
+Wire Wire Line
+	2950 4100 2950 3600
+Connection ~ 2950 3600
+Wire Wire Line
+	2950 3600 3350 3600
+Wire Wire Line
+	2550 4100 2550 3600
+Connection ~ 2550 3600
+Wire Wire Line
+	2550 3600 2950 3600
+$Comp
+L power:-12V #PWR04
+U 1 1 5F1A13AD
+P 5500 3600
+F 0 "#PWR04" H 5500 3700 50  0001 C CNN
+F 1 "-12V" H 5515 3773 50  0000 C CNN
+F 2 "" H 5500 3600 50  0001 C CNN
+F 3 "" H 5500 3600 50  0001 C CNN
+	1    5500 3600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5500 3600 5300 3600
+Connection ~ 5300 3600
+$Comp
+L Device:D_Bridge_-AA+ D1
+U 1 1 5F1BB89D
+P 2800 1900
+F 0 "D1" H 3000 2100 50  0000 L CNN
+F 1 "KBP210" H 3000 1750 50  0000 L CNN
+F 2 "Diode_THT:Diode_Bridge_Vishay_KBU" H 2800 1900 50  0001 C CNN
+F 3 "~" H 2800 1900 50  0001 C CNN
+	1    2800 1900
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC

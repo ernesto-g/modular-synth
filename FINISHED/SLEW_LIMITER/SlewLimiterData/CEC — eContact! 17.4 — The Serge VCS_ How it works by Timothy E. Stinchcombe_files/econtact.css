@@ -1,0 +1,80 @@
+@charset "UTF-8";
+
+/* Mobile Layout: 480px and below. */
+
+#top li.logotop a {
+	background-image: url(../image/eContact.svg);
+	background-size: 199px 36px;
+	background-repeat: no-repeat;
+	background-position: 20px 0px;
+	text-indent: -9000px;
+	display: block;
+	height: 36px;
+	text-decoration: none;
+	border-style: none;
+}
+#top li.logotop a:hover {
+	background-image: url(../image/eContact.svg);
+	background-size: 199px 36px;
+	background-repeat: no-repeat;
+	background-position: 20px 0px;
+}
+#subNav .subMenu a.currentissue {
+	margin-left: 0;
+}
+
+
+/* Tablet Layout: 481px to 768px. Inherits styles from: Mobile Layout. */
+
+/*@media only screen and (min-width: 481px) {*/
+/*max edit*/
+@media only screen and (min-width: 570px) {	
+
+#top li.logotop a {
+	background-image: url(../image/eContact.svg);
+	background-size: 253px 47px;
+	background-repeat: no-repeat;
+	background-position: 20px 0px;
+	text-indent: -9000px;
+	display: block;
+	height: 47px;
+	text-decoration: none;
+	border-style: none;
+}
+#top li.logotop a:hover {
+	background-image: url(../image/eContact.svg);
+	background-size: 253px 47px;
+	background-repeat: no-repeat;
+	background-position: 20px 0px;
+}	
+	
+	
+}
+
+
+
+/* Desktop Layout: 769px to a max of 1232px.  Inherits styles from: Mobile Layout and Tablet Layout. */
+
+@media only screen and (min-width: 769px) {
+	
+	
+#top li.logotop a {
+	background-image: url(../image/eContact.svg);
+	background-size: 326px 59px;
+	background-repeat: no-repeat;
+	background-position: 20px 0px;
+	text-indent: -9000px;
+	display: block;
+	height: 59px;
+	text-decoration: none;
+	border-style: none;
+}
+#top li.logotop a:hover {
+	background-image: url(../image/eContact.svg);
+	background-size: 326px 59px;
+	background-repeat: no-repeat;
+	background-position: 20px 0px;
+}
+
+
+}
