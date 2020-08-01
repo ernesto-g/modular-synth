@@ -26,9 +26,9 @@ Characteristics:
 
 Each module has the following structure:
 
-  - Firmware: Microcontroller code (Arduino, Bluepill,etc.)
-  - Manual: PDF and DOC file
-  - XXXXXXX_modular_PCB: Folder
-  --XXXXXXX_modular: Kickad project
-  --DIY: PDF files for schematic, PCB and front panel
-  - Front Panel Blueprint: Corel Draw files
+  * Firmware: Microcontroller code (Arduino, Bluepill,etc.)
+  * Manual: PDF and DOC file
+  * XXXXXXX_modular_PCB: Folder
+    * XXXXXXX_modular: Kickad project
+    * DIY: PDF files for schematic, PCB and front panel
+  * Front Panel Blueprint: Corel Draw files
