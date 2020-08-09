@@ -581,7 +581,8 @@ static int subStep(unsigned char indexTrack)
 {
     int ret=0;
     stepIndex[indexTrack]--;
-    if(stepIndex[indexTrack]==255)
+    //if(stepIndex[indexTrack]==255)
+    if(stepIndex[indexTrack]>=8) // stepIndex is unsigned. fix: Reset event set stepIndex to 255. When this happens It has to go back to the last step
     {
         stepIndex[indexTrack]=trackEndStep[indexTrack]-1;
         ret=1;
