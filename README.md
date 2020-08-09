@@ -15,11 +15,12 @@ Characteristics:
   - [Simple VCO](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/VCO): Triangle and square VCO. 1V/Ocv control voltage.
   - [Slew limiter](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/SLEW_LIMITER): Slew limiter and LFO
   - [IOs](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/IOS): Audio line and Eurorack level adapter.
+  - [Power Supply](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/POWER_SUPPLY): Power Supply Board for modules.
+  
 
 # Unfinished work
 
   - Industrial kick
-  - Power suppy
   - Case blueprints
   
 # Project structure

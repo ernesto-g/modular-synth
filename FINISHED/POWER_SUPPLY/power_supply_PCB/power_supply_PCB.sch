@@ -4,11 +4,11 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
-Title ""
-Date ""
+Title "Power Supply"
+Date "2020-08-09"
 Rev ""
-Comp ""
-Comment1 ""
+Comp "Ernesto Gigliotti"
+Comment1 "ernestogigliotti@gmail.com"
 Comment2 ""
 Comment3 ""
 Comment4 ""
@@ -586,12 +586,12 @@ Wire Wire Line
 	5500 3600 5300 3600
 Connection ~ 5300 3600
 $Comp
-L Device:D_Bridge_-AA+ D?
+L Device:D_Bridge_-AA+ D1
 U 1 1 5F1BB89D
 P 2800 1900
-F 0 "D?" H 3144 1946 50  0000 L CNN
-F 1 "D_Bridge_-AA+" H 3144 1855 50  0000 L CNN
-F 2 "" H 2800 1900 50  0001 C CNN
+F 0 "D1" H 3000 2100 50  0000 L CNN
+F 1 "KBP210" H 3000 1750 50  0000 L CNN
+F 2 "Diode_THT:Diode_Bridge_Vishay_KBU" H 2800 1900 50  0001 C CNN
 F 3 "~" H 2800 1900 50  0001 C CNN
 	1    2800 1900
 	1    0    0    -1  
