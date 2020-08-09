@@ -197,6 +197,13 @@ void track_playStep(int stepIndex, int trackIndex)
     {
         case 0:
         {
+            // if control is set to 0, dont trigger
+            if(currentNoteProbValue[trackIndex][stepIndex]<=0)
+            {
+                break;
+            }
+            //______________________________________
+            
             // Set velocity
             ios_setVelocityOut(127); // Max value
                         
