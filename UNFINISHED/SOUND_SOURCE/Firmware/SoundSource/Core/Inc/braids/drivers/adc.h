@@ -52,6 +52,7 @@ class Adc {
   uint16_t channel(uint8_t index) const
   {
 	  // 12 bit values
+
 	  /*
 	  if(index<ADC_CHANNELS)
 	  {
@@ -61,7 +62,7 @@ class Adc {
 		  return 0;
 		*/
 
-
+	  // FOR DEBUGGING
 	  if(index==0)
 	  {
 		  // param 1

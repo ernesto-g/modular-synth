@@ -2,7 +2,7 @@ MainLoop.cpp:50:13:void callbackRender(int)	0	static
 macro_oscillator.h:50:15:void braids::MacroOscillator::Init()	16	static
 uid.h:36:10:uint32_t stmlib::GetUniqueId(uint8_t)	0	static
 MainLoop.cpp:65:6:void MainLoop::init()	16	static
-MainLoop.cpp:155:6:void MainLoop::render(uint8_t*, uint32_t)	48	dynamic
-MainLoop.cpp:288:6:void MainLoop::adcStateMachine()	16	static
+MainLoop.cpp:169:6:void MainLoop::render(uint8_t*, uint32_t)	48	dynamic
+MainLoop.cpp:302:6:void MainLoop::adcStateMachine()	16	static
 MainLoop.cpp:107:6:void MainLoop::loop()	16	static
-MainLoop.cpp:310:1:cpp)	0	static
+MainLoop.cpp:314:1:cpp)	0	static

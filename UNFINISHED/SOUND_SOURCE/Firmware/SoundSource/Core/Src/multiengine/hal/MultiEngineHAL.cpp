@@ -127,7 +127,7 @@ void mehal_init(uint32_t* samplesBuffer,uint32_t samplesBufferSize,void (*fnCall
 	NVIC_EnableIRQ(DMA1_Channel5_IRQn);
 	// globally enable interrupts
 	__enable_irq();
-	//___________________________________________________________________
+	//________________________________________________________________
 
 	// enable the DMA channel
 	DMA1_Channel5->CCR |= DMA_CCR_EN;
@@ -151,17 +151,23 @@ void mehal_init(uint32_t* samplesBuffer,uint32_t samplesBufferSize,void (*fnCall
 
 
 	// PIN  B12 for debug
+	__HAL_RCC_GPIOB_CLK_ENABLE(); // Enable clck for portb
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
-	__HAL_RCC_GPIOB_CLK_ENABLE();
-
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET); //Configure GPIO pin Output Level
 	GPIO_InitStruct.Pin = GPIO_PIN_12;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+	// PIN  B13 for GATE INPUT
+	GPIO_InitTypeDef GPIO_InitStruct2 = {0};
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET); //Configure GPIO pin Output Level
+	GPIO_InitStruct2.Pin = GPIO_PIN_13;
+	GPIO_InitStruct2.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct2.Pull = GPIO_PULLUP;
+	GPIO_InitStruct2.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct2);
 
 
 	// Configure ADC1
@@ -226,6 +232,12 @@ void mehal_debugPinReset(void)
 {
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
 }
+
+uint8_t mehal_readGateInput(void)
+{
+	return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13);
+}
+
 
 void mehal_delay(uint32_t t)
 {

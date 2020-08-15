@@ -98,7 +98,7 @@ void MainLoop::init(void)
 		      adc_code_p1_max);
 	//________________________________
 
-	settings.SetValue(SETTING_OSCILLATOR_SHAPE, MACRO_OSC_SHAPE_PARTICLE_NOISE);
+	settings.SetValue(SETTING_OSCILLATOR_SHAPE, MACRO_OSC_SHAPE_PLUCKED);
 	//settings.SetValue(SETTING_SAMPLE_RATE,SAMPLE_RATE_48K);
 	settings.SetValue(SETTING_RESOLUTION,RESOLUTION_8_BIT);
 
@@ -106,6 +106,7 @@ void MainLoop::init(void)
 
 void MainLoop::loop(void)
 {
+	// Debug
 	static int debug=0;
 	static int debug2=0;
 	debug++;
@@ -117,21 +118,33 @@ void MainLoop::loop(void)
 		{
 			debug2=0;
 			mehal_toogleBoardLed();
-			trigger_flag=true;
-			flagTriggerInEvent=1;
 		}
 	}
-	//mehal_delay(500);
+	//_______
 
+	// Gate event
+	static uint8_t prevGate=1;
+	uint8_t currentGate = mehal_readGateInput();
+	if(currentGate==0 && prevGate==1)
+	{
+		trigger_flag=true;
+		flagTriggerInEvent=1;
+	}
+	prevGate = currentGate;
+	//____________
+
+	// Scale manager
     if (current_scale != settings.GetValue(SETTING_QUANTIZER_SCALE)) {
       current_scale = settings.GetValue(SETTING_QUANTIZER_SCALE);
       quantizer.Configure(scales[current_scale]);
     }
+    //______________
 
     // Read Analog values
     this->adcStateMachine();
     //____________________
 
+    // Render event
 	if(flagRender==1)
 	{
 		uint8_t* out;
@@ -150,6 +163,7 @@ void MainLoop::loop(void)
 		mehal_debugPinReset();
 		flagRender=0;
 	}
+	//______________
 }
 
 void MainLoop::render(uint8_t* out, uint32_t outSize)
@@ -288,16 +302,6 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 void MainLoop::adcStateMachine(void)
 {
 	static uint8_t chn=0;
-
-	/*
-	switch(chn)
-	{
-		case 0:adc.updateChannelValue(chn,mehal_readADC(1));break; // A1
-		case 1:adc.updateChannelValue(chn,mehal_readADC(2));break; // A2
-		case 2:adc.updateChannelValue(chn,mehal_readADC(3));break; // A3
-		case 3:adc.updateChannelValue(chn,mehal_readADC(4));break; // A4
-		case 4:adc.updateChannelValue(chn,mehal_readADC(5));break; // A5
-	}*/
 
 	adc.updateChannelValue(chn,mehal_readADC(chn));
 

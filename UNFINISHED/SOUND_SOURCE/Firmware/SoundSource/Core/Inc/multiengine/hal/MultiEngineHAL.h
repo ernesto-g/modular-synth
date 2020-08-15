@@ -19,6 +19,9 @@ uint16_t mehal_readADC( uint8_t channel);
 
 void mehal_debugPinSet(void);
 void mehal_debugPinReset(void);
+
+uint8_t mehal_readGateInput(void);
+
 }
 
 #endif /* INC_MULTIENGINE_HAL_MULTIENGINEHAL_H_ */
