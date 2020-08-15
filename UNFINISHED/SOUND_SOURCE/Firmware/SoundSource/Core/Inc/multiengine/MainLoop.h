@@ -16,6 +16,7 @@ class MainLoop
 	void init(void);
 	void loop(void);
 	void render(uint8_t* out, uint32_t outSize);
+	void adcStateMachine(void);
 };
 
 

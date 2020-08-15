@@ -1,9 +1,28 @@
 /*
- * MultiEngineHAL.cpp
- *
- *  Created on: Aug 13, 2020
- *      Author: ernesto
+MIT License
+
+Copyright (c) 2020 Ernesto Gigliotti
+Copyright (c) 2018 Marcel Meyer-Garcia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
  */
+
 
 extern "C" {
 #include "stm32f1xx_hal.h"
@@ -15,21 +34,17 @@ void DMA1_Channel5_IRQHandler()
 	// check if the "transfer complete event" has triggered the interrupt
 	if( DMA1->ISR & DMA_ISR_TCIF5 ){
 		// complete transfer
-		//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 		if(callbackDMA!=NULL)
 			callbackDMA(1);
 	}
 	else if(DMA1->ISR & DMA_ISR_HTIF5)
 	{
 		// half transfer
-		//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
 		if(callbackDMA!=NULL)
 			callbackDMA(0);
 	}
 	// clear the interrupt flag
 	DMA1->IFCR |= DMA_IFCR_CGIF5;
-
-
 }
 
 void mehal_init(uint32_t* samplesBuffer,uint32_t samplesBufferSize,void (*fnCallbackDMA)(int))
@@ -105,8 +120,7 @@ void mehal_init(uint32_t* samplesBuffer,uint32_t samplesBufferSize,void (*fnCall
 	// set peripheral size to 16bit
 	DMA1_Channel5->CCR |= DMA_CCR_PSIZE_0;
 
-	// probar configurar interrupt al final y a mitad de la transferencia
-	// enable transfer complete interrupt
+	// enable transfer complete interrupt and halft complete interrupt
 	DMA1_Channel5->CCR |= DMA_CCR_TCIE;
 	DMA1_Channel5->CCR |= DMA_CCR_HTIE;
 	// enable DMA1 interrupt
@@ -136,21 +150,68 @@ void mehal_init(uint32_t* samplesBuffer,uint32_t samplesBufferSize,void (*fnCall
 	TIM1->CR1 |= TIM_CR1_CEN;
 
 
-	// PIN para debug B12
+	// PIN  B12 for debug
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 
 	/*Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
 
-	/*Configure GPIO pin : PC13 */
 	GPIO_InitStruct.Pin = GPIO_PIN_12;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+
+	// Configure ADC1
+	// set ADC clock prescaler to 6 to get a 12MHZ ADC clock (14MHz is maximum)
+	RCC->CFGR &=~RCC_CFGR_ADCPRE_0;
+	RCC->CFGR |= RCC_CFGR_ADCPRE_1;
+	// enable ADC1 clock
+	RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;
+	// enable ADC1
+	ADC1->CR2 |= ADC_CR2_ADON;
+	// select software start as external event trigger
+	ADC1->CR2 |= (ADC_CR2_EXTSEL_2 | ADC_CR2_EXTSEL_1 | ADC_CR2_EXTSEL_0);
+	// set sample time to minimum (1.5µs)
+	ADC1->SMPR2 &=~(ADC_SMPR2_SMP0_2 | ADC_SMPR2_SMP0_1 | ADC_SMPR2_SMP0_0);
+	// set data alignment to right
+	ADC1->CR2 &=~ADC_CR2_ALIGN;
+	// wait 10µs before ADC calibration
+	//delay(10);
+	HAL_Delay(1); // 1ms
+	// start calibration of ADC1
+	ADC1->CR2 |= ADC_CR2_CAL;
+	// wait until calibration is finished
+	while( (ADC1->CR2) & ADC_CR2_CAL );
+
 }
+
+uint16_t mehal_readADC(uint8_t channel)
+{
+	channel = channel + 1; // A0 is not used (its PWM output)
+
+
+	// check if parameter is within range
+	if( (channel>17) || (channel<0) ) return 0xFFFF;
+	// set number of ADC channels to scan to 1 (so we read only 1 channel)
+	ADC1->SQR1 = 0;
+	// set the channel that we want to use
+	ADC1->SQR3 = (channel << ADC_SQR3_SQ1_Pos);
+	// clear the end of conversion flag
+	ADC1->SR &=~ADC_SR_EOC;
+	// start conversion
+	ADC1->CR2 |= ADC_CR2_ADON;
+	// trigger conversion
+	ADC1->CR2 |= ADC_CR2_SWSTART;
+	// wait until conversion is finished
+	while( !(ADC1->SR & ADC_SR_EOC) );
+	// read conversion result (12bit) from the data register and return it
+	return ((ADC1->DR) & 0b111111111111);
+}
+
+
 
 void mehal_toogleBoardLed(void)
 {

@@ -81,8 +81,8 @@ void MainLoop::init(void)
 	//ws.Init(GetUniqueId(1));
 
 	// calibracion
-	int32_t adc_code_c2=0;
-	int32_t adc_code_c4=3000;
+	int32_t adc_code_c2=1024;
+	int32_t adc_code_c4=2048;
 	int32_t adc_code_fm=0;
 	int32_t adc_code_p0_min=0;
 	int32_t adc_code_p0_max=4095;
@@ -98,7 +98,7 @@ void MainLoop::init(void)
 		      adc_code_p1_max);
 	//________________________________
 
-	settings.SetValue(SETTING_OSCILLATOR_SHAPE, MACRO_OSC_SHAPE_FLUTED);
+	settings.SetValue(SETTING_OSCILLATOR_SHAPE, MACRO_OSC_SHAPE_PARTICLE_NOISE);
 	//settings.SetValue(SETTING_SAMPLE_RATE,SAMPLE_RATE_48K);
 	settings.SetValue(SETTING_RESOLUTION,RESOLUTION_8_BIT);
 
@@ -113,7 +113,7 @@ void MainLoop::loop(void)
 	{
 		debug=0;
 		debug2++;
-		if(debug2>=20)
+		if(debug2>=10)
 		{
 			debug2=0;
 			mehal_toogleBoardLed();
@@ -128,6 +128,9 @@ void MainLoop::loop(void)
       quantizer.Configure(scales[current_scale]);
     }
 
+    // Read Analog values
+    this->adcStateMachine();
+    //____________________
 
 	if(flagRender==1)
 	{
@@ -161,7 +164,11 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 
 	  uint32_t ad_value = envelope.Render();
 
+
+	  // falta modulacion de shape
+	  // TODO
 	  osc.set_shape(settings.shape());
+	  //___________________________
 
 
 	  // Set timbre and color: CV + internal modulation.
@@ -184,11 +191,11 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 	  // Apply hysteresis to ADC reading to prevent a single bit error to move
 	  // the quantized pitch up and down the quantization boundary.
 	  int32_t pitch = quantizer.Process(
-	      settings.adc_to_pitch(adc.channel(2)),
+	      settings.adc_to_pitch(adc.channel(ADC_CHANNEL_PITCH)),
 	      (60 + settings.quantizer_root()) << 7);
 
 	  if (!settings.meta_modulation()) {
-	    pitch += settings.adc_to_fm(adc.channel(3));
+	    pitch += settings.adc_to_fm(adc.channel(ADC_CHANNEL_FM));
 	  }
 	  // Check if the pitch has changed to cause an auto-retrigger
 	  int32_t pitch_delta = pitch - previous_pitch;
@@ -200,8 +207,11 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 
 	  // ver que es
 	  //pitch += jitter_source.Render(settings.vco_drift());
-	  //pitch += internal_adc.value() >> 8;
+
+	  // Fine tune adjust
+	  pitch += adc.channel(ADC_CHANNEL_FINE_TUNE) >> 8; //pitch += internal_adc.value() >> 8;
 	  //___________
+
 	  pitch += ad_value * settings.GetValue(SETTING_AD_FM) >> 7;
 
 	  if (pitch > 16383) {
@@ -225,10 +235,8 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 
 
 	  int16_t audio_samples[outSize];
-	  uint8_t* sync_buffer = sync_samples;
-	  int16_t* render_buffer = audio_samples;
-	  //uint8_t* sync_buffer = sync_samples[render_block];
-	  //int16_t* render_buffer = audio_samples[render_block];
+	  uint8_t* sync_buffer = sync_samples; //uint8_t* sync_buffer = sync_samples[render_block];
+	  int16_t* render_buffer = audio_samples; //int16_t* render_buffer = audio_samples[render_block];
 
 	  if (settings.GetValue(SETTING_AD_VCA) != 0
 	    || settings.GetValue(SETTING_AD_TIMBRE) != 0
@@ -262,21 +270,42 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 	      }
 	      sample = sample * gain_lp >> 16;
 	      gain_lp += (gain - gain_lp) >> 4;
-	      int16_t warped = 0; //ws.Transform(sample);
+	      int16_t warped = 0; //ws.Transform(sample); // there is not enough RAM for this
 	      render_buffer[i] = Mix(sample, warped, signature);
 	    }
 
-	  // lo copio al buffer de reproduccion
+	  // Copy rendered buffer to DMA buffer (8bits)
 	  uint32_t i;
 	  for(i=0; i<outSize; i++)
 	  {
 		  out[i] = (uint8_t) (((uint16_t)(  -(render_buffer[i]) + 32768U )) >>8)  ;
-		  //out[i] = (uint8_t) render_buffer[i]  ;
 	  }
-	  //___________________________________
-
-	  static int k=0;
-	  k++;
-
+	  //___________________________________________
 
 }
+
+
+void MainLoop::adcStateMachine(void)
+{
+	static uint8_t chn=0;
+
+	/*
+	switch(chn)
+	{
+		case 0:adc.updateChannelValue(chn,mehal_readADC(1));break; // A1
+		case 1:adc.updateChannelValue(chn,mehal_readADC(2));break; // A2
+		case 2:adc.updateChannelValue(chn,mehal_readADC(3));break; // A3
+		case 3:adc.updateChannelValue(chn,mehal_readADC(4));break; // A4
+		case 4:adc.updateChannelValue(chn,mehal_readADC(5));break; // A5
+	}*/
+
+	adc.updateChannelValue(chn,mehal_readADC(chn));
+
+	chn++;
+	if(chn>=ADC_CHANNELS)
+	{
+		chn=0;
+	}
+
+}
+

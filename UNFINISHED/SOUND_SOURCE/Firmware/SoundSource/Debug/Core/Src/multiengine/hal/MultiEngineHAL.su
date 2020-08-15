@@ -1,6 +1,7 @@
-MultiEngineHAL.cpp:13:6:void DMA1_Channel5_IRQHandler()	8	static
-MultiEngineHAL.cpp:35:6:void mehal_init(uint32_t*, uint32_t, void (*)(int))	40	static,ignoring_inline_asm
-MultiEngineHAL.cpp:155:6:void mehal_toogleBoardLed()	0	static
-MultiEngineHAL.cpp:160:6:void mehal_debugPinSet()	0	static
-MultiEngineHAL.cpp:164:6:void mehal_debugPinReset()	0	static
-MultiEngineHAL.cpp:169:6:void mehal_delay(uint32_t)	0	static
+MultiEngineHAL.cpp:32:6:void DMA1_Channel5_IRQHandler()	8	static
+MultiEngineHAL.cpp:50:6:void mehal_init(uint32_t*, uint32_t, void (*)(int))	40	static,ignoring_inline_asm
+MultiEngineHAL.cpp:191:10:uint16_t mehal_readADC(uint8_t)	0	static
+MultiEngineHAL.cpp:216:6:void mehal_toogleBoardLed()	0	static
+MultiEngineHAL.cpp:221:6:void mehal_debugPinSet()	0	static
+MultiEngineHAL.cpp:225:6:void mehal_debugPinReset()	0	static
+MultiEngineHAL.cpp:230:6:void mehal_delay(uint32_t)	0	static

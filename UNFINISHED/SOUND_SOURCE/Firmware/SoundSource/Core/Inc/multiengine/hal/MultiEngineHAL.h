@@ -15,6 +15,8 @@ void mehal_init(uint32_t* samplesBuffer,uint32_t samplesBufferSize,void (*fnCall
 void mehal_toogleBoardLed(void);
 void mehal_delay(uint32_t t);
 
+uint16_t mehal_readADC( uint8_t channel);
+
 void mehal_debugPinSet(void);
 void mehal_debugPinReset(void);
 }

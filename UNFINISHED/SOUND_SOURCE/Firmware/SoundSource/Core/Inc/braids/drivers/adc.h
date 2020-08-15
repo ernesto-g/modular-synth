@@ -33,6 +33,14 @@
 
 namespace braids {
 
+#define ADC_CHANNELS	5
+
+#define ADC_CHANNEL_PARAM0		0
+#define ADC_CHANNEL_PARAM1		1
+#define ADC_CHANNEL_PITCH		2
+#define ADC_CHANNEL_FM			3
+#define ADC_CHANNEL_FINE_TUNE	4
+
 
 class Adc {
  public:
@@ -44,31 +52,56 @@ class Adc {
   uint16_t channel(uint8_t index) const
   {
 	  // 12 bit values
+	  /*
+	  if(index<ADC_CHANNELS)
+	  {
+		  return this->currentValues[index];
+	  }
+	  else
+		  return 0;
+		*/
+
+
 	  if(index==0)
 	  {
 		  // param 1
-		  return 2048;
+		  return this->currentValues[index];
 	  }
 	  else if(index==1)
 	  {
 		  // param 2
-		  return 2048;
+		  return 2048; //this->currentValues[index];
 	  }
 	  else if(index==2)
 	  {
 		  ///pitch
-		  return 500;
+		  return this->currentValues[index];
 	  }
 	  else if(index==3)
 	  {
 		  // FM
+		  return 0 ; //this->currentValues[index];
+	  }
+	  else if(index==4)
+	  {
+		  // Fine tune
 		  return 0;
 	  }
 	  else
 		  return 2048;
+
+  }
+
+  void updateChannelValue(uint8_t chn,uint16_t value)
+  {
+	  if(chn<ADC_CHANNELS)
+	  {
+		  this->currentValues[chn] = value;
+	  }
   }
  
  private:
+  	  uint16_t currentValues[ADC_CHANNELS]={2048,2048,3000,0};
 };
 
 }  // namespace braids
