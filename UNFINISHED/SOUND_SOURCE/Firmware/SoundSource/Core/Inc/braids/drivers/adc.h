@@ -53,40 +53,30 @@ class Adc {
   {
 	  // 12 bit values
 
-	  /*
-	  if(index<ADC_CHANNELS)
-	  {
-		  return this->currentValues[index];
-	  }
-	  else
-		  return 0;
-		*/
-
-	  // FOR DEBUGGING
 	  if(index==0)
 	  {
 		  // param 1
-		  return this->currentValues[index];
+		  return this->currentValues[1];
 	  }
 	  else if(index==1)
 	  {
 		  // param 2
-		  return 2048; //this->currentValues[index];
+		  return this->currentValues[0];
 	  }
 	  else if(index==2)
 	  {
 		  ///pitch
-		  return this->currentValues[index];
+		  return this->currentValues[4];
 	  }
 	  else if(index==3)
 	  {
 		  // FM
-		  return 0 ; //this->currentValues[index];
+		  return this->currentValues[3];
 	  }
 	  else if(index==4)
 	  {
 		  // Fine tune
-		  return 0;
+		  return this->currentValues[2];
 	  }
 	  else
 		  return 2048;

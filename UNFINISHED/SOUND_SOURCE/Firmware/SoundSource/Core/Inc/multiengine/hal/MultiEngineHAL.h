@@ -21,6 +21,13 @@ void mehal_debugPinSet(void);
 void mehal_debugPinReset(void);
 
 uint8_t mehal_readGateInput(void);
+uint8_t mehal_readEncoderSwitch(void);
+
+void mehal_sendDataTo595(uint8_t data);
+
+void mehal_setBank0Led(uint8_t state);
+void mehal_setBank1Led(uint8_t state);
+void mehal_setConfigLed(uint8_t state);
 
 }
 
