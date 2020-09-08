@@ -355,6 +355,15 @@ uint8_t mehal_readEncoderSwitch(void)
 {
 	return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14);
 }
+uint8_t mehal_readEncoderA(void)
+{
+	return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12);
+}
+uint8_t mehal_readEncoderB(void)
+{
+	return HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_13);
+}
+
 
 void mehal_sendDataTo595(uint8_t data)
 {

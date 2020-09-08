@@ -6,8 +6,10 @@ MultiEngineHAL.cpp:341:6:void mehal_debugPinSet()	0	static
 MultiEngineHAL.cpp:345:6:void mehal_debugPinReset()	0	static
 MultiEngineHAL.cpp:350:9:uint8_t mehal_readGateInput()	0	static
 MultiEngineHAL.cpp:354:9:uint8_t mehal_readEncoderSwitch()	0	static
-MultiEngineHAL.cpp:359:6:void mehal_sendDataTo595(uint8_t)	16	static
-MultiEngineHAL.cpp:389:6:void mehal_setConfigLed(uint8_t)	0	static
-MultiEngineHAL.cpp:396:6:void mehal_setBank1Led(uint8_t)	0	static
-MultiEngineHAL.cpp:404:6:void mehal_setBank0Led(uint8_t)	0	static
-MultiEngineHAL.cpp:413:6:void mehal_delay(uint32_t)	0	static
+MultiEngineHAL.cpp:358:9:uint8_t mehal_readEncoderA()	0	static
+MultiEngineHAL.cpp:362:9:uint8_t mehal_readEncoderB()	0	static
+MultiEngineHAL.cpp:368:6:void mehal_sendDataTo595(uint8_t)	16	static
+MultiEngineHAL.cpp:398:6:void mehal_setConfigLed(uint8_t)	0	static
+MultiEngineHAL.cpp:405:6:void mehal_setBank1Led(uint8_t)	0	static
+MultiEngineHAL.cpp:413:6:void mehal_setBank0Led(uint8_t)	0	static
+MultiEngineHAL.cpp:422:6:void mehal_delay(uint32_t)	0	static

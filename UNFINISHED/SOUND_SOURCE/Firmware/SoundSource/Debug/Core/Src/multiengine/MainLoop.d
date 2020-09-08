@@ -9,7 +9,8 @@ Core/Src/multiengine/MainLoop.o: ../Core/Src/multiengine/MainLoop.cpp \
  ../Core/Inc/braids/drivers/adc.h ../Core/Inc/braids/quantizer.h \
  ../Core/Inc/braids/signature_waveshaper.h \
  ../Core/Inc/stmlib/system/uid.h ../Core/Inc/braids/quantizer_scales.h \
- ../Core/Inc/multiengine/Display.h
+ ../Core/Inc/multiengine/Ui.h ../Core/Inc/multiengine/hal/Display.h \
+ ../Core/Inc/multiengine/hal/Encoder.h
 
 ../Core/Inc/multiengine/MainLoop.h:
 
@@ -45,4 +46,8 @@ Core/Src/multiengine/MainLoop.o: ../Core/Src/multiengine/MainLoop.cpp \
 
 ../Core/Inc/braids/quantizer_scales.h:
 
-../Core/Inc/multiengine/Display.h:
+../Core/Inc/multiengine/Ui.h:
+
+../Core/Inc/multiengine/hal/Display.h:
+
+../Core/Inc/multiengine/hal/Encoder.h:

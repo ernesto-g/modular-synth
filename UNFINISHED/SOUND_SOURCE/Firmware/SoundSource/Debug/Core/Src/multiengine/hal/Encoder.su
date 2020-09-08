@@ -1,0 +1,4 @@
+Encoder.cc:39:6:void Encoder::Init()	0	static
+Encoder.cc:45:6:void Encoder::sysTick()	0	static
+Encoder.cc:53:6:void Encoder::loop()	16	static
+Encoder.cc:106:6:bool Encoder::pressedLong()	0	static

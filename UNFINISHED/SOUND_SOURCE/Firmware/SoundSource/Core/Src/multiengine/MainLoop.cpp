@@ -17,7 +17,9 @@
 #include "stmlib/system/uid.h"
 #include "braids/quantizer_scales.h"
 
-#include "Display.h"
+#include "Ui.h"
+
+
 
 #define SAMPLES_BUFFER_SIZE		48
 static uint8_t samplesBuffer[SAMPLES_BUFFER_SIZE];
@@ -35,6 +37,8 @@ static bool trigger_detected_flag;
 static Quantizer quantizer;
 //static SignatureWaveshaper ws;
 static uint8_t current_scale = 0xff;
+static Ui userInterface;
+static uint8_t sysTickDivisor=0;
 
 const uint16_t bit_reduction_masks[] = {
     0xc000,
@@ -49,7 +53,8 @@ const uint16_t decimation_factors[] = { 24, 12, 6, 4, 3, 2, 1 };
 
 static uint32_t flagTriggerInEvent=0;
 
-static Display display;
+
+
 
 static void callbackRender(int flagEndHalf)
 {
@@ -82,6 +87,7 @@ void MainLoop::init(void)
 	quantizer.Init();
 	envelope.Init();
 	adc.Init();
+	userInterface.init();
 	//ws.Init(GetUniqueId(1));
 
 	// calibracion
@@ -102,18 +108,17 @@ void MainLoop::init(void)
 		      adc_code_p1_max);
 	//________________________________
 
-	settings.SetValue(SETTING_OSCILLATOR_SHAPE, MACRO_OSC_SHAPE_PLUCKED);
-	//settings.SetValue(SETTING_SAMPLE_RATE,SAMPLE_RATE_48K);
 	settings.SetValue(SETTING_RESOLUTION,RESOLUTION_8_BIT);
 
-
-	display.showBank(0);
 }
 
-uint8_t counterDebug='0';
+
 
 void MainLoop::loop(void)
 {
+
+	userInterface.loop();
+
 	// Debug
 	static int debug=0;
 	static int debug2=0;
@@ -126,28 +131,6 @@ void MainLoop::loop(void)
 		{
 			debug2=0;
 			mehal_toogleBoardLed();
-			//mehal_sendDataTo595(0x20);
-			display.showChar(counterDebug);
-			counterDebug++;
-			if(counterDebug>'9')
-			{
-				counterDebug='0';
-			}
-
-			if(counterDebug=='5')
-			{
-				display.showBank(0);
-				display.showConfig(0);
-			}
-			if(counterDebug=='8')
-			{
-				display.showBank(1);
-			}
-			if(counterDebug=='2')
-			{
-				display.showConfig(1);
-			}
-
 		}
 	}
 	//_______
@@ -191,6 +174,17 @@ void MainLoop::loop(void)
 		mehal_debugPinSet();
 		this->render(out,SAMPLES_BUFFER_SIZE/2);
 		mehal_debugPinReset();
+		//______________
+
+		// update UI
+		sysTickDivisor++;
+		if(sysTickDivisor>=4)
+		{
+			userInterface.sysTick(); // 1ms
+			sysTickDivisor=0;
+		}
+		//__________
+
 		flagRender=0;
 	}
 	//______________

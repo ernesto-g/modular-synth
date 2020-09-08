@@ -6,7 +6,7 @@
  */
 
 #include <stdint.h>
-#include "Display.h"
+#include "hal/Display.h"
 #include "hal/MultiEngineHAL.h"
 
 static const int8_t NUMBERS_TABLE[]={
@@ -80,6 +80,10 @@ void Display::showBank(uint8_t bankNumber) {
 		case 1:
 			mehal_setBank0Led(0);
 			mehal_setBank1Led(1);
+			break;
+		case 2:
+			mehal_setBank0Led(0);
+			mehal_setBank1Led(0);
 			break;
 	}
 }
