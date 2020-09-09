@@ -92,3 +92,50 @@ void Display::showConfig(uint8_t flagOnOff) {
 
 	mehal_setConfigLed(flagOnOff);
 }
+
+void Display::showValue(uint8_t maxValue,uint8_t value)
+{
+	switch(maxValue)
+	{
+		case 15:
+		{
+			// 0 to 15 scale
+			uint16_t val = value*9/15;
+			showChar('0'+val);
+			break;
+		}
+		case 1:
+		{
+			// on off scale
+			if(value==0)
+				showChar('0');
+			else
+				showChar('1');
+			break;
+		}
+		case 2:
+		{
+			// 3 values scale
+			if(value==0)
+				showChar('0');
+			else if(value==1)
+				showChar('1');
+			else
+				showChar('2');
+			break;
+		}
+		case 4:
+		case 11:
+		case 19:
+		{
+			if(value<=9)
+				showChar('0'+value);
+			else
+				showChar('A'+(value-10));
+
+			break;
+		}
+
+	}
+}
+

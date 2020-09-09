@@ -1,3 +1,4 @@
-Ui.cpp:92:6:void Ui::init()	16	static
-Ui.cpp:103:6:void Ui::sysTick()	0	static
-Ui.cpp:108:6:void Ui::loop()	16	static
+Encoder.h:65:18:int32_t Encoder::increment() const	0	static
+Ui.cpp:99:6:void Ui::init()	16	static
+Ui.cpp:110:6:void Ui::sysTick()	0	static
+Ui.cpp:115:6:void Ui::loop()	24	static

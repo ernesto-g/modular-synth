@@ -317,7 +317,7 @@ const SettingMetadata Settings::metadata_[] = {
   { 0, 1, "META", boolean_values },
   { 0, 3, "RANG", pitch_range_values },
   { 0, 4, "OCTV", octave_values },
-  { 0, 48, "QNTZ", quantization_values },
+  { 0, 19, "QNTZ", quantization_values }, //{ 0, 48, "QNTZ", quantization_values }, Limited to 20
   { 0, 1, "FLAT", boolean_values },
   { 0, 4, "DRFT", intensity_values },
   { 0, 4, "SIGN", intensity_values },

@@ -17,6 +17,7 @@ class Display
 	void showChar(int8_t c);
 	void showBank(uint8_t bankNumber);
 	void showConfig(uint8_t flagOnOff);
+	void showValue(uint8_t maxValue,uint8_t value);
 };
 
 

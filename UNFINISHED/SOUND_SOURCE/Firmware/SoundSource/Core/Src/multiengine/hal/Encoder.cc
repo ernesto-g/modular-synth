@@ -55,7 +55,7 @@ void Encoder::loop(void) {
 	{
 		case ENCODER_SW_STATE_IDLE:
 		{
-			if(pressed())
+			if(mehal_readEncoderSwitch()==0)
 			{
 				state = ENCODER_SW_STATE_WAIT_RELEASE;
 				swTimeout = 3000;
@@ -71,16 +71,17 @@ void Encoder::loop(void) {
 				state = ENCODER_SW_STATE_DEBOUNCE;
 				swTimeout = 100;
 			}
-			if(!pressed())
+			if(mehal_readEncoderSwitch()==1)
 			{
 				state = ENCODER_SW_STATE_DEBOUNCE;
 				swTimeout = 100;
+				flagShortPress=1;
 			}
 			break;
 		}
 		case ENCODER_SW_STATE_DEBOUNCE:
 		{
-			if(!pressed())
+			if(mehal_readEncoderSwitch()==1)
 			{
 				if(swTimeout==0)
 				{
@@ -111,4 +112,12 @@ bool Encoder::pressedLong(void)
 
 	return r;
 }
+
+bool Encoder::pressed(void) {
+    //return switch_state_ == 0x00;
+	bool r = flagShortPress;
+	flagShortPress=0;
+	return r;
+  }
+
 

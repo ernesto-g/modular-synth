@@ -16,8 +16,10 @@
 
 using namespace braids;
 
-#define UI_STATE_SELECT_OSCILLATOR	0
-#define UI_STATE_CONFIG				1
+#define UI_STATE_SELECT_OSCILLATOR			0
+#define UI_STATE_CONFIG_MENU				1
+#define UI_STATE_SET_VALUE					2
+
 
 struct S_OscData{
 	uint8_t osc;
@@ -72,20 +74,25 @@ static const OscData LIMITED_OSCILLATORS[]={
 		  {MACRO_OSC_SHAPE_PARTICLE_NOISE,1,'I'}
 			};
 
+struct S_ConfigItem{
+	int8_t symbol;
+	Setting option;
+};
+typedef struct S_ConfigItem ConfigItem;
 #define CONFIG_ITEMS_SYMBOLS_LEN	12
-static const int8_t CONFIG_ITEMS_SYMBOLS[CONFIG_ITEMS_SYMBOLS_LEN]={
-		'A', // Attack
-		'D', // Decay
-		'F', // FM Mod
-		'T', // Timbre Mod
-		'C', // Color Mod
-		'H', // VCA Mod
-		'E', // Meta on off
-		'G', // Trigger auto on off
-		'U', // Quantizer Off Tone Semitone
-		'O', // Root
-		'L', // Flat On OFF
-		'R', // Drift on off
+static const ConfigItem CONFIG_ITEMS[CONFIG_ITEMS_SYMBOLS_LEN]={
+		{'A',SETTING_AD_ATTACK}, // Attack
+		{'D',SETTING_AD_DECAY}, // Decay
+		{'F',SETTING_AD_FM}, // FM Mod
+		{'T',SETTING_AD_TIMBRE}, // Timbre Mod
+		{'C',SETTING_AD_COLOR}, // Color Mod
+		{'H',SETTING_AD_VCA}, // VCA Mod
+		{'E',SETTING_META_MODULATION}, // Meta on off
+		{'G',SETTING_TRIG_SOURCE}, // Trigger auto on off
+		{'U',SETTING_QUANTIZER_SCALE}, // Quantizer Off Tone Semitone
+		{'O',SETTING_QUANTIZER_ROOT}, // Root
+		{'L',SETTING_VCO_FLATTEN}, // Flat On OFF
+		{'R',SETTING_VCO_DRIFT} // Drift on off
 };
 
 
@@ -140,23 +147,25 @@ void Ui::loop(void) {
 
 			if(encoder.pressedLong())
 			{
-				state = UI_STATE_CONFIG;
+				state = UI_STATE_CONFIG_MENU;
 				display.showConfig(1);
 				display.showBank(2); // both off
 				configIndex=0;
 			}
 			break;
 		}
-		case UI_STATE_CONFIG:
+		case UI_STATE_CONFIG_MENU:
 		{
 			if(encoder.pressedLong())
 			{
 				state = UI_STATE_SELECT_OSCILLATOR;
 				display.showConfig(0);
 				display.showBank(LIMITED_OSCILLATORS[currentOscillator].bank);
+				display.showChar(LIMITED_OSCILLATORS[currentOscillator].symbol);
+				break;
 			}
 
-			display.showChar(CONFIG_ITEMS_SYMBOLS[configIndex]);
+			display.showChar(CONFIG_ITEMS[configIndex].symbol);
 
 			int32_t increment = encoder.increment();
 			if (increment != 0)
@@ -174,9 +183,32 @@ void Ui::loop(void) {
 
 			if(encoder.pressed())
 			{
-
+				// Enter to option
+				state = UI_STATE_SET_VALUE;
 			}
 
+			break;
+		}
+		case UI_STATE_SET_VALUE:
+		{
+			Setting setting_ = CONFIG_ITEMS[configIndex].option;
+			int16_t value = settings.GetValue(setting_);
+
+			int32_t increment = encoder.increment();
+			if (increment != 0)
+			{
+				value = settings.metadata(setting_).Clip(value + increment);
+				settings.SetValue(setting_, value);
+			}
+
+			// show value
+			display.showValue(settings.metadata(setting_).max_value,value);
+
+			if(encoder.pressed())
+			{
+				// Enter to option
+				state = UI_STATE_CONFIG_MENU;
+			}
 			break;
 		}
 	}

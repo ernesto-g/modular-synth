@@ -45,6 +45,7 @@ class Encoder {
   void Init();
   void sysTick();
   bool pressedLong(void);
+  bool pressed(void);
   void loop(void);
   
   inline bool released() const {
@@ -55,10 +56,7 @@ class Encoder {
     return switch_state_ == 0x80;
   }
 
-  inline bool pressed() const {
-    return switch_state_ == 0x00;
-  }
-  
+
   inline bool pressed_immediate() const {
     //return !GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_13);
 	  return !mehal_readEncoderSwitch();
@@ -84,6 +82,7 @@ class Encoder {
   uint32_t swTimeout;
   uint8_t state;
   bool flagLongPress;
+  bool flagShortPress;
   //DISALLOW_COPY_AND_ASSIGN(Encoder);
 };
 
