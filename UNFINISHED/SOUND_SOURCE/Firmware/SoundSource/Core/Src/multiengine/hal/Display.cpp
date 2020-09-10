@@ -85,6 +85,10 @@ void Display::showBank(uint8_t bankNumber) {
 			mehal_setBank0Led(0);
 			mehal_setBank1Led(0);
 			break;
+		case 3:
+			mehal_setBank0Led(1);
+			mehal_setBank1Led(1);
+			break;
 	}
 }
 

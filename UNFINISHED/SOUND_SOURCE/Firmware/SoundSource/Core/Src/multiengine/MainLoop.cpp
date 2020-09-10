@@ -87,7 +87,7 @@ void MainLoop::init(void)
 	quantizer.Init();
 	envelope.Init();
 	adc.Init();
-	userInterface.init();
+	userInterface.init(&adc);
 	//ws.Init(GetUniqueId(1));
 
 	// calibracion

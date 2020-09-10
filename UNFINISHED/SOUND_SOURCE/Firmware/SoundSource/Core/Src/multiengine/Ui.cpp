@@ -10,6 +10,7 @@
 #include "Ui.h"
 
 #include "braids/settings.h"
+#include "braids/drivers/adc.h"
 
 #include "hal/Display.h"
 #include "hal/Encoder.h"
@@ -19,6 +20,8 @@ using namespace braids;
 #define UI_STATE_SELECT_OSCILLATOR			0
 #define UI_STATE_CONFIG_MENU				1
 #define UI_STATE_SET_VALUE					2
+#define UI_STATE_CALIB						3
+#define UI_STATE_CALIB_STEP_2				4
 
 
 struct S_OscData{
@@ -96,11 +99,14 @@ static const ConfigItem CONFIG_ITEMS[CONFIG_ITEMS_SYMBOLS_LEN]={
 };
 
 
-void Ui::init(void) {
+void Ui::init(Adc* adc) {
 	display.init();
 	encoder.Init();
 	currentOscillator=0;
 	state = UI_STATE_SELECT_OSCILLATOR;
+	timeoutCalibCounter=0;
+	enterCalibCounter=0;
+	this->adc = adc;
 
 	display.showChar(LIMITED_OSCILLATORS[currentOscillator].symbol);
 	display.showBank(LIMITED_OSCILLATORS[currentOscillator].bank);
@@ -110,6 +116,16 @@ void Ui::init(void) {
 void Ui::sysTick(void)
 {
 	encoder.sysTick();
+
+	if(timeoutCalibCounter>0)
+	{
+		timeoutCalibCounter--;
+		if(timeoutCalibCounter==0)
+		{
+			enterCalibCounter=0;
+		}
+	}
+
 }
 
 void Ui::loop(void) {
@@ -151,6 +167,7 @@ void Ui::loop(void) {
 				display.showConfig(1);
 				display.showBank(2); // both off
 				configIndex=0;
+				enterCalibCounter=0;
 			}
 			break;
 		}
@@ -185,6 +202,21 @@ void Ui::loop(void) {
 			{
 				// Enter to option
 				state = UI_STATE_SET_VALUE;
+
+				// Calibration mode detection
+				if(enterCalibCounter==0)
+					timeoutCalibCounter=2000;
+
+				enterCalibCounter++;
+				if(enterCalibCounter>=4)
+				{
+					enterCalibCounter=0;
+					state = UI_STATE_CALIB;
+					display.showConfig(1);
+					display.showBank(3); // all leds ON
+					display.showChar('2');
+				}
+				//___________________________
 			}
 
 			break;
@@ -206,7 +238,63 @@ void Ui::loop(void) {
 
 			if(encoder.pressed())
 			{
-				// Enter to option
+				// go back to config menu
+				state = UI_STATE_CONFIG_MENU;
+			}
+			break;
+		}
+		case UI_STATE_CALIB:
+		{
+			if(encoder.pressedLong())
+			{
+				state = UI_STATE_CONFIG_MENU;
+				// go back to config menu
+				display.showConfig(1);
+				display.showBank(2); // all leds OFF
+				break;
+			}
+
+			if(encoder.pressed())
+			{
+				// save CV values and go to step 2
+				adc_code_c2 = adc->channel(ADC_CHANNEL_PITCH);
+				adc_code_p0_min = adc->channel(ADC_CHANNEL_PARAM0);
+				adc_code_p1_min = adc->channel(ADC_CHANNEL_PARAM1);
+
+				state = UI_STATE_CALIB_STEP_2;
+				display.showChar('4');
+			}
+			break;
+		}
+		case UI_STATE_CALIB_STEP_2:
+		{
+			if(encoder.pressedLong())
+			{
+				state = UI_STATE_CONFIG_MENU;
+				// go back to config menu
+				display.showConfig(1);
+				display.showBank(2); // all leds OFF
+				break;
+			}
+
+			if(encoder.pressed())
+			{
+				int32_t adc_code_c4 = adc->channel(ADC_CHANNEL_PITCH);
+				int32_t adc_code_p0_max = adc->channel(ADC_CHANNEL_PARAM0);
+				int32_t adc_code_p1_max = adc->channel(ADC_CHANNEL_PARAM1);
+				int32_t adc_code_fm=0; //adc->channel(ADC_CHANNEL_FINE_TUNE);
+
+				settings.Calibrate(adc_code_c2,
+						      adc_code_c4,
+						      adc_code_fm,
+						      adc_code_p0_min,
+						      adc_code_p0_max,
+						      adc_code_p1_min,
+						      adc_code_p1_max);
+
+				// TODO : Save in eeprom
+
+				// go back to config menu
 				state = UI_STATE_CONFIG_MENU;
 			}
 			break;

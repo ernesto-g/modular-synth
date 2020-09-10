@@ -46,7 +46,7 @@ static unsigned char saveKey(unsigned char note);
 
 
 // Tables
-static const PROGMEM unsigned int CHROM_TABLE[60] = {136,144,152,161,171,181,192,203,215,228,242,256,271,287,304,322,342,362,383,406,430,456,483,512,542,575,609,645,683,724,767,813,861,912,966,1024,1085,1149,1217,1290,1367,1448,1534,1625,1722,1824,1933,2048,2169,2298,2435,2580,2733,2896,3068,3250,3443,3648,3865,4095};
+static const PROGMEM unsigned int CHROM_TABLE[60] = {68,137,205,273,341,410,478,546,614,682,751,819,887,956,1024,1092,1160,1229,1297,1365,1433,1501,1570,1638,1706,1775,1843,1911,1979,2048,2116,2184,2252,2320,2389,2457,2525,2594,2662,2730,2798,2867,2935,3003,3071,3139,3208,3276,3344,3413,3481,3549,3617,3686,3754,3822,3890,3958,4027,4095};
 
 
 
@@ -212,7 +212,7 @@ static void midi_analizeMidiInfo(MidiInfo * pMidiInfo)
                     // SET Velocity output
                     ios_setVelocityOut(pMidiInfo->vel);
                     // SET CV voltage for note
-                    ios_setCVout(pgm_read_word(&(CHROM_TABLE[noteTableIndex])));                          
+                    ios_setCVout(pgm_read_word(&(CHROM_TABLE[noteTableIndex])));
                     // Set GATE 1
                     ios_setHi(IOS_GATE_1);
                   }
