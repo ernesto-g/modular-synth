@@ -1,0 +1,6 @@
+Memory.cpp:12:10:uint32_t Memory::readUInt32(uint16_t)	16	static
+Memory.cpp:18:9:uint8_t Memory::readUInt8(uint16_t)	16	static
+Memory.cpp:25:10:uint16_t Memory::readUInt16(uint16_t)	16	static
+Memory.cpp:32:9:uint8_t Memory::writeUInt32(uint16_t, uint32_t)	16	static
+Memory.cpp:37:9:uint8_t Memory::writeUInt8(uint16_t, uint8_t)	16	static
+Memory.cpp:42:9:uint8_t Memory::writeUInt16(uint16_t, uint16_t)	16	static

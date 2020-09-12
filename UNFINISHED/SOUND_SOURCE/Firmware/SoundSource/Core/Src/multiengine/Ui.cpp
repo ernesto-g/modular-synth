@@ -14,6 +14,8 @@
 
 #include "hal/Display.h"
 #include "hal/Encoder.h"
+#include "hal/Memory.h"
+
 
 using namespace braids;
 
@@ -30,7 +32,8 @@ struct S_OscData{
 	int8_t symbol;
 };
 typedef struct S_OscData OscData;
-static const OscData LIMITED_OSCILLATORS[]={
+#define OSCILLATOR_INDEX_LEN	39
+static const OscData LIMITED_OSCILLATORS[OSCILLATOR_INDEX_LEN]={
 		  {MACRO_OSC_SHAPE_CSAW,0,'0'},
 		  {MACRO_OSC_SHAPE_MORPH,0,'1'},
 		  {MACRO_OSC_SHAPE_SAW_SQUARE,0,'2'},
@@ -99,18 +102,29 @@ static const ConfigItem CONFIG_ITEMS[CONFIG_ITEMS_SYMBOLS_LEN]={
 };
 
 
-void Ui::init(Adc* adc) {
+void Ui::init(Adc* adc,Memory* memory) {
 	display.init();
 	encoder.Init();
-	currentOscillator=0;
 	state = UI_STATE_SELECT_OSCILLATOR;
 	timeoutCalibCounter=0;
 	enterCalibCounter=0;
 	this->adc = adc;
+	this->memory = memory;
 
+	// Load current oscillator from eeprom
+	currentOscillator=(int8_t)memory->readUInt8(Memory::ADDR_CURRENT_OSCILLATOR);
+	if(currentOscillator>=OSCILLATOR_INDEX_LEN)
+	{
+		currentOscillator=0;
+	}
 	display.showChar(LIMITED_OSCILLATORS[currentOscillator].symbol);
 	display.showBank(LIMITED_OSCILLATORS[currentOscillator].bank);
 	settings.SetValue(SETTING_OSCILLATOR_SHAPE, LIMITED_OSCILLATORS[currentOscillator].osc);
+	//________________________
+
+	// Load all settings from eeprom
+	loadAllSettings();
+
 }
 
 void Ui::sysTick(void)
@@ -126,6 +140,30 @@ void Ui::sysTick(void)
 		}
 	}
 
+}
+
+void Ui::saveAllSettings(void)
+{
+	uint16_t i;
+	for(i=0; i<CONFIG_ITEMS_SYMBOLS_LEN; i++)
+	{
+		Setting setting_ = CONFIG_ITEMS[i].option;
+		int16_t value = settings.GetValue(setting_);
+		this->memory->writeUInt16(Memory::ADDR_BASE_SETTINGS+(i*(sizeof(uint16_t))), (uint16_t)value);
+	}
+}
+void Ui::loadAllSettings(void)
+{
+	uint16_t i;
+	for(i=0; i<CONFIG_ITEMS_SYMBOLS_LEN; i++)
+	{
+		Setting setting_ = CONFIG_ITEMS[i].option;
+
+		int16_t valMem = (int16_t)this->memory->readUInt16(Memory::ADDR_BASE_SETTINGS+(i*(sizeof(uint16_t))));
+
+		int16_t value = settings.metadata(setting_).Clip(valMem);
+		settings.SetValue(setting_, value);
+	}
 }
 
 void Ui::loop(void) {
@@ -146,8 +184,8 @@ void Ui::loop(void) {
 					currentOscillator--;
 				}
 
-				if(currentOscillator>38)
-					currentOscillator=38;
+				if(currentOscillator>=OSCILLATOR_INDEX_LEN)
+					currentOscillator=(OSCILLATOR_INDEX_LEN-1);
 				if(currentOscillator<0)
 					currentOscillator=0;
 
@@ -159,6 +197,7 @@ void Ui::loop(void) {
 			{
 				settings.SetValue(SETTING_OSCILLATOR_SHAPE, LIMITED_OSCILLATORS[currentOscillator].osc);
 				display.showConfig(0);
+				memory->writeUInt8(Memory::ADDR_CURRENT_OSCILLATOR, (uint8_t)currentOscillator);
 			}
 
 			if(encoder.pressedLong())
@@ -179,6 +218,9 @@ void Ui::loop(void) {
 				display.showConfig(0);
 				display.showBank(LIMITED_OSCILLATORS[currentOscillator].bank);
 				display.showChar(LIMITED_OSCILLATORS[currentOscillator].symbol);
+
+				// save all settings in EEPROM
+				saveAllSettings();
 				break;
 			}
 
@@ -292,7 +334,14 @@ void Ui::loop(void) {
 						      adc_code_p1_min,
 						      adc_code_p1_max);
 
-				// TODO : Save in eeprom
+				// Save in eeprom
+				this->memory->writeUInt32(Memory::ADDR_ADC_CODE_C2, adc_code_c2);
+				this->memory->writeUInt32(Memory::ADDR_ADC_CODE_C4, adc_code_c4);
+				this->memory->writeUInt32(Memory::ADDR_ADC_CODE_FM, adc_code_fm);
+				this->memory->writeUInt32(Memory::ADDR_ADC_CODE_P0_MIN, adc_code_p0_min);
+				this->memory->writeUInt32(Memory::ADDR_ADC_CODE_P0_MAX, adc_code_p0_max);
+				this->memory->writeUInt32(Memory::ADDR_ADC_CODE_P1_MIN, adc_code_p1_min);
+				this->memory->writeUInt32(Memory::ADDR_ADC_CODE_P1_MAX, adc_code_p1_max);
 
 				// go back to config menu
 				state = UI_STATE_CONFIG_MENU;

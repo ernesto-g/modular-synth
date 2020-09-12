@@ -1,4 +1,6 @@
 Encoder.h:65:18:int32_t Encoder::increment() const	0	static
-Ui.cpp:102:6:void Ui::init(braids::Adc*)	16	static
-Ui.cpp:116:6:void Ui::sysTick()	8	static
-Ui.cpp:131:6:void Ui::loop()	24	static
+Ui.cpp:130:6:void Ui::sysTick()	8	static
+Ui.cpp:145:6:void Ui::saveAllSettings()	24	static
+Ui.cpp:155:6:void Ui::loadAllSettings()	32	static
+Ui.cpp:105:6:void Ui::init(braids::Adc*, Memory*)	24	static
+Ui.cpp:169:6:void Ui::loop()	24	static

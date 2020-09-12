@@ -32,6 +32,9 @@ void mehal_setBank0Led(uint8_t state);
 void mehal_setBank1Led(uint8_t state);
 void mehal_setConfigLed(uint8_t state);
 
+uint8_t mehal_i2cMemRead(uint16_t memAddress,uint8_t *pData, uint16_t size);
+uint8_t mehal_i2cMemWrite(uint16_t memAddress,uint8_t *pData, uint16_t size);
+
 }
 
 #endif /* INC_MULTIENGINE_HAL_MULTIENGINEHAL_H_ */

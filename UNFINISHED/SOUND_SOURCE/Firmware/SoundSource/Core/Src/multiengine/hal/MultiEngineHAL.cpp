@@ -28,7 +28,11 @@ extern "C" {
 #include "stm32f1xx_hal.h"
 #include "multiengine/hal/MultiEngineHAL.h"
 
+static I2C_HandleTypeDef hi2c1;
+#define MEM_ADDRESS	0xA0
+
 static void (*callbackDMA)(int) = NULL;
+static void MX_I2C1_Init(void);
 
 void DMA1_Channel5_IRQHandler()
 {
@@ -156,6 +160,7 @@ void mehal_init(uint32_t* samplesBuffer,uint32_t samplesBufferSize,void (*fnCall
 	__HAL_RCC_GPIOA_CLK_ENABLE(); // Enable clck for porta
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
+	/*
 	// PIN  B6 (I2C DATA)
 	GPIO_InitStruct.Pin = GPIO_PIN_6;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -163,12 +168,22 @@ void mehal_init(uint32_t* samplesBuffer,uint32_t samplesBufferSize,void (*fnCall
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+	//((GPIOB->IDR>>6)&0x01) // Read DATA
+	//GPIOB->CRL &= ~(GPIO_CRL_MODE6); // DATA:INPUT
+	//GPIOB->CRL |= (GPIO_CRL_MODE6_1); // DATA:OUTPUT
+	//GPIOB -> BSRR = (1 << 6); // DATA=1
+	//GPIOB -> BRR = (1 << 6); // DATA=0
+
 	// PIN  B7 (I2C CLK)
 	GPIO_InitStruct.Pin = GPIO_PIN_7;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+	//GPIOB -> BSRR = (1 << 7); // CLK=1
+	//GPIOB -> BRR = (1 << 7); // CLK=0
+	*/
 
 	// PIN  B11 GATE_IN
 	GPIO_InitStruct.Pin = GPIO_PIN_11;
@@ -306,6 +321,10 @@ void mehal_init(uint32_t* samplesBuffer,uint32_t samplesBufferSize,void (*fnCall
 	// wait until calibration is finished
 	while( (ADC1->CR2) & ADC_CR2_CAL );
 
+	// Configure I2C
+	MX_I2C1_Init();
+
+
 }
 
 uint16_t mehal_readADC(uint8_t channel)
@@ -331,6 +350,53 @@ uint16_t mehal_readADC(uint8_t channel)
 	return ((ADC1->DR) & 0b111111111111);
 }
 
+/**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.ClockSpeed = 400000;
+  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    //Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
+}
+
+
+uint8_t mehal_i2cMemRead(uint16_t memAddress,uint8_t *pData, uint16_t size)
+{
+	return (uint8_t)HAL_I2C_Mem_Read(&hi2c1, MEM_ADDRESS, memAddress, I2C_MEMADD_SIZE_8BIT, pData, size, 300);
+}
+
+uint8_t mehal_i2cMemWrite(uint16_t memAddress,uint8_t *pData, uint16_t size)
+{
+	uint8_t r;
+	r= (uint8_t)HAL_I2C_Mem_Write(&hi2c1, MEM_ADDRESS, memAddress, I2C_MEMADD_SIZE_8BIT, pData, size, 500);
+	mehal_delay(30);
+	return r;
+}
 
 
 void mehal_toogleBoardLed(void)
@@ -423,6 +489,7 @@ void mehal_delay(uint32_t t)
 {
 	  HAL_Delay(t);
 }
+
 
 
 

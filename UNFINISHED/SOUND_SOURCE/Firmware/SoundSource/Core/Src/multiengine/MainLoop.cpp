@@ -8,6 +8,7 @@
 
 #include "MainLoop.h"
 #include "hal/MultiEngineHAL.h"
+#include "hal/Memory.h"
 
 #include "braids/macro_oscillator.h"
 #include "braids/envelope.h"
@@ -39,6 +40,7 @@ static Quantizer quantizer;
 static uint8_t current_scale = 0xff;
 static Ui userInterface;
 static uint8_t sysTickDivisor=0;
+static Memory memory;
 
 const uint16_t bit_reduction_masks[] = {
     0xc000,
@@ -71,6 +73,14 @@ static void callbackRender(int flagEndHalf)
 	}
 }
 
+
+uint32_t debug_0=0;
+uint32_t debug_1=0;
+uint32_t debug_2=0;
+uint32_t debug_3=0;
+uint32_t debug_4=0;
+
+
 void MainLoop::init(void)
 {
 	int i;
@@ -87,25 +97,33 @@ void MainLoop::init(void)
 	quantizer.Init();
 	envelope.Init();
 	adc.Init();
-	userInterface.init(&adc);
+	userInterface.init(&adc,&memory);
 	//ws.Init(GetUniqueId(1));
 
-	// calibracion
-	int32_t adc_code_c2=1024;
-	int32_t adc_code_c4=2048;
-	int32_t adc_code_fm=0;
-	int32_t adc_code_p0_min=0;
-	int32_t adc_code_p0_max=4095;
-	int32_t adc_code_p1_min=0;
-	int32_t adc_code_p1_max=4095;
 
-	settings.Calibrate(adc_code_c2,
-		      adc_code_c4,
-		      adc_code_fm,
-		      adc_code_p0_min,
-		      adc_code_p0_max,
-		      adc_code_p1_min,
-		      adc_code_p1_max);
+	// calibracion
+	int32_t adc_code_c2=memory.readUInt32(Memory::ADDR_ADC_CODE_C2);
+	if(adc_code_c2<0 || adc_code_c2>4095) adc_code_c2=82;
+
+	int32_t adc_code_c4=memory.readUInt32(Memory::ADDR_ADC_CODE_C4);
+	if(adc_code_c4<0 || adc_code_c4>4095) adc_code_c4=671;
+
+	int32_t adc_code_fm=memory.readUInt32(Memory::ADDR_ADC_CODE_FM);
+	if(adc_code_fm<0 || adc_code_fm>4095) adc_code_fm=0;
+
+	int32_t adc_code_p0_min= memory.readUInt32(Memory::ADDR_ADC_CODE_P0_MIN);
+	if(adc_code_p0_min<0 || adc_code_p0_min>4095) adc_code_p0_min=0;
+
+	int32_t adc_code_p0_max= memory.readUInt32(Memory::ADDR_ADC_CODE_P0_MAX);
+	if(adc_code_p0_max<0 || adc_code_p0_max>4095) adc_code_p0_max=4095;
+
+	int32_t adc_code_p1_min= memory.readUInt32(Memory::ADDR_ADC_CODE_P1_MIN);
+	if(adc_code_p1_min<0 || adc_code_p1_min>4095) adc_code_p1_min=0;
+
+	int32_t adc_code_p1_max= memory.readUInt32(Memory::ADDR_ADC_CODE_P1_MAX);
+	if(adc_code_p1_max<0 || adc_code_p1_max>4095) adc_code_p1_max=4095;
+
+	settings.Calibrate(adc_code_c2,adc_code_c4,adc_code_fm,adc_code_p0_min,adc_code_p0_max,adc_code_p1_min,adc_code_p1_max);
 	//________________________________
 
 	settings.SetValue(SETTING_RESOLUTION,RESOLUTION_8_BIT);
