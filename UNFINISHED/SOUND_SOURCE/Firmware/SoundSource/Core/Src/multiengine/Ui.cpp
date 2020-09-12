@@ -32,7 +32,7 @@ struct S_OscData{
 	int8_t symbol;
 };
 typedef struct S_OscData OscData;
-#define OSCILLATOR_INDEX_LEN	39
+
 static const OscData LIMITED_OSCILLATORS[OSCILLATOR_INDEX_LEN]={
 		  {MACRO_OSC_SHAPE_CSAW,0,'0'},
 		  {MACRO_OSC_SHAPE_MORPH,0,'1'},
@@ -126,6 +126,37 @@ void Ui::init(Adc* adc,Memory* memory) {
 	loadAllSettings();
 
 }
+
+int16_t Ui::validateOscillatorIndex(int16_t index)
+{
+	if(index>=OSCILLATOR_INDEX_LEN)
+	{
+		return OSCILLATOR_INDEX_LEN-1;
+	}
+	if(index<0)
+		return 0;
+
+	return index;
+}
+
+void Ui::showMetaOscillator(int16_t index)
+{
+	uint8_t i = validateOscillatorIndex(index);
+
+	display.showChar(LIMITED_OSCILLATORS[i].symbol);
+	display.showBank(LIMITED_OSCILLATORS[i].bank);
+}
+
+MacroOscillatorShape Ui::getOscillatorShapeFromIndex(int16_t index)
+{
+	uint8_t i = validateOscillatorIndex(index);
+
+	MacroOscillatorShape osc_shape = static_cast<MacroOscillatorShape>(LIMITED_OSCILLATORS[i].osc);
+
+	return osc_shape;
+}
+
+
 
 void Ui::sysTick(void)
 {

@@ -221,9 +221,28 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 	  uint32_t ad_value = envelope.Render();
 
 
-	  // falta modulacion de shape
-	  // TODO
-	  osc.set_shape(settings.shape());
+	  // Shape modulation
+	  if (settings.meta_modulation())
+	  {
+	      int16_t shape = adc.channel(ADC_CHANNEL_FM)>>6;
+	      shape -= settings.data().fm_cv_offset;
+	      if (shape > previous_shape + 1 || shape < previous_shape - 1) {
+	        previous_shape = shape;
+	      } else {
+	        shape = previous_shape;
+	      }
+	      shape = (OSCILLATOR_INDEX_LEN* shape) >> 5;
+	      shape += settings.shape();
+
+	      shape = userInterface.validateOscillatorIndex(shape);
+
+	      osc.set_shape(userInterface.getOscillatorShapeFromIndex(shape));
+	      userInterface.showMetaOscillator(shape);
+	    }
+	  else
+	  {
+	      osc.set_shape(settings.shape());
+	  }
 	  //___________________________
 
 

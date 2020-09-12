@@ -13,6 +13,10 @@
 #include "hal/Encoder.h"
 #include "braids/drivers/adc.h"
 #include "hal/Memory.h"
+#include "braids/settings.h"
+
+
+#define OSCILLATOR_INDEX_LEN	39
 
 using namespace braids;
 
@@ -22,6 +26,10 @@ class Ui
 		void init(Adc* adc,Memory* memory);
 		void loop(void);
 		void sysTick(void);
+		int16_t validateOscillatorIndex(int16_t index);
+		void showMetaOscillator(int16_t index);
+		MacroOscillatorShape getOscillatorShapeFromIndex(int16_t index);
+
 	private:
 		Display display;
 		Encoder encoder;
