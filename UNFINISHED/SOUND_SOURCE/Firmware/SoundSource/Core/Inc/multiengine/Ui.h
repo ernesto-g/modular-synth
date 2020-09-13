@@ -29,7 +29,9 @@ class Ui
 		int16_t validateOscillatorIndex(int16_t index);
 		void showMetaOscillator(int16_t index);
 		MacroOscillatorShape getOscillatorShapeFromIndex(int16_t index);
-
+		void showUnCalibrated(void);
+		void showCalibrated(void);
+		void justFinishedRender(void);
 	private:
 		Display display;
 		Encoder encoder;
@@ -43,6 +45,10 @@ class Ui
 		int32_t adc_code_c2;
 		int32_t adc_code_p0_min;
 		int32_t adc_code_p1_min;
+		uint8_t flagUncal;
+		uint8_t fineTuneChanged;
+		uint8_t oscillatorChanged;
+		uint8_t flagJustFinishedRender;
 		void saveAllSettings(void);
 		void loadAllSettings(void);
 };

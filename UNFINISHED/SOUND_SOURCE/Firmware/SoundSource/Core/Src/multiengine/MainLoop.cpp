@@ -138,6 +138,7 @@ void MainLoop::loop(void)
 	userInterface.loop();
 
 	// Debug
+	/*
 	static int debug=0;
 	static int debug2=0;
 	debug++;
@@ -151,6 +152,7 @@ void MainLoop::loop(void)
 			mehal_toogleBoardLed();
 		}
 	}
+	*/
 	//_______
 
 	// Gate event
@@ -203,6 +205,8 @@ void MainLoop::loop(void)
 		}
 		//__________
 
+		userInterface.justFinishedRender(); // notify the UI the render has finished. Now there is time to update the display
+
 		flagRender=0;
 	}
 	//______________
@@ -237,7 +241,7 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 	      shape = userInterface.validateOscillatorIndex(shape);
 
 	      osc.set_shape(userInterface.getOscillatorShapeFromIndex(shape));
-	      userInterface.showMetaOscillator(shape);
+	      //userInterface.showMetaOscillator(shape);
 	    }
 	  else
 	  {
@@ -284,7 +288,23 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 	  //pitch += jitter_source.Render(settings.vco_drift());
 
 	  // Fine tune adjust
-	  pitch += adc.channel(ADC_CHANNEL_FINE_TUNE) >> 8; //pitch += internal_adc.value() >> 8;
+	  //pitch += adc.channel(ADC_CHANNEL_FINE_TUNE) >> 8; //pitch += internal_adc.value() >> 8;
+	  uint16_t fineTuneAdc = 4095 - adc.channel(ADC_CHANNEL_FINE_TUNE);
+	  if(fineTuneAdc>=(2048+256))
+	  {
+		  pitch += ((fineTuneAdc-(2048+256))*128)/(4095-(2048+256));
+		  userInterface.showUnCalibrated();
+	  }
+	  else if(fineTuneAdc<=(2048-256))
+	  {
+		  pitch += (fineTuneAdc*128)/(2048-256) - 128;
+		  userInterface.showUnCalibrated();
+	  }
+	  else
+	  {
+		  // no adjust. calibrated
+		  userInterface.showCalibrated();
+	  }
 	  //___________
 
 	  pitch += ad_value * settings.GetValue(SETTING_AD_FM) >> 7;

@@ -52,7 +52,7 @@ static const int8_t CHARS_TABLE[]={
 };
 
 void Display::init(void) {
-
+	this->dotState=0;
 }
 
 void Display::showChar(int8_t c) {
@@ -63,6 +63,8 @@ void Display::showChar(int8_t c) {
 		data = CHARS_TABLE[c - 'A'];
 	else
 		data = NUMBERS_TABLE[c - '0'];
+
+	data = data | (this->dotState<<7);
 
 	data = ~data;
 
@@ -142,4 +144,14 @@ void Display::showValue(uint8_t maxValue,uint8_t value)
 
 	}
 }
+
+void Display::showDigitDot(void)
+{
+	this->dotState=1;
+}
+void Display::hideDigitDot(void)
+{
+	this->dotState=0;
+}
+
 

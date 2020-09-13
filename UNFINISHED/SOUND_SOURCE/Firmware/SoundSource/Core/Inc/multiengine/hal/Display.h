@@ -18,6 +18,10 @@ class Display
 	void showBank(uint8_t bankNumber);
 	void showConfig(uint8_t flagOnOff);
 	void showValue(uint8_t maxValue,uint8_t value);
+	void showDigitDot(void);
+	void hideDigitDot(void);
+	private:
+	uint8_t dotState;
 };
 
 

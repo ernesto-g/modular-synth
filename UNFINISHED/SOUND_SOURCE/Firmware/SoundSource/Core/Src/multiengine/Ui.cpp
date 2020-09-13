@@ -111,6 +111,11 @@ void Ui::init(Adc* adc,Memory* memory) {
 	this->adc = adc;
 	this->memory = memory;
 
+	this->flagUncal=2;
+	this->fineTuneChanged=0;
+	this->oscillatorChanged=1;
+	this->flagJustFinishedRender=0;
+
 	// Load current oscillator from eeprom
 	currentOscillator=(int8_t)memory->readUInt8(Memory::ADDR_CURRENT_OSCILLATOR);
 	if(currentOscillator>=OSCILLATOR_INDEX_LEN)
@@ -156,7 +161,24 @@ MacroOscillatorShape Ui::getOscillatorShapeFromIndex(int16_t index)
 	return osc_shape;
 }
 
-
+void Ui::showUnCalibrated(void)
+{
+	display.showDigitDot();
+	if(flagUncal!=1)
+	{
+		flagUncal=1;
+		fineTuneChanged=1;
+	}
+}
+void Ui::showCalibrated(void)
+{
+	display.hideDigitDot();
+	if(flagUncal!=0)
+	{
+		flagUncal=0;
+		fineTuneChanged=1;
+	}
+}
 
 void Ui::sysTick(void)
 {
@@ -197,6 +219,11 @@ void Ui::loadAllSettings(void)
 	}
 }
 
+void Ui::justFinishedRender(void)
+{
+	flagJustFinishedRender=1;
+}
+
 void Ui::loop(void) {
 
 	encoder.loop();
@@ -205,6 +232,23 @@ void Ui::loop(void) {
 	{
 		case UI_STATE_SELECT_OSCILLATOR:
 		{
+			if(flagJustFinishedRender)
+			{
+				flagJustFinishedRender=0;
+				if(fineTuneChanged)
+				{
+					fineTuneChanged=0;
+					display.showChar(LIMITED_OSCILLATORS[currentOscillator].symbol); // update display to show DOT
+				}
+				if(oscillatorChanged)
+				{
+					oscillatorChanged=0;
+					display.showChar(LIMITED_OSCILLATORS[currentOscillator].symbol);
+					display.showBank(LIMITED_OSCILLATORS[currentOscillator].bank);
+					display.showConfig(1);
+				}
+			}
+
 			int32_t increment = encoder.increment();
 			if (increment != 0)
 			{
@@ -220,9 +264,7 @@ void Ui::loop(void) {
 				if(currentOscillator<0)
 					currentOscillator=0;
 
-				display.showChar(LIMITED_OSCILLATORS[currentOscillator].symbol);
-				display.showBank(LIMITED_OSCILLATORS[currentOscillator].bank);
-				display.showConfig(1);
+				oscillatorChanged=1; // to update display later
 			}
 			if(encoder.pressed())
 			{
@@ -239,6 +281,9 @@ void Ui::loop(void) {
 				configIndex=0;
 				enterCalibCounter=0;
 			}
+
+
+
 			break;
 		}
 		case UI_STATE_CONFIG_MENU:
