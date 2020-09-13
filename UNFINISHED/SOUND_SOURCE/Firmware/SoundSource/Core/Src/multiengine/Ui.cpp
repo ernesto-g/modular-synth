@@ -135,6 +135,7 @@ void Ui::init(Adc* adc,Memory* memory) {
 	display.showChar(LIMITED_OSCILLATORS[currentOscillator].symbol);
 	display.showBank(LIMITED_OSCILLATORS[currentOscillator].bank);
 	settings.SetValue(SETTING_OSCILLATOR_SHAPE, LIMITED_OSCILLATORS[currentOscillator].osc);
+	display.showConfig(0);
 	//________________________
 
 	// Load all settings from eeprom
@@ -255,7 +256,7 @@ void Ui::loop(void) {
 					oscillatorChanged=0;
 					display.showChar(LIMITED_OSCILLATORS[currentOscillator].symbol);
 					display.showBank(LIMITED_OSCILLATORS[currentOscillator].bank);
-					display.showConfig(1);
+
 				}
 			}
 
@@ -275,6 +276,7 @@ void Ui::loop(void) {
 					currentOscillator=0;
 
 				oscillatorChanged=1; // to update display later
+				display.showConfig(1);
 			}
 			if(encoder.pressed())
 			{
