@@ -16,7 +16,7 @@
 #include "braids/settings.h"
 
 
-#define OSCILLATOR_INDEX_LEN	39
+#define OSCILLATOR_INDEX_LEN	43
 
 using namespace braids;
 

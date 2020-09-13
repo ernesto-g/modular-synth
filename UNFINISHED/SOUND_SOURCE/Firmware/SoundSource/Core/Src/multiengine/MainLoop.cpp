@@ -17,6 +17,8 @@
 #include "braids/signature_waveshaper.h"
 #include "stmlib/system/uid.h"
 #include "braids/quantizer_scales.h"
+#include "braids/vco_jitter_source.h"
+
 
 #include "Ui.h"
 
@@ -41,6 +43,7 @@ static uint8_t current_scale = 0xff;
 static Ui userInterface;
 static uint8_t sysTickDivisor=0;
 static Memory memory;
+//static VcoJitterSource jitter_source;  // Not implemented. speed is not good enough
 
 const uint16_t bit_reduction_masks[] = {
     0xc000,
@@ -74,13 +77,6 @@ static void callbackRender(int flagEndHalf)
 }
 
 
-uint32_t debug_0=0;
-uint32_t debug_1=0;
-uint32_t debug_2=0;
-uint32_t debug_3=0;
-uint32_t debug_4=0;
-
-
 void MainLoop::init(void)
 {
 	int i;
@@ -96,6 +92,7 @@ void MainLoop::init(void)
 	osc.Init();
 	quantizer.Init();
 	envelope.Init();
+	//jitter_source.Init();
 	adc.Init();
 	userInterface.init(&adc,&memory);
 	//ws.Init(GetUniqueId(1));
@@ -134,26 +131,7 @@ void MainLoop::init(void)
 
 void MainLoop::loop(void)
 {
-
 	userInterface.loop();
-
-	// Debug
-	/*
-	static int debug=0;
-	static int debug2=0;
-	debug++;
-	if(debug>=60000)
-	{
-		debug=0;
-		debug2++;
-		if(debug2>=10)
-		{
-			debug2=0;
-			mehal_toogleBoardLed();
-		}
-	}
-	*/
-	//_______
 
 	// Gate event
 	static uint8_t prevGate=1;
@@ -284,7 +262,7 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 	  }
 	  previous_pitch = pitch;
 
-	  // ver que es
+	  // JITTER VCO DRIFT
 	  //pitch += jitter_source.Render(settings.vco_drift());
 
 	  // Fine tune adjust

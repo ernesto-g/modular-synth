@@ -2550,16 +2550,16 @@ DigitalOscillator::RenderFn DigitalOscillator::fn_table_[] = {
   &DigitalOscillator::RenderKick,
   &DigitalOscillator::RenderCymbal,
   &DigitalOscillator::RenderSnare,
-  NULL,//&DigitalOscillator::RenderWavetables,
+  NULL,//&DigitalOscillator::RenderWavetables, // 25K
   NULL,//&DigitalOscillator::RenderWaveMap,  // 45K
-  NULL,//&DigitalOscillator::RenderWaveLine,
-  NULL,//&DigitalOscillator::RenderWaveParaphonic,
-  NULL,//&DigitalOscillator::RenderFilteredNoise,
-  NULL,//&DigitalOscillator::RenderTwinPeaksNoise,
-  NULL,//&DigitalOscillator::RenderClockedNoise,
+  NULL,//&DigitalOscillator::RenderWaveLine, //26K
+  NULL,//&DigitalOscillator::RenderWaveParaphonic, // 26K
+  &DigitalOscillator::RenderFilteredNoise,
+  &DigitalOscillator::RenderTwinPeaksNoise,
+  &DigitalOscillator::RenderClockedNoise,
   &DigitalOscillator::RenderGranularCloud,
   &DigitalOscillator::RenderParticleNoise,
-  NULL,//&DigitalOscillator::RenderDigitalModulation,
+  &DigitalOscillator::RenderDigitalModulation, // nuevo
   // &DigitalOscillator::RenderYourAlgo,
 
   &DigitalOscillator::RenderQuestionMark
