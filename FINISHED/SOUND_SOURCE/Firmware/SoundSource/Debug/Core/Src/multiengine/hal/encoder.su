@@ -1,0 +1,2 @@
+encoder.cc:36:6:void braids::Encoder::Init()	0	static
+encoder.cc:41:6:void braids::Encoder::Debounce()	16	static

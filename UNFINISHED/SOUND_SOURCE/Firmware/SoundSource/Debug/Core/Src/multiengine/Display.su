@@ -1,4 +1,0 @@
-Display.cpp:54:6:void Display::init()	0	static
-Display.cpp:58:6:void Display::showChar(int8_t)	0	static
-Display.cpp:72:6:void Display::showBank(uint8_t)	8	static
-Display.cpp:87:6:void Display::showConfig(uint8_t)	0	static

@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name YAAJ_STM32)(type Legacy)(uri ${KIPRJMOD}/Bluepill/YAAJ_STM32.lib)(options "")(descr ""))
+)

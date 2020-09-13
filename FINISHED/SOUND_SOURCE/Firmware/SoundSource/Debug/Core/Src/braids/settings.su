@@ -1,0 +1,7 @@
+murmurhash3.h:6:10:uint32_t rotl32(uint32_t, int8_t)	0	static
+murmurhash3.h:11:10:uint32_t fmix32(uint32_t)	0	static
+murmurhash3.h:22:6:void MurmurHash3_x86_32(const void*, int, uint32_t, void*)	24	static
+settings.cc:105:6:void braids::Settings::Reset()	8	static
+settings.cc:116:6:void braids::Settings::CheckPaques()	8	static
+settings.cc:77:6:void braids::Settings::Init()	16	static
+settings.cc:110:6:void braids::Settings::Save()	0	static
