@@ -16,6 +16,7 @@ Characteristics:
   - [Slew limiter](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/SLEW_LIMITER): Slew limiter and LFO
   - [IOs](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/IOS): Audio line and Eurorack level adapter.
   - [Power Supply](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/POWER_SUPPLY): Power Supply Board for modules.
+  - [Sound Source](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/SOUND_SOURCE): Macro-oscillator based on Mutable Instruments Braids.
   
 
 # Unfinished work
