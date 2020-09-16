@@ -47,7 +47,6 @@ static MacroOscillator osc;
 static Envelope envelope;
 static Adc adc;
 static volatile bool trigger_flag;
-static bool trigger_detected_flag;
 static Quantizer quantizer;
 //static SignatureWaveshaper ws;
 static uint8_t current_scale = 0xff;
@@ -109,7 +108,7 @@ void MainLoop::init(void)
 	//ws.Init(GetUniqueId(1));
 
 
-	// calibracion
+	// calibration
 	int32_t adc_code_c2=memory.readUInt32(Memory::ADDR_ADC_CODE_C2);
 	if(adc_code_c2<0 || adc_code_c2>4095) adc_code_c2=82;
 
@@ -269,7 +268,7 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 	  int32_t pitch_delta = pitch - previous_pitch;
 	  if (settings.data().auto_trig &&
 	      (pitch_delta >= 0x40 || -pitch_delta >= 0x40)) {
-	    trigger_detected_flag = true;
+		  trigger_flag = true;
 	  }
 	  previous_pitch = pitch;
 
