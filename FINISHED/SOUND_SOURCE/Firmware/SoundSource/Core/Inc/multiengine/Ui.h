@@ -60,6 +60,7 @@ class Ui
 		uint8_t fineTuneChanged;
 		uint8_t oscillatorChanged;
 		uint8_t flagJustFinishedRender;
+		uint8_t flagPendingSetCurrentOscillator;
 		void saveAllSettings(void);
 		void loadAllSettings(void);
 };

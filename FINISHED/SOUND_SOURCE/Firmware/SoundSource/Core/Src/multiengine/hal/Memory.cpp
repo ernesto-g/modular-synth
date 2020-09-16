@@ -42,16 +42,21 @@ uint16_t Memory::readUInt16(uint16_t address)
 
 uint8_t Memory::writeUInt32(uint16_t address,uint32_t value)
 {
-	return mehal_i2cMemWrite(address, (uint8_t*)&value, sizeof(uint32_t));
+	return mehal_i2cMemWrite(address, (uint8_t*)&value, sizeof(uint32_t),1);
 }
 
 uint8_t Memory::writeUInt8(uint16_t address,uint8_t value)
 {
-	return mehal_i2cMemWrite(address, &value, sizeof(uint8_t));
+	return mehal_i2cMemWrite(address, &value, sizeof(uint8_t),1);
+}
+
+uint8_t Memory::writeUInt8NoWait(uint16_t address,uint8_t value)
+{
+	return mehal_i2cMemWrite(address, &value, sizeof(uint8_t),0);
 }
 
 uint8_t Memory::writeUInt16(uint16_t address,uint16_t value)
 {
-	return mehal_i2cMemWrite(address, (uint8_t*)&value, sizeof(uint16_t));
+	return mehal_i2cMemWrite(address, (uint8_t*)&value, sizeof(uint16_t),1);
 }
 

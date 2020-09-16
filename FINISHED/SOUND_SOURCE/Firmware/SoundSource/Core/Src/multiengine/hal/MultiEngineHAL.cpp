@@ -390,11 +390,12 @@ uint8_t mehal_i2cMemRead(uint16_t memAddress,uint8_t *pData, uint16_t size)
 	return (uint8_t)HAL_I2C_Mem_Read(&hi2c1, MEM_ADDRESS, memAddress, I2C_MEMADD_SIZE_8BIT, pData, size, 300);
 }
 
-uint8_t mehal_i2cMemWrite(uint16_t memAddress,uint8_t *pData, uint16_t size)
+uint8_t mehal_i2cMemWrite(uint16_t memAddress,uint8_t *pData, uint16_t size,uint8_t flagWait)
 {
 	uint8_t r;
 	r= (uint8_t)HAL_I2C_Mem_Write(&hi2c1, MEM_ADDRESS, memAddress, I2C_MEMADD_SIZE_8BIT, pData, size, 500);
-	mehal_delay(30);
+	if(flagWait)
+		mehal_delay(30);
 	return r;
 }
 

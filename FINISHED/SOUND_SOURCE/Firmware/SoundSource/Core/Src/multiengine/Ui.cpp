@@ -125,6 +125,7 @@ void Ui::init(Adc* adc,Memory* memory) {
 	this->fineTuneChanged=0;
 	this->oscillatorChanged=1;
 	this->flagJustFinishedRender=0;
+	this->flagPendingSetCurrentOscillator=0;
 
 	// Load current oscillator from eeprom
 	currentOscillator=(int8_t)memory->readUInt8(Memory::ADDR_CURRENT_OSCILLATOR);
@@ -258,6 +259,13 @@ void Ui::loop(void) {
 					display.showBank(LIMITED_OSCILLATORS[currentOscillator].bank);
 
 				}
+				if(flagPendingSetCurrentOscillator)
+				{
+					flagPendingSetCurrentOscillator=0;
+					settings.SetValue(SETTING_OSCILLATOR_SHAPE, LIMITED_OSCILLATORS[currentOscillator].osc);
+					display.showConfig(0);
+					memory->writeUInt8NoWait(Memory::ADDR_CURRENT_OSCILLATOR, (uint8_t)currentOscillator);
+				}
 			}
 
 			int32_t increment = encoder.increment();
@@ -280,9 +288,7 @@ void Ui::loop(void) {
 			}
 			if(encoder.pressed())
 			{
-				settings.SetValue(SETTING_OSCILLATOR_SHAPE, LIMITED_OSCILLATORS[currentOscillator].osc);
-				display.showConfig(0);
-				memory->writeUInt8(Memory::ADDR_CURRENT_OSCILLATOR, (uint8_t)currentOscillator);
+				flagPendingSetCurrentOscillator=1;
 			}
 
 			if(encoder.pressedLong())

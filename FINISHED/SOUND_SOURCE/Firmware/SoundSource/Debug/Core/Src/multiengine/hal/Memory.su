@@ -3,4 +3,5 @@ Memory.cpp:29:9:uint8_t Memory::readUInt8(uint16_t)	16	static
 Memory.cpp:36:10:uint16_t Memory::readUInt16(uint16_t)	16	static
 Memory.cpp:43:9:uint8_t Memory::writeUInt32(uint16_t, uint32_t)	16	static
 Memory.cpp:48:9:uint8_t Memory::writeUInt8(uint16_t, uint8_t)	16	static
-Memory.cpp:53:9:uint8_t Memory::writeUInt16(uint16_t, uint16_t)	16	static
+Memory.cpp:53:9:uint8_t Memory::writeUInt8NoWait(uint16_t, uint8_t)	16	static
+Memory.cpp:58:9:uint8_t Memory::writeUInt16(uint16_t, uint16_t)	16	static

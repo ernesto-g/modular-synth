@@ -27,6 +27,7 @@ class Memory{
 
 		uint8_t readUInt8(uint16_t address);
 		uint8_t writeUInt8(uint16_t address,uint8_t value);
+		uint8_t writeUInt8NoWait(uint16_t address,uint8_t value);
 
 		uint16_t readUInt16(uint16_t address);
 		uint8_t writeUInt16(uint16_t address,uint16_t value);
