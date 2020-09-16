@@ -1,2 +1,5 @@
-encoder.cc:36:6:void braids::Encoder::Init()	0	static
-encoder.cc:41:6:void braids::Encoder::Debounce()	16	static
+Encoder.cc:39:6:void Encoder::Init()	0	static
+Encoder.cc:45:6:void Encoder::sysTick()	0	static
+Encoder.cc:53:6:void Encoder::loop()	16	static
+Encoder.cc:107:6:bool Encoder::pressedLong()	0	static
+Encoder.cc:116:6:bool Encoder::pressed()	0	static
