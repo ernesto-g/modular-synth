@@ -11226,10 +11226,11 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 	  int32_t pitch_delta = pitch - previous_pitch;
  8004c00:	f9b0 1000 	ldrsh.w	r1, [r0]
  8004c04:	ebab 0101 	sub.w	r1, fp, r1
-	      (pitch_delta >= 0x40 || -pitch_delta >= 0x40)) {
- 8004c08:	313f      	adds	r1, #63	; 0x3f
+	      //(pitch_delta >= 0x40 || -pitch_delta >= 0x40)) {
+			(pitch_delta >= 0x70 || -pitch_delta >= 0x70)) {
+ 8004c08:	316f      	adds	r1, #111	; 0x6f
 	  if (settings.data().auto_trig &&
- 8004c0a:	297e      	cmp	r1, #126	; 0x7e
+ 8004c0a:	29de      	cmp	r1, #222	; 0xde
 		  trigger_flag = true;
  8004c0c:	bf84      	itt	hi
  8004c0e:	2101      	movhi	r1, #1

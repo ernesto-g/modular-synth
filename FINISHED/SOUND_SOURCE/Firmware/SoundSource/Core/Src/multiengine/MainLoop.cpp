@@ -267,7 +267,8 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 	  // Check if the pitch has changed to cause an auto-retrigger
 	  int32_t pitch_delta = pitch - previous_pitch;
 	  if (settings.data().auto_trig &&
-	      (pitch_delta >= 0x40 || -pitch_delta >= 0x40)) {
+	      //(pitch_delta >= 0x40 || -pitch_delta >= 0x40)) {
+			(pitch_delta >= 0x70 || -pitch_delta >= 0x70)) { // too much noise in this hardware
 		  trigger_flag = true;
 	  }
 	  previous_pitch = pitch;
