@@ -2207,9 +2207,9 @@ F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-8766-SEEPROM-AT24CS04
 	1    14300 1550
 	1    0    0    -1  
 $EndComp
-Text GLabel 8550 3000 0    50   Input ~ 0
-MEM_SDA
 Text GLabel 8550 3100 0    50   Input ~ 0
+MEM_SDA
+Text GLabel 8550 3000 0    50   Input ~ 0
 MEM_SCL
 Text GLabel 15300 1450 2    50   Input ~ 0
 MEM_SDA
