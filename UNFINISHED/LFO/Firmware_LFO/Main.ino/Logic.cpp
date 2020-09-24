@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "LFO.h"
 #include "Logic.h"
+#include "FrontPanel.h"
 
 #define POT_CHANGE_THRESHOLD  1
 
@@ -19,9 +20,9 @@ void log_loop(void)
   static int16_t pot1ValueOld = 0xFFFF;
   static int16_t pot2ValueOld = 0xFFFF;
   
-  int16_t pot0Value = analogRead(A0); 
-  int16_t pot1Value = analogRead(A1); 
-  int16_t pot2Value = analogRead(A2); 
+  int16_t pot0Value = fp_getPotValue(0); 
+  int16_t pot1Value = fp_getPotValue(1); 
+  int16_t pot2Value = fp_getPotValue(2); 
 
   switch(currentMode)
   {

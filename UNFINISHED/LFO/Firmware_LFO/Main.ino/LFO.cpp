@@ -12,10 +12,6 @@ struct DDS {
 };
 volatile struct DDS voices[NUM_VOICES];
 
-volatile uint8_t flagPendigPhaseUpdate[NUM_VOICES];
-volatile uint16_t valuePendigPhaseUpdate[NUM_VOICES];
-
-volatile uint8_t flagLfoRenderFinished=0;
 
 #define SET_LFO_0(X)  OCR2B=X
 #define SET_LFO_1(X)  OCR1A=X
@@ -69,7 +65,7 @@ void lfo_init(void)
   {              
     voices[i].accumulator=0;
     voices[i].position=0;
-    lfo_setWaveType(i,LFO_WAVE_TYPE_SINE);
+    lfo_setWaveType(i,LFO_WAVE_TYPE_SAW);
     lfo_setFrequencyFrom_ADC(i,768); 
   }
  
@@ -94,6 +90,12 @@ ISR(TIMER0_COMPA_vect) // Period: 104us. process: 25uS
         case LFO_WAVE_TYPE_EXP:
           PWMValue = pgm_read_byte_near(EXPTABLE + voices[i].position );
           break;
+        case LFO_WAVE_TYPE_SAW:
+          PWMValue = pgm_read_byte_near(SAWTABLE + voices[i].position );
+          break;
+        case LFO_WAVE_TYPE_RANDOM:
+          PWMValue = pgm_read_byte_near(RANDTABLE + voices[i].position );
+          break;
       }
       switch(i)
       {
@@ -108,30 +110,9 @@ ISR(TIMER0_COMPA_vect) // Period: 104us. process: 25uS
       voices[i].accumulator = voices[i].accumulator % ACCUMULATOR_STEPS;
       voices[i].position = voices[i].position % TABLE_SIZE;
       //________________
-
-      /*      
-      if(i==0)
-      {
-        // update phase for 1 and 2
-        if(flagPendigPhaseUpdate[1]==1)
-        {
-          flagPendigPhaseUpdate[1]=0;
-          voices[1].position = voices[0].position + valuePendigPhaseUpdate[1];
-          voices[1].accumulator = voices[0].accumulator;
-          voices[1].position = voices[1].position % TABLE_SIZE;
-        }
-        if(flagPendigPhaseUpdate[2]==1)
-        {
-          flagPendigPhaseUpdate[2]=0;
-          voices[2].position = voices[0].position + valuePendigPhaseUpdate[2];
-          voices[2].accumulator = voices[0].accumulator;
-          voices[2].position = voices[2].position % TABLE_SIZE;
-        }
-      }*/
   }
   
   //digitalWrite(1,LOW);  
-  flagLfoRenderFinished=1;
 }
 
 void lfo_setWaveType(unsigned char index,unsigned char type)
@@ -157,12 +138,6 @@ void lfo_setPhaseFromADC(unsigned char index,unsigned int adcValue)
         voices[index].position = voices[0].position + adcValue;
         voices[index].position = voices[index].position % TABLE_SIZE;
         sei();//allow interrupts
-        /*        
-        cli();//stop interrupts
-        flagPendigPhaseUpdate[index] = 1;
-        valuePendigPhaseUpdate[index] = adcValue;
-        sei();//allow interrupts
-        */
   }
 }
 
@@ -175,21 +150,5 @@ void lfo_reset(unsigned char index)
 
 void lfo_loop(void)
 {
-  if(flagLfoRenderFinished)
-  {
-    flagLfoRenderFinished=0;
-    /*
-    // update phase for 1 and 2
-    if(flagPendigPhaseUpdate[1]==1)
-    {
-      flagPendigPhaseUpdate[1]=0;
-      voices[1].position = voices[0].position + valuePendigPhaseUpdate[1];
-      //voices[1].accumulator = voices[0].accumulator;
-    }
-    if(flagPendigPhaseUpdate[2]==1)
-    {
-      flagPendigPhaseUpdate[2]=0;
-      voices[2].position = voices[0].position + valuePendigPhaseUpdate[2];
-    }*/
-  }
+
 }
