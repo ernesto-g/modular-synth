@@ -15,3 +15,4 @@ void lfo_setPhaseFromADC(unsigned char index,unsigned int adcValue);
 
 void lfo_reset(unsigned char index);
 void lfo_loop(void);
+uint8_t lfo_getWaveType(uint8_t index);

@@ -147,6 +147,10 @@ void lfo_reset(unsigned char index)
     voices[index].position=0;
 }
 
+uint8_t lfo_getWaveType(uint8_t index)
+{
+    return waveType[index];
+}
 
 void lfo_loop(void)
 {
