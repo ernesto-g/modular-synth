@@ -5,20 +5,30 @@
 #define NUM_VOICES  3
 #define ACCUMULATOR_STEPS 512
 
+#define SET_LFO_0(X)  OCR2B=X
+#define SET_LFO_1(X)  OCR1A=X
+#define SET_LFO_2(X)  OCR2A=X
+
+
 struct DDS {
     uint16_t increment;
     uint16_t position;
     uint16_t accumulator;
 };
-volatile struct DDS voices[NUM_VOICES];
 
-
-#define SET_LFO_0(X)  OCR2B=X
-#define SET_LFO_1(X)  OCR1A=X
-#define SET_LFO_2(X)  OCR2A=X
+struct SEQ {
+    uint16_t steps;
+    uint16_t currentStep;
+};
 
 // Private variables
-static volatile unsigned char waveType[NUM_VOICES]={LFO_WAVE_TYPE_SINE,LFO_WAVE_TYPE_SINE,LFO_WAVE_TYPE_SINE};
+static volatile struct DDS voices[NUM_VOICES];
+static volatile uint8_t waveType[NUM_VOICES]={LFO_WAVE_TYPE_SINE,LFO_WAVE_TYPE_SINE,LFO_WAVE_TYPE_SINE};
+static volatile uint8_t flagSamplesON; 
+static struct SEQ sequencerInfo[NUM_VOICES];
+
+// Private functions
+static void setOutputByStep(uint8_t i);
 
 
 void lfo_init(void)
@@ -58,16 +68,17 @@ void lfo_init(void)
   //___________________________________
 
 
-
-
   unsigned char i;
   for(i=0; i<NUM_VOICES; i++)
   {              
     voices[i].accumulator=0;
     voices[i].position=0;
+    sequencerInfo[i].currentStep=0;
+    sequencerInfo[i].steps=1;
     lfo_setWaveType(i,LFO_WAVE_TYPE_SAW);
     lfo_setFrequencyFrom_ADC(i,768); 
   }
+  flagSamplesON=1;
  
 }
 
@@ -77,41 +88,43 @@ ISR(TIMER0_COMPA_vect) // Period: 104us. process: 25uS
   unsigned short PWMValue;
   unsigned char i;
 
-  for(i=0; i<NUM_VOICES; i++)
-  {              
-      switch(waveType[i])
-      {
-        case LFO_WAVE_TYPE_SINE:
-          PWMValue = pgm_read_byte_near(SINETABLE + voices[i].position );
-          break;
-        case LFO_WAVE_TYPE_TRIANGLE:
-          PWMValue = pgm_read_byte_near(TRIANGLETABLE + voices[i].position );
-          break;
-        case LFO_WAVE_TYPE_EXP:
-          PWMValue = pgm_read_byte_near(EXPTABLE + voices[i].position );
-          break;
-        case LFO_WAVE_TYPE_SAW:
-          PWMValue = pgm_read_byte_near(SAWTABLE + voices[i].position );
-          break;
-        case LFO_WAVE_TYPE_RANDOM:
-          PWMValue = pgm_read_byte_near(RANDTABLE + voices[i].position );
-          break;
-      }
-      switch(i)
-      {
-        case 0: SET_LFO_0(PWMValue);break;  
-        case 1: SET_LFO_1(PWMValue);break;  
-        case 2: SET_LFO_2(PWMValue);break;  
-      }
-
-      // Calculate step
-      voices[i].accumulator += voices[i].increment;
-      voices[i].position += voices[i].accumulator / ACCUMULATOR_STEPS;
-      voices[i].accumulator = voices[i].accumulator % ACCUMULATOR_STEPS;
-      voices[i].position = voices[i].position % TABLE_SIZE;
-      //________________
-  }
+  if(flagSamplesON)
+  {
+    for(i=0; i<NUM_VOICES; i++)
+    {              
+        switch(waveType[i])
+        {
+          case LFO_WAVE_TYPE_SINE:
+            PWMValue = pgm_read_byte_near(SINETABLE + voices[i].position );
+            break;
+          case LFO_WAVE_TYPE_TRIANGLE:
+            PWMValue = pgm_read_byte_near(TRIANGLETABLE + voices[i].position );
+            break;
+          case LFO_WAVE_TYPE_EXP:
+            PWMValue = pgm_read_byte_near(EXPTABLE + voices[i].position );
+            break;
+          case LFO_WAVE_TYPE_SAW:
+            PWMValue = pgm_read_byte_near(SAWTABLE + voices[i].position );
+            break;
+          case LFO_WAVE_TYPE_RANDOM:
+            PWMValue = pgm_read_byte_near(RANDTABLE + voices[i].position );
+            break;
+        }
+        switch(i)
+        {
+          case 0: SET_LFO_0(PWMValue);break;  
+          case 1: SET_LFO_1(PWMValue);break;  
+          case 2: SET_LFO_2(PWMValue);break;  
+        }
   
+        // Calculate step
+        voices[i].accumulator += voices[i].increment;
+        voices[i].position += voices[i].accumulator / ACCUMULATOR_STEPS;
+        voices[i].accumulator = voices[i].accumulator % ACCUMULATOR_STEPS;
+        voices[i].position = voices[i].position % TABLE_SIZE;
+        //________________
+    }
+  } 
   //digitalWrite(1,LOW);  
 }
 
@@ -155,4 +168,82 @@ uint8_t lfo_getWaveType(uint8_t index)
 void lfo_loop(void)
 {
 
+}
+
+void lfo_setMode(uint8_t mode)
+{
+    if(mode==LFO_SEQ_MODE)
+    {
+      flagSamplesON=0;
+    }
+    else
+    {
+      flagSamplesON=1;
+    }
+}
+
+void lfo_clkEvent(void)
+{
+    uint8_t i;
+    
+    if(flagSamplesON)
+    {
+      // Sync lfo
+    }
+    else
+    {
+      // Sequencer mode
+      for(i=0; i<NUM_VOICES; i++)
+      {
+          // Increment step
+          sequencerInfo[i].currentStep++;
+          if(sequencerInfo[i].currentStep>=sequencerInfo[i].steps)
+          {
+              sequencerInfo[i].currentStep=0;  
+          }
+          
+          setOutputByStep(i);
+          //_______________
+      }
+    }
+}
+
+void lfo_setSteps(uint8_t lfoIndex, uint8_t steps)
+{
+    sequencerInfo[lfoIndex].steps = steps;
+}
+
+static void setOutputByStep(uint8_t i)
+{
+      uint16_t PWMValue;
+      uint16_t tableOffset;
+
+      tableOffset = (sequencerInfo[i].currentStep*(TABLE_SIZE-1))/(sequencerInfo[i].steps-1);
+      
+      
+      switch(waveType[i])
+      {
+        case LFO_WAVE_TYPE_SINE:
+          PWMValue = pgm_read_byte_near(SINETABLE + tableOffset);
+          break;
+        case LFO_WAVE_TYPE_TRIANGLE:
+          PWMValue = pgm_read_byte_near(TRIANGLETABLE + tableOffset);
+          break;
+        case LFO_WAVE_TYPE_EXP:
+          PWMValue = pgm_read_byte_near(EXPTABLE + tableOffset);
+          break;
+        case LFO_WAVE_TYPE_SAW:
+          PWMValue = pgm_read_byte_near(SAWTABLE + tableOffset);
+          break;
+        case LFO_WAVE_TYPE_RANDOM:
+          PWMValue = pgm_read_byte_near(RANDTABLE + tableOffset);
+          break;
+      }          
+      // Output sample
+      switch(i)
+      {
+        case 0: SET_LFO_0(PWMValue);break;
+        case 1: SET_LFO_1(PWMValue);break;
+        case 2: SET_LFO_2(PWMValue);break;
+      }
 }

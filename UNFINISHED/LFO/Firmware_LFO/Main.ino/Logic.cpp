@@ -2,6 +2,7 @@
 #include "LFO.h"
 #include "Logic.h"
 #include "FrontPanel.h"
+#include "Ios.h"
 
 #define LOGIC_STATE_SELECT_LFO      0
 #define LOGIC_STATE_SELECT_WAVEFORM 1
@@ -24,6 +25,7 @@ void log_loop(void)
   static int16_t pot0ValueOld = 0xFFFF;
   static int16_t pot1ValueOld = 0xFFFF;
   static int16_t pot2ValueOld = 0xFFFF;
+  static uint8_t clkOld=1;
 
   
   int16_t pot0Value = fp_getPotValue(0); 
@@ -83,6 +85,8 @@ void log_loop(void)
   {
       case MODE_FREE:
       {
+          lfo_setMode(LFO_FREE_MODE);
+        
           lfo_setFrequencyFrom_ADC(0,pot0Value);
           lfo_setFrequencyFrom_ADC(1,pot1Value);
           lfo_setFrequencyFrom_ADC(2,pot2Value);
@@ -90,7 +94,9 @@ void log_loop(void)
       }
       case MODE_PHASE:
       {
-          // same freq set by pot0
+          lfo_setMode(LFO_PHASE_MODE);
+
+          // same freq for all LFOs, set by pot0
           lfo_setFrequencyFrom_ADC(0,pot0Value);
           lfo_setFrequencyFrom_ADC(1,pot0Value);
           lfo_setFrequencyFrom_ADC(2,pot0Value);
@@ -99,14 +105,32 @@ void log_loop(void)
           if(pot1Value>(pot1ValueOld+POT_CHANGE_THRESHOLD) || pot1Value<(pot1ValueOld-POT_CHANGE_THRESHOLD) )
             lfo_setPhaseFromADC(1,pot1Value);
           
-          if(pot2Value!=pot2ValueOld)
-          lfo_setPhaseFromADC(2,pot2Value);
+          if(pot2Value>(pot2ValueOld+POT_CHANGE_THRESHOLD) || pot2Value<(pot2ValueOld-POT_CHANGE_THRESHOLD) )
+            lfo_setPhaseFromADC(2,pot2Value);
+          //_____________
           
           break;
       }
       case MODE_SEQUENCER:
       {
+          lfo_setMode(LFO_SEQ_MODE);
+
+          lfo_setSteps(0, pot0Value/32);
+          lfo_setSteps(1, pot1Value/32);
+          lfo_setSteps(2, pot2Value/32);
         
+          if(ios_getClkIn()==0)
+          {
+            if(clkOld==1)
+            {
+              clkOld=0;
+              lfo_clkEvent(); 
+            }
+          }
+          else
+          {
+            clkOld=1;                  
+          }
           break;
       }
   }

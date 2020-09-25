@@ -1,25 +1,20 @@
 #include "LFO.h"
 #include "Logic.h"
 #include "FrontPanel.h"
+#include "Ios.h"
 
-void setup() {
-
-  pinMode(1, OUTPUT); // BOC
-
+void setup() 
+{
+  ios_init();
   lfo_init();
   fp_init();
   log_init();
-
-
 }
 
 
-
-
-void loop() {
-
+void loop() 
+{
   lfo_loop();
   fp_loop();
-  log_loop();
-  
+  log_loop(); 
 }
