@@ -10,3 +10,4 @@ int fp_getEncoderSw(void);
 void fp_showLfoInLeds(uint8_t lfoIndex);
 void fp_showWaveTypeInLeds(uint8_t wave);
 uint8_t fp_getModeSwitch(void);
+void fp_showStepsInLeds(uint8_t steps);

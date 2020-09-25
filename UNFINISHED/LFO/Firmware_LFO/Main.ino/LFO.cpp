@@ -245,7 +245,7 @@ void lfo_clkEvent(void)
       if(sequencerInfo[0].currentStep==0)
       {
         ios_setBocOut(1);
-        timeoutBoc=10;
+        timeoutBoc=2;
       }
       //_______________
     }

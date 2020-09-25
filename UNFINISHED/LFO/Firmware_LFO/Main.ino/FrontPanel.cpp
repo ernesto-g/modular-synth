@@ -174,3 +174,31 @@ void fp_showWaveTypeInLeds(uint8_t wave)
         }        
     }
 }
+
+void fp_showStepsInLeds(uint8_t steps)
+{
+  if((steps&0x01)==0x01)
+      ios_setLed(LED0,1);
+  else
+      ios_setLed(LED0,0);
+  
+  if((steps&0x02)==0x02)
+      ios_setLed(LED1,1);
+  else
+      ios_setLed(LED1,0);
+
+  if((steps&0x04)==0x04)
+      ios_setLed(LED2,1);
+  else
+      ios_setLed(LED2,0);
+
+  if((steps&0x08)==0x08)
+      ios_setLed(LED3,1);
+  else
+      ios_setLed(LED3,0);
+
+  if((steps&0x10)==0x10)
+      ios_setLed(LED4,1);
+  else
+      ios_setLed(LED4,0);
+}

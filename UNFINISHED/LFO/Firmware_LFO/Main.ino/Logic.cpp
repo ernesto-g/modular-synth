@@ -12,10 +12,17 @@
 static uint8_t currentMode;
 static int8_t selectedLfo=0;
 static uint8_t state;
+static uint8_t flagDisableShowLfo;
+static volatile uint16_t timeoutEnableShowLfo=0;
 
 static void sysTick(void) // System interrupt ~1ms
 {
-  
+    if(timeoutEnableShowLfo>0)
+    {
+      timeoutEnableShowLfo--;
+      if(timeoutEnableShowLfo==0)
+        flagDisableShowLfo=0; // Show lfo selection in leds again
+    }
 }
 
 void log_init(void)
@@ -25,6 +32,7 @@ void log_init(void)
     fp_setEncoderPosition(selectedLfo);
 
     lfo_setSystickCallback(sysTick);
+    flagDisableShowLfo=0;
 }
 
 void log_loop(void)
@@ -52,8 +60,9 @@ void log_loop(void)
           selectedLfo=2;
           fp_setEncoderPosition(selectedLfo);
         }
-        
-        fp_showLfoInLeds(selectedLfo);
+
+        if(flagDisableShowLfo==0)
+          fp_showLfoInLeds(selectedLfo);
           
         if(fp_getEncoderSw())
         {
@@ -122,9 +131,34 @@ void log_loop(void)
       {
           lfo_setMode(LFO_SEQ_MODE);
 
-          lfo_setSteps(0, pot0Value/32);
-          lfo_setSteps(1, pot1Value/32);
-          lfo_setSteps(2, pot2Value/32);
+          int16_t pot0Value32 = pot0Value/32;
+          int16_t pot1Value32 = pot1Value/32;
+          int16_t pot2Value32 = pot2Value/32;
+          int16_t pot0Value32Old = pot0ValueOld/32;
+          int16_t pot1Value32Old = pot1ValueOld/32;
+          int16_t pot2Value32Old = pot2ValueOld/32;
+          
+          if(pot0Value32!=pot0Value32Old)
+          {
+            lfo_setSteps(0,pot0Value32);
+            flagDisableShowLfo=1;
+            timeoutEnableShowLfo=4000;
+            fp_showStepsInLeds(pot0Value32);
+          }
+          if(pot1Value32!=pot1Value32Old)
+          {
+            lfo_setSteps(1, pot1Value32);
+            flagDisableShowLfo=1;
+            timeoutEnableShowLfo=4000;
+            fp_showStepsInLeds(pot1Value32);            
+          }
+          if(pot2Value32!=pot2Value32Old)
+          {
+            lfo_setSteps(2, pot2Value32);
+            flagDisableShowLfo=1;
+            timeoutEnableShowLfo=4000;
+            fp_showStepsInLeds(pot2Value32);            
+          }
         
           if(ios_getClkIn()==0)
           {
