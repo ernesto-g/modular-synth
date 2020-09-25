@@ -24,3 +24,4 @@ uint8_t lfo_getWaveType(uint8_t index);
 void lfo_clkEvent(void);
 void lfo_setMode(uint8_t mode);
 void lfo_setSteps(uint8_t lfoIndex, uint8_t steps);
+void lfo_setSystickCallback(void (*callback)(void));

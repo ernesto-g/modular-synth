@@ -47,6 +47,11 @@ void ios_setLed(uint8_t index,uint8_t value)
   }
 }
 
+void ios_setBocOut(uint8_t value)
+{
+  digitalWrite(PIN_BOC1_D1,value);
+}
+
 
 uint8_t ios_getClkIn(void)
 {

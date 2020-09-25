@@ -13,11 +13,18 @@ static uint8_t currentMode;
 static int8_t selectedLfo=0;
 static uint8_t state;
 
+static void sysTick(void) // System interrupt ~1ms
+{
+  
+}
+
 void log_init(void)
 {
     state = LOGIC_STATE_SELECT_LFO;
     currentMode = MODE_PHASE;
     fp_setEncoderPosition(selectedLfo);
+
+    lfo_setSystickCallback(sysTick);
 }
 
 void log_loop(void)

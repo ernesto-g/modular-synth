@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Waveforms.h"
 #include "LFO.h"
+#include "Ios.h"
 
 #define NUM_VOICES  3
 #define ACCUMULATOR_STEPS 512
@@ -26,6 +27,11 @@ static volatile struct DDS voices[NUM_VOICES];
 static volatile uint8_t waveType[NUM_VOICES]={LFO_WAVE_TYPE_SINE,LFO_WAVE_TYPE_SINE,LFO_WAVE_TYPE_SINE};
 static volatile uint8_t flagSamplesON; 
 static struct SEQ sequencerInfo[NUM_VOICES];
+static volatile uint8_t timeoutBoc=0;
+static volatile uint8_t intDivider=0;
+static volatile void (*systickCallback)(void)=NULL;
+static volatile uint16_t lfo0lastPosition=0;
+
 
 // Private functions
 static void setOutputByStep(uint8_t i);
@@ -84,12 +90,20 @@ void lfo_init(void)
 
 ISR(TIMER0_COMPA_vect) // Period: 104us. process: 25uS
 {
-  //digitalWrite(1,HIGH);  
   unsigned short PWMValue;
   unsigned char i;
 
   if(flagSamplesON)
   {
+    if(voices[0].position<lfo0lastPosition)
+    {
+      // Begining Of cicle
+      ios_setBocOut(1);
+      timeoutBoc=2;
+    }
+    lfo0lastPosition = voices[0].position;
+
+
     for(i=0; i<NUM_VOICES; i++)
     {              
         switch(waveType[i])
@@ -116,7 +130,7 @@ ISR(TIMER0_COMPA_vect) // Period: 104us. process: 25uS
           case 1: SET_LFO_1(PWMValue);break;  
           case 2: SET_LFO_2(PWMValue);break;  
         }
-  
+
         // Calculate step
         voices[i].accumulator += voices[i].increment;
         voices[i].position += voices[i].accumulator / ACCUMULATOR_STEPS;
@@ -125,7 +139,25 @@ ISR(TIMER0_COMPA_vect) // Period: 104us. process: 25uS
         //________________
     }
   } 
-  //digitalWrite(1,LOW);  
+
+  intDivider++;
+  if(intDivider>=10)
+  {
+    //1ms
+    intDivider=0;
+
+    if(timeoutBoc>0)
+      timeoutBoc--;
+
+    if(systickCallback!=NULL)
+      systickCallback();  
+  }
+
+}
+
+void lfo_setSystickCallback(void (*callback)(void))
+{
+  systickCallback = callback;
 }
 
 void lfo_setWaveType(unsigned char index,unsigned char type)
@@ -167,7 +199,10 @@ uint8_t lfo_getWaveType(uint8_t index)
 
 void lfo_loop(void)
 {
-
+    if(timeoutBoc==0)
+    {
+      ios_setBocOut(0);
+    }
 }
 
 void lfo_setMode(uint8_t mode)
@@ -205,6 +240,14 @@ void lfo_clkEvent(void)
           setOutputByStep(i);
           //_______________
       }
+      
+      // Set BOC output
+      if(sequencerInfo[0].currentStep==0)
+      {
+        ios_setBocOut(1);
+        timeoutBoc=10;
+      }
+      //_______________
     }
 }
 
