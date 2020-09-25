@@ -3,6 +3,7 @@
 #include "Logic.h"
 #include "FrontPanel.h"
 #include "Ios.h"
+#include "Memory.h"
 
 #define LOGIC_STATE_SELECT_LFO      0
 #define LOGIC_STATE_SELECT_WAVEFORM 1
@@ -30,9 +31,15 @@ void log_init(void)
     state = LOGIC_STATE_SELECT_LFO;
     currentMode = MODE_PHASE;
     fp_setEncoderPosition(selectedLfo);
-
     lfo_setSystickCallback(sysTick);
     flagDisableShowLfo=0;
+
+    
+    lfo_setWaveType(0,mem_readWaveform(0));
+    lfo_setWaveType(1,mem_readWaveform(1));
+    lfo_setWaveType(2,mem_readWaveform(2));
+
+    randomSeed(fp_getPotValue(1));
 }
 
 void log_loop(void)
@@ -85,11 +92,14 @@ void log_loop(void)
 
         fp_showWaveTypeInLeds(wave);
         lfo_setWaveType(selectedLfo,wave);
+        
 
         if(fp_getEncoderSw())
         {
             state = LOGIC_STATE_SELECT_LFO;
             fp_setEncoderPosition(selectedLfo);
+            // save in eeprom
+            mem_writeWaveform(selectedLfo,wave);
         }        
         break;
       }
@@ -132,32 +142,36 @@ void log_loop(void)
           lfo_setMode(LFO_SEQ_MODE);
 
           int16_t pot0Value32 = pot0Value/32;
+          int16_t pot0Value32Old = pot0ValueOld/32;          
           int16_t pot1Value32 = pot1Value/32;
           int16_t pot2Value32 = pot2Value/32;
-          int16_t pot0Value32Old = pot0ValueOld/32;
           int16_t pot1Value32Old = pot1ValueOld/32;
           int16_t pot2Value32Old = pot2ValueOld/32;
-          
+
           if(pot0Value32!=pot0Value32Old)
           {
             lfo_setSteps(0,pot0Value32);
             flagDisableShowLfo=1;
             timeoutEnableShowLfo=4000;
-            fp_showStepsInLeds(pot0Value32);
-          }
+            if(state!=LOGIC_STATE_SELECT_WAVEFORM)
+              fp_showStepsInLeds(pot0Value32);
+          }            
+          
           if(pot1Value32!=pot1Value32Old)
           {
             lfo_setSteps(1, pot1Value32);
             flagDisableShowLfo=1;
             timeoutEnableShowLfo=4000;
-            fp_showStepsInLeds(pot1Value32);            
+            if(state!=LOGIC_STATE_SELECT_WAVEFORM)
+              fp_showStepsInLeds(pot1Value32);            
           }
           if(pot2Value32!=pot2Value32Old)
           {
             lfo_setSteps(2, pot2Value32);
             flagDisableShowLfo=1;
             timeoutEnableShowLfo=4000;
-            fp_showStepsInLeds(pot2Value32);            
+            if(state!=LOGIC_STATE_SELECT_WAVEFORM)
+              fp_showStepsInLeds(pot2Value32);            
           }
         
           if(ios_getClkIn()==0)

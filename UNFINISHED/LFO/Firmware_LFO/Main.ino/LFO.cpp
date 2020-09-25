@@ -160,8 +160,11 @@ void lfo_setSystickCallback(void (*callback)(void))
   systickCallback = callback;
 }
 
-void lfo_setWaveType(unsigned char index,unsigned char type)
+void lfo_setWaveType(uint8_t index,uint8_t type)
 {
+    if(type>4)
+      type=0;
+      
     waveType[index] = type;
 }
 
@@ -279,7 +282,7 @@ static void setOutputByStep(uint8_t i)
           PWMValue = pgm_read_byte_near(SAWTABLE + tableOffset);
           break;
         case LFO_WAVE_TYPE_RANDOM:
-          PWMValue = pgm_read_byte_near(RANDTABLE + tableOffset);
+          PWMValue =  random(0, 256); //pgm_read_byte_near(RANDTABLE + tableOffset);
           break;
       }          
       // Output sample

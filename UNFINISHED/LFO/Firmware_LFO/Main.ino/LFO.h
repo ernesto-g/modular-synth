@@ -13,7 +13,7 @@
 
 
 void lfo_init(void);
-void lfo_setWaveType(unsigned char index,unsigned char type);
+void lfo_setWaveType(uint8_t index,uint8_t type);
 void lfo_setFrequencyFrom_ADC(unsigned char index,unsigned int adcValue);
 void lfo_setPhaseFromADC(unsigned char index,unsigned int adcValue);
 
