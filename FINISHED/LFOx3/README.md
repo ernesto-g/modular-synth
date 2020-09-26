@@ -1,7 +1,7 @@
 # LFOx3: Low frequency oscillator
 LFOx3 is a 3 channel digital low frequency oscillator module.
 
-<!--![alt text](https://raw.githubusercontent.com/ernesto-g/modular-synth/master/FINISHED/SOUND_SOURCE/Pictures/5.png)-->
+![alt text](https://github.com/ernesto-g/modular-synth/blob/master/FINISHED/LFOx3/Pictures/1.jpg)
 
 Characteristics:
 
