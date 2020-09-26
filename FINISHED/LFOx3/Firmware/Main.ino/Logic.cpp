@@ -174,21 +174,30 @@ void log_loop(void)
               fp_showStepsInLeds(pot2Value32);            
           }
         
-          if(ios_getClkIn()==0)
-          {
-            if(clkOld==1)
-            {
-              clkOld=0;
-              lfo_clkEvent(); 
-            }
-          }
-          else
-          {
-            clkOld=1;                  
-          }
+         
           break;
       }
   }
+
+  // Clk Input detection
+    if(ios_getClkIn()==0)
+    {
+      if(clkOld==1)
+      {
+        clkOld=0;
+        switch(currentMode)
+        {
+            case MODE_FREE: lfo_clkEventForFreeMode();break;
+            case MODE_PHASE: lfo_clkEventForPhaseMode(pot1Value,pot2Value);break;
+            case MODE_SEQUENCER: lfo_clkEventForSequencerMode();break;
+        } 
+      }
+    }
+    else
+    {
+      clkOld=1;                  
+    }
+  //____________________
 
 
   pot0ValueOld = pot0Value;

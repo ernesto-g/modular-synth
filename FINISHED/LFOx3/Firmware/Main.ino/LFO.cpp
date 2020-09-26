@@ -220,38 +220,59 @@ void lfo_setMode(uint8_t mode)
     }
 }
 
-void lfo_clkEvent(void)
+void lfo_clkEventForFreeMode(void)
+{
+      // Sync lfo
+      cli();//stop interrupts
+      voices[0].position=0;
+      voices[0].accumulator=0;
+      voices[1].position=0;
+      voices[1].accumulator=0;
+      voices[2].position=0;
+      voices[2].accumulator=0;
+      sei();//allow interrupts
+}
+
+void lfo_clkEventForPhaseMode(uint16_t potValue1,uint16_t potValue2)
+{
+      cli();//stop interrupts
+      voices[0].position=0;
+      voices[0].accumulator=0;
+
+      voices[1].position = voices[0].position + potValue1;
+      voices[1].position = voices[1].position % TABLE_SIZE;
+
+      voices[2].position = voices[0].position + potValue2;
+      voices[2].position = voices[2].position % TABLE_SIZE;
+              
+      sei();//allow interrupts
+}
+
+void lfo_clkEventForSequencerMode(void)
 {
     uint8_t i;
     
-    if(flagSamplesON)
+    for(i=0; i<NUM_VOICES; i++)
     {
-      // Sync lfo
+        // Increment step
+        sequencerInfo[i].currentStep++;
+        if(sequencerInfo[i].currentStep>=sequencerInfo[i].steps)
+        {
+            sequencerInfo[i].currentStep=0;  
+        }
+        
+        setOutputByStep(i);
+        //_______________
     }
-    else
+    
+    // Set BOC output
+    if(sequencerInfo[0].currentStep==0)
     {
-      // Sequencer mode
-      for(i=0; i<NUM_VOICES; i++)
-      {
-          // Increment step
-          sequencerInfo[i].currentStep++;
-          if(sequencerInfo[i].currentStep>=sequencerInfo[i].steps)
-          {
-              sequencerInfo[i].currentStep=0;  
-          }
-          
-          setOutputByStep(i);
-          //_______________
-      }
-      
-      // Set BOC output
-      if(sequencerInfo[0].currentStep==0)
-      {
-        ios_setBocOut(1);
-        timeoutBoc=2;
-      }
-      //_______________
+      ios_setBocOut(1);
+      timeoutBoc=2;
     }
+    //_______________
+   
 }
 
 void lfo_setSteps(uint8_t lfoIndex, uint8_t steps)

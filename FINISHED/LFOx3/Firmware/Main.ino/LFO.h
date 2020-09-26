@@ -21,7 +21,10 @@ void lfo_reset(unsigned char index);
 void lfo_loop(void);
 uint8_t lfo_getWaveType(uint8_t index);
 
-void lfo_clkEvent(void);
+void lfo_clkEventForFreeMode(void);
+void lfo_clkEventForPhaseMode(uint16_t potValue1,uint16_t potValue2);
+void lfo_clkEventForSequencerMode(void);
+
 void lfo_setMode(uint8_t mode);
 void lfo_setSteps(uint8_t lfoIndex, uint8_t steps);
 void lfo_setSystickCallback(void (*callback)(void));
