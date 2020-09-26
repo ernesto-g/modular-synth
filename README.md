@@ -17,6 +17,7 @@ Characteristics:
   - [IOs](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/IOS): Audio line and Eurorack level adapter.
   - [Power Supply](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/POWER_SUPPLY): Power Supply Board for modules.
   - [Sound Source](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/SOUND_SOURCE): Macro-oscillator based on Mutable Instruments Braids.
+  - [LFOx3](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/LFOx3): Low frequency oscillator and sequencer.
   
 
 # Unfinished work
