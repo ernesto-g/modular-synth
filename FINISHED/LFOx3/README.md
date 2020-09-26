@@ -10,6 +10,7 @@ Characteristics:
   - 10Vpp audio signals
   - 5V control signals
   - 5 Waveforms
+  - 105sec to 150Hz range.
   - 10kHz, 8-bit audio processing
   - Beginning of cycle Output.
 
