@@ -13,7 +13,7 @@ Characteristics:
   - 10kHz, 8-bit audio processing
   - Beginning of cycle Output.
 
-Download [manual](https://github.com/ernesto-g/modular-synth/raw/master/FINISHED/SOUND_SOURCE/Manual/Sound%20Source%20Manual.pdf)   
+Download [manual](https://github.com/ernesto-g/modular-synth/raw/master/FINISHED/LFOx3/Manual/LFOx3%20Manual.pdf)   
  
 # Project structure
 
