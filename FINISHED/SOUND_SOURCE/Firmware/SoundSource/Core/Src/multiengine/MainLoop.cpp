@@ -134,6 +134,7 @@ void MainLoop::init(void)
 	//________________________________
 
 	settings.SetValue(SETTING_RESOLUTION,RESOLUTION_8_BIT);
+	settings.SetValue(SETTING_PITCH_OCTAVE,1); // C2: Lowest octave
 
 }
 
