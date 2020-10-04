@@ -1,0 +1,42 @@
+excitation.h:65:18:int32_t braids::Excitation::Process()	0	static
+svf.h:50:8:void braids::Svf::Init()	0	static
+svf.h:60:8:void braids::Svf::set_frequency(int16_t)	0	static
+svf.h:78:18:int32_t braids::Svf::Process(int32_t)	20	static
+random.h:44:26:static uint32_t stmlib::Random::GetWord()	0	static
+random.h:49:25:static int16_t stmlib::Random::GetSample()	8	static
+digital_oscillator.cc:2274:6:void braids::DigitalOscillator::RenderQuestionMark(const uint8_t*, int16_t*, size_t)	48	static
+digital_oscillator.cc:51:10:uint32_t braids::DigitalOscillator::ComputePhaseIncrement(int16_t)	8	static
+digital_oscillator.cc:1785:6:void braids::DigitalOscillator::RenderWaveParaphonic(const uint8_t*, int16_t*, size_t)	96	static
+digital_oscillator.cc:73:10:uint32_t braids::DigitalOscillator::ComputeDelay(int16_t)	8	static
+digital_oscillator.cc:94:6:void braids::DigitalOscillator::Render(const uint8_t*, int16_t*, size_t)	32	static
+digital_oscillator.cc:129:6:void braids::DigitalOscillator::RenderTripleRingMod(const uint8_t*, int16_t*, size_t)	64	static
+digital_oscillator.cc:164:6:void braids::DigitalOscillator::RenderSawSwarm(const uint8_t*, int16_t*, size_t)	120	static
+digital_oscillator.cc:244:6:void braids::DigitalOscillator::RenderComb(const uint8_t*, int16_t*, size_t)	48	static
+digital_oscillator.cc:285:6:void braids::DigitalOscillator::RenderToy(const uint8_t*, int16_t*, size_t)	48	static
+digital_oscillator.cc:328:6:void braids::DigitalOscillator::RenderDigitalFilter(const uint8_t*, int16_t*, size_t)	64	static
+digital_oscillator.cc:410:6:void braids::DigitalOscillator::RenderVosim(const uint8_t*, int16_t*, size_t)	48	static
+digital_oscillator.cc:469:6:void braids::DigitalOscillator::RenderVowel(const uint8_t*, int16_t*, size_t)	48	static
+digital_oscillator.cc:620:9:int16_t braids::DigitalOscillator::InterpolateFormantParameter(const int16_t (*)[5][5], int16_t, int16_t, uint8_t)	20	static
+digital_oscillator.cc:638:6:void braids::DigitalOscillator::RenderVowelFof(const uint8_t*, int16_t*, size_t)	144	static
+digital_oscillator.cc:720:6:void braids::DigitalOscillator::RenderFm(const uint8_t*, int16_t*, size_t)	48	static
+digital_oscillator.cc:750:6:void braids::DigitalOscillator::RenderFeedbackFm(const uint8_t*, int16_t*, size_t)	56	static
+digital_oscillator.cc:792:6:void braids::DigitalOscillator::RenderChaoticFeedbackFm(const uint8_t*, int16_t*, size_t)	48	static
+digital_oscillator.cc:858:6:void braids::DigitalOscillator::RenderStruckBell(const uint8_t*, int16_t*, size_t)	40	static
+digital_oscillator.cc:923:6:void braids::DigitalOscillator::RenderHarmonics(const uint8_t*, int16_t*, size_t)	152	static
+digital_oscillator.cc:990:6:void braids::DigitalOscillator::RenderStruckDrum(const uint8_t*, int16_t*, size_t)	88	static
+digital_oscillator.cc:1088:6:void braids::DigitalOscillator::RenderPlucked(const uint8_t*, int16_t*, size_t)	80	static
+digital_oscillator.cc:1197:6:void braids::DigitalOscillator::RenderBowed(const uint8_t*, int16_t*, size_t)	96	static
+digital_oscillator.cc:1304:6:void braids::DigitalOscillator::RenderBlown(const uint8_t*, int16_t*, size_t)	64	static
+digital_oscillator.cc:1368:6:void braids::DigitalOscillator::RenderFluted(const uint8_t*, int16_t*, size_t)	96	static
+digital_oscillator.cc:1526:6:void braids::DigitalOscillator::RenderWavetables(const uint8_t*, int16_t*, size_t)	36	static
+digital_oscillator.cc:1566:6:void braids::DigitalOscillator::RenderWaveMap(const uint8_t*, int16_t*, size_t)	64	static
+digital_oscillator.cc:1629:6:void braids::DigitalOscillator::RenderWaveLine(const uint8_t*, int16_t*, size_t)	96	static
+digital_oscillator.cc:1872:6:void braids::DigitalOscillator::RenderFilteredNoise(const uint8_t*, int16_t*, size_t)	56	static
+digital_oscillator.cc:1917:6:void braids::DigitalOscillator::RenderTwinPeaksNoise(const uint8_t*, int16_t*, size_t)	72	static
+digital_oscillator.cc:1985:6:void braids::DigitalOscillator::RenderClockedNoise(const uint8_t*, int16_t*, size_t)	32	static
+digital_oscillator.cc:2054:6:void braids::DigitalOscillator::RenderGranularCloud(const uint8_t*, int16_t*, size_t)	40	static
+digital_oscillator.cc:2119:6:void braids::DigitalOscillator::RenderParticleNoise(const uint8_t*, int16_t*, size_t)	88	static
+digital_oscillator.cc:2223:6:void braids::DigitalOscillator::RenderDigitalModulation(const uint8_t*, int16_t*, size_t)	64	static
+digital_oscillator.cc:2342:6:void braids::DigitalOscillator::RenderKick(const uint8_t*, int16_t*, size_t)	56	static
+digital_oscillator.cc:2407:6:void braids::DigitalOscillator::RenderSnare(const uint8_t*, int16_t*, size_t)	72	static
+digital_oscillator.cc:2490:6:void braids::DigitalOscillator::RenderCymbal(const uint8_t*, int16_t*, size_t)	72	static

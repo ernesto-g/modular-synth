@@ -1,0 +1,17 @@
+MultiEngineHAL.cpp:37:6:void DMA1_Channel5_IRQHandler()	8	static
+MultiEngineHAL.cpp:55:6:void mehal_init(uint32_t*, uint32_t, void (*)(int))	64	static,ignoring_inline_asm
+MultiEngineHAL.cpp:330:10:uint16_t mehal_readADC(uint8_t)	0	static
+MultiEngineHAL.cpp:388:9:uint8_t mehal_i2cMemRead(uint16_t, uint8_t*, uint16_t)	24	static
+MultiEngineHAL.cpp:393:9:uint8_t mehal_i2cMemWrite(uint16_t, uint8_t*, uint16_t, uint8_t)	32	static
+MultiEngineHAL.cpp:403:6:void mehal_toogleBoardLed()	0	static
+MultiEngineHAL.cpp:408:6:void mehal_debugPinSet()	0	static
+MultiEngineHAL.cpp:412:6:void mehal_debugPinReset()	0	static
+MultiEngineHAL.cpp:417:9:uint8_t mehal_readGateInput()	0	static
+MultiEngineHAL.cpp:421:9:uint8_t mehal_readEncoderSwitch()	0	static
+MultiEngineHAL.cpp:425:9:uint8_t mehal_readEncoderA()	0	static
+MultiEngineHAL.cpp:429:9:uint8_t mehal_readEncoderB()	0	static
+MultiEngineHAL.cpp:435:6:void mehal_sendDataTo595(uint8_t)	16	static
+MultiEngineHAL.cpp:465:6:void mehal_setConfigLed(uint8_t)	0	static
+MultiEngineHAL.cpp:472:6:void mehal_setBank1Led(uint8_t)	0	static
+MultiEngineHAL.cpp:480:6:void mehal_setBank0Led(uint8_t)	0	static
+MultiEngineHAL.cpp:489:6:void mehal_delay(uint32_t)	0	static

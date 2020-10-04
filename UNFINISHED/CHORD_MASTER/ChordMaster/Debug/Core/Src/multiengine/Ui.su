@@ -1,0 +1,14 @@
+Encoder.h:65:18:int32_t Encoder::increment() const	0	static
+Ui.cpp:134:10:uint16_t Ui::getParamFromCurrentChord()	0	static
+Ui.cpp:139:10:uint16_t Ui::getParamFromCurrentWaveTable()	0	static
+Ui.cpp:178:9:int16_t Ui::validateOscillatorIndex(int16_t)	0	static
+Ui.cpp:190:6:void Ui::showMetaOscillator(int16_t)	16	static
+Ui.cpp:198:22:braids::MacroOscillatorShape Ui::getOscillatorShapeFromIndex(int16_t)	0	static
+Ui.cpp:207:6:void Ui::showUnCalibrated()	8	static
+Ui.cpp:216:6:void Ui::showCalibrated()	8	static
+Ui.cpp:226:6:void Ui::sysTick()	8	static
+Ui.cpp:240:6:void Ui::saveAllSettings()	24	static
+Ui.cpp:250:6:void Ui::loadAllSettings()	32	static
+Ui.cpp:144:6:void Ui::init(braids::Adc*, Memory*)	24	static
+Ui.cpp:264:6:void Ui::justFinishedRender()	0	static
+Ui.cpp:269:6:void Ui::loop()	24	static
