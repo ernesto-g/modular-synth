@@ -46,6 +46,10 @@ class Ui
 		void justFinishedRender(void);
 		uint16_t getParamFromCurrentChord(void);
 		uint16_t getParamFromCurrentWaveTable(void);
+		int16_t getChord1(void);
+		int16_t getChord2(void);
+		int16_t getChord3(void);
+		void setChordByParams(uint16_t param0, uint16_t param1,uint16_t param2);
 	private:
 		Display display;
 		Encoder encoder;
@@ -64,7 +68,7 @@ class Ui
 		uint8_t oscillatorChanged;
 		uint8_t flagJustFinishedRender;
 		uint8_t flagPendingSetCurrentOscillator;
-		uint8_t currentChord;
+		int16_t currentChordIntervals[3];
 		void saveAllSettings(void);
 		void loadAllSettings(void);
 };

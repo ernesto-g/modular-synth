@@ -76,6 +76,12 @@ class MacroOscillator {
     parameter_[0] = parameter_1;
     parameter_[1] = parameter_2;
   }
+  inline void set_chords_parameters(
+      int16_t parameter_1,
+      int16_t parameter_2,
+	  int16_t parameter_3) {
+	  digital_oscillator_.set_chordIntervals(parameter_1,parameter_2,parameter_3);
+  }
   
   inline void Strike() {
     digital_oscillator_.Strike();

@@ -66,8 +66,8 @@ ChordMaster.bin \
 all: ChordMaster.elf secondary-outputs
 
 # Tool invocations
-ChordMaster.elf: $(OBJS) $(USER_OBJS) /home/ernesto/STM32CubeIDE/workspace_1.4.0/ChordMaster/STM32F103C8TX_FLASH.ld
-	arm-none-eabi-g++ -o "ChordMaster.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/home/ernesto/STM32CubeIDE/workspace_1.4.0/ChordMaster/STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ChordMaster.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+ChordMaster.elf: $(OBJS) $(USER_OBJS) /home/ernesto/Arduino/Modular_Secuencer_Firmware/UNFINISHED/CHORD_MASTER/ChordMaster/STM32F103C8TX_FLASH.ld
+	arm-none-eabi-g++ -o "ChordMaster.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/home/ernesto/Arduino/Modular_Secuencer_Firmware/UNFINISHED/CHORD_MASTER/ChordMaster/STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ChordMaster.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -284,6 +284,7 @@ class DigitalOscillator {
   inline void Strike() {
     strike_ = true;
   }
+  void set_chordIntervals(int16_t interval1,int16_t interval2,int16_t interval3 );
 
   void Render(const uint8_t* sync, int16_t* buffer, size_t size);
   
@@ -330,6 +331,8 @@ class DigitalOscillator {
   
   // void RenderYourAlgo(const uint8_t*, int16_t*, size_t);
   
+
+
   uint32_t ComputePhaseIncrement(int16_t midi_pitch);
   uint32_t ComputeDelay(int16_t midi_pitch);
   int16_t InterpolateFormantParameter(
@@ -359,6 +362,8 @@ class DigitalOscillator {
   Excitation pulse_[4];
   Svf svf_[3];
   
+  int16_t chordsIntervals[3];
+
   union {
     int16_t comb[kCombDelayLength];
     int16_t ks[1025 * 4];

@@ -145,6 +145,7 @@ void MainLoop::loop(void)
 	userInterface.loop();
 
 	// Gate event
+	/*
 	static uint8_t prevGate=1;
 	uint8_t currentGate = mehal_readGateInput();
 	if(currentGate==0 && prevGate==1)
@@ -153,6 +154,7 @@ void MainLoop::loop(void)
 		flagTriggerInEvent=1;
 	}
 	prevGate = currentGate;
+	*/
 	//____________
 
 	// Scale manager
@@ -193,6 +195,13 @@ void MainLoop::loop(void)
 			sysTickDivisor=0;
 		}
 		//__________
+
+		//recalculate current chord
+		int32_t value0 = settings.adc_to_parameter(0, adc.channel(ADC_CHANNEL_PARAM0));
+		int32_t value1 = settings.adc_to_parameter(1, adc.channel(ADC_CHANNEL_PARAM1));
+		int32_t value2 = settings.adc_to_fm(adc.channel(ADC_CHANNEL_FM));
+		userInterface.setChordByParams(value0, value1, value2);
+		//_________________________
 
 		userInterface.justFinishedRender(); // notify the UI the render has finished. Now there is time to update the display
 
@@ -256,7 +265,8 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 	    parameters[i] = value;
 	  }*/
 	  //osc.set_parameters(parameters[0], parameters[1]);
-	  osc.set_parameters(userInterface.getParamFromCurrentWaveTable(), userInterface.getParamFromCurrentChord());
+	  osc.set_parameters(userInterface.getParamFromCurrentWaveTable(),0);
+	  osc.set_chords_parameters(userInterface.getChord1(),userInterface.getChord2(),userInterface.getChord3());
 	  //_________________________________________________
 
 

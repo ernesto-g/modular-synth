@@ -1754,33 +1754,40 @@ static const uint16_t chords[17][3] = {
   { 4, 4 + 12 SEMI, 12 SEMI },			//det   oct(det)oct			: ??
 };
 */
-#define CHORD_TABLE_SIZE	19
+/*
+ * #define CHORD_TABLE_SIZE	19
 static const uint16_t chords[CHORD_TABLE_SIZE][3] = {
   { 4 SEMI, 7 SEMI, 12 SEMI },			//3M	5th		oct			: MAJOR
   { 4 SEMI, 7 SEMI, 11 SEMI },			//3M	5th		7M			: MAJOR7
   { 4 SEMI, 7 SEMI, 9 SEMI },			//3M	5th		6M			: 6
-  { 4 SEMI, 7 SEMI, 10 SEMI },			//3M	5th		7M			: 7 (dominant)
-
   { 4 SEMI, 6 SEMI, 10 SEMI },			//3M	5thdim	7M			: 7-5
-  { 4 SEMI, 8 SEMI, 10 SEMI },			//3M	5thaug	7M			: 7+5
-  { 4 SEMI, 8 SEMI, 12 SEMI },			//3M	5thaug	oct			: aug
-  { 4 SEMI, 8 SEMI, 10 SEMI },			//3M	5thaug	7M			: aug7
-
   { 3 SEMI, 7 SEMI, 12 SEMI }, 			//3m  	5ta  	oct 		: MINOR
   { 3 SEMI, 7 SEMI, 10 SEMI }, 			//3m  	5ta  	7m  		: MINOR7
   { 3 SEMI, 7 SEMI, 9 SEMI }, 			//3m  	5ta  	6	  		: MINOR6
   { 3 SEMI, 7 SEMI, 11 SEMI }, 			//3m  	5ta  	7M	  		: MINMAJ7
-
+  { 4 SEMI, 7 SEMI, 10 SEMI },			//3M	5th		7M			: 7 (dominant)
   { 3 SEMI, 6 SEMI, 12 SEMI }, 			//3m  	5thdim 	oct 		: dim
   { 3 SEMI, 6 SEMI, 9 SEMI }, 			//3m  	5thdim 	6 			: dim7
   { 3 SEMI, 6 SEMI, 10 SEMI }, 			//3m  	5thdim 	7m 			: half-dim
+  { 2 SEMI, 7 SEMI, 12 SEMI }, 			//2M  	5th  	oct 		: SUS2
+  { 5 SEMI, 7 SEMI, 12 SEMI },			//4ta	5th		oct			: SUS4
+  { 4 SEMI, 8 SEMI, 12 SEMI },			//3M	5thaug	oct			: aug
+  { 4 SEMI, 8 SEMI, 10 SEMI },			//3M	5thaug	7M			: aug7
+
+
 
   { 7 SEMI, 12 SEMI, 19 SEMI },			//5ta 	oct  	5ta+1oct 	: C5 (POWER)
   { 4 SEMI, 7 SEMI,  14 SEMI },			//3M	5th		9			: add9
-  { 2 SEMI, 7 SEMI, 12 SEMI }, 			//2M  	5th  	oct 		: SUS2
-  { 5 SEMI, 7 SEMI, 12 SEMI },			//4ta	5th		oct			: SUS4
 
 };
+ */
+
+void DigitalOscillator::set_chordIntervals(int16_t interval1,int16_t interval2,int16_t interval3 )
+{
+	chordsIntervals[0] = interval1;
+	chordsIntervals[1] = interval2;
+	chordsIntervals[2] = interval3;
+}
 
 void DigitalOscillator::RenderWaveParaphonic(
     const uint8_t* sync,
@@ -1821,12 +1828,13 @@ void DigitalOscillator::RenderWaveParaphonic(
     phase_increment[i] = ComputePhaseIncrement(pitch_ + detune);
   }*/
   
+  /*
   uint16_t chord_integral = parameter_[1] >> 10;
   if(chord_integral>=CHORD_TABLE_SIZE)
 	  chord_integral=CHORD_TABLE_SIZE-1;
-
+	*/
   for (size_t i = 0; i < 3; ++i) {
-    uint16_t detune = chords[chord_integral][i];
+    uint16_t detune = chordsIntervals[i]; //chords[chord_integral][i];
     phase_increment[i] = ComputePhaseIncrement(pitch_ + detune);
   }
 

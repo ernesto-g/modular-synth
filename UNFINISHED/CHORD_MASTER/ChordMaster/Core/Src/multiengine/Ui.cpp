@@ -15,38 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-// Major
-#define CHORD_MAJ		0
-#define CHORD_MAJ7		1
-#define CHORD_6			2
-#define CHORD_7			3
-// Aug/Altered
-#define CHORD_7_MINUS_5	4
-#define CHORD_7_PLUS_5	5
-#define CHORD_AUG		6
-#define CHORD_AUG7		7
-// Minor
-#define CHORD_MINOR		8
-#define CHORD_MINOR7	9
-#define CHORD_MINOR6	10
-#define CHORD_MIN_MAJ7	11
-// Dim
-
-/*
-
-Dim (3)
---Cdim
---Cdim7
---Chalf-dim
-
-Misc (4)
---C5
---Cadd9
---Csus4
---Csus2
- *
- */
 #include <stdint.h>
 #include "Ui.h"
 
@@ -65,6 +33,243 @@ using namespace braids;
 #define UI_STATE_SET_VALUE					2
 #define UI_STATE_CALIB						3
 #define UI_STATE_CALIB_STEP_2				4
+
+
+#define SEMI * 128
+
+
+static uint8_t calculateQuality(uint16_t param)
+{
+	// quality: 0 to 5
+	// 0-820     = 0
+	// 820-1640  = 1
+	// 1640-2460 = 2
+	// 2460-3280 = 3
+	// 3280-4100 = 4
+	// 4100-4095 = 5
+	if(param>4100)
+		return 5;
+	if(param>3280)
+		return 4;
+	if(param>2460)
+		return 3;
+	if(param>1640)
+		return 2;
+	if(param>820)
+		return 1;
+
+	return 0;
+}
+static uint8_t calculateVariation(uint16_t param,uint8_t quality)
+{
+	if(quality==0 ||quality==1)
+	{
+		// 0 - 3
+		if(param>3072)
+			return 3;
+		if(param>2048)
+			return 2;
+		if(param>1024)
+			return 1;
+		return 0;
+	}
+
+	if(quality==3 ||quality==5)
+	{
+		// 0 - 2
+		if(param>2730)
+			return 2;
+		if(param>1365)
+			return 1;
+		return 0;
+	}
+	if(quality==4)
+	{
+		// 0 - 1
+		if(param<2048)
+			return 0;
+		return 1;
+	}
+
+	return 0;
+}
+void Ui::setChordByParams(uint16_t param0, uint16_t param1,uint16_t param2)
+{
+	// param 0 : quality
+	// param 1: variation
+	// param 2: voicing
+
+	uint8_t quality = calculateQuality(param0>>2);
+	uint8_t variation = calculateVariation(param1>>2,quality);
+	//uint8_t voicing = calculateVoicing(param2>>2);
+
+	switch(quality)
+	{
+		case 0: // maj
+		{
+			switch(variation){
+				case 0:{
+					// Major triad
+					currentChordIntervals[0]=4 SEMI;
+					currentChordIntervals[1]=7 SEMI;
+					currentChordIntervals[2]=12 SEMI;
+					break;
+				}
+				case 1:{
+					// Major7
+					currentChordIntervals[0]=4 SEMI;
+					currentChordIntervals[1]=7 SEMI;
+					currentChordIntervals[2]=11 SEMI;
+					break;
+				}
+				case 2:{
+					// 6
+					currentChordIntervals[0]=4 SEMI;
+					currentChordIntervals[1]=7 SEMI;
+					currentChordIntervals[2]=9 SEMI;
+					break;
+				}
+				case 3:{
+					// 7-5
+					currentChordIntervals[0]=4 SEMI;
+					currentChordIntervals[1]=6 SEMI;
+					currentChordIntervals[2]=10 SEMI;
+					break;
+				}
+			}
+			break;
+		}
+		case 1: // min
+		{
+			switch(variation){
+				case 0:{
+					// MINOR
+					currentChordIntervals[0]=3 SEMI;
+					currentChordIntervals[1]=7 SEMI;
+					currentChordIntervals[2]=12 SEMI;
+					break;
+				}
+				case 1:{
+					// MINOR7
+					currentChordIntervals[0]=3 SEMI;
+					currentChordIntervals[1]=7 SEMI;
+					currentChordIntervals[2]=11 SEMI;
+					break;
+				}
+				case 2:{
+					// MINOR6
+					currentChordIntervals[0]=3 SEMI;
+					currentChordIntervals[1]=7 SEMI;
+					currentChordIntervals[2]=9 SEMI;
+					break;
+				}
+				case 3:{
+					// MINMAJ7
+					currentChordIntervals[0]=3 SEMI;
+					currentChordIntervals[1]=7 SEMI;
+					currentChordIntervals[2]=11 SEMI;
+					break;
+				}
+			}
+			break;
+		}
+		case 2: // dom
+		{
+			currentChordIntervals[0]=4 SEMI;
+			currentChordIntervals[1]=7 SEMI;
+			currentChordIntervals[2]=10 SEMI;
+			break;
+		}
+		case 3: // dim
+		{
+			switch(variation){
+				case 0:{
+					// DIM
+					currentChordIntervals[0]=3 SEMI;
+					currentChordIntervals[1]=6 SEMI;
+					currentChordIntervals[2]=12 SEMI;
+					break;
+				}
+				case 1:{
+					// DIM7
+					currentChordIntervals[0]=3 SEMI;
+					currentChordIntervals[1]=6 SEMI;
+					currentChordIntervals[2]=9 SEMI;
+					break;
+				}
+				case 2:{
+					// half-dim
+					currentChordIntervals[0]=3 SEMI;
+					currentChordIntervals[1]=6 SEMI;
+					currentChordIntervals[2]=10 SEMI;
+					break;
+				}
+			}
+			break;
+		}
+		case 4: // sus
+		{
+			switch(variation){
+				case 0:{
+					// SUS2
+					currentChordIntervals[0]=2 SEMI;
+					currentChordIntervals[1]=7 SEMI;
+					currentChordIntervals[2]=12 SEMI;
+					break;
+				}
+				case 1:{
+					// SUS4
+					currentChordIntervals[0]=5 SEMI;
+					currentChordIntervals[1]=7 SEMI;
+					currentChordIntervals[2]=12 SEMI;
+					break;
+				}
+			}
+			break;
+		}
+		case 5: // aug
+		{
+			switch(variation){
+				case 0:{
+					// AUG
+					currentChordIntervals[0]=4 SEMI;
+					currentChordIntervals[1]=8 SEMI;
+					currentChordIntervals[2]=12 SEMI;
+					break;
+				}
+				case 1:{
+					// AUG7
+					currentChordIntervals[0]=4 SEMI;
+					currentChordIntervals[1]=8 SEMI;
+					currentChordIntervals[2]=10 SEMI;
+					break;
+				}
+				case 2:{
+					// 6
+					currentChordIntervals[0]=4 SEMI;
+					currentChordIntervals[1]=7 SEMI;
+					currentChordIntervals[2]=9 SEMI;
+					break;
+				}
+			}
+			break;
+		}
+	}
+
+}
+
+int16_t Ui::getChord1(void)
+{
+	return this->currentChordIntervals[0];
+}
+int16_t Ui::getChord2(void)
+{
+	return this->currentChordIntervals[1];
+}
+int16_t Ui::getChord3(void)
+{
+	return this->currentChordIntervals[2];
+}
 
 
 struct S_OscData{
@@ -133,10 +338,6 @@ static const ConfigItem CONFIG_ITEMS[CONFIG_ITEMS_SYMBOLS_LEN]={
 #define CHORD_
 
 
-uint16_t Ui::getParamFromCurrentChord(void)
-{
-	return  (((uint16_t)currentChord)<<10);
-}
 
 uint16_t Ui::getParamFromCurrentWaveTable(void)
 {
@@ -158,7 +359,9 @@ void Ui::init(Adc* adc,Memory* memory) {
 	this->flagJustFinishedRender=0;
 	this->flagPendingSetCurrentOscillator=0;
 
-	this->currentChord=11;
+	this->currentChordIntervals[0]=0;
+	this->currentChordIntervals[1]=0;
+	this->currentChordIntervals[2]=0;
 
 	// Load current oscillator from eeprom
 	currentOscillator=(int8_t)memory->readUInt8(Memory::ADDR_CURRENT_OSCILLATOR);
