@@ -1834,7 +1834,7 @@ void DigitalOscillator::RenderWaveParaphonic(
 	  chord_integral=CHORD_TABLE_SIZE-1;
 	*/
   for (size_t i = 0; i < 3; ++i) {
-    uint16_t detune = chordsIntervals[i]; //chords[chord_integral][i];
+    int16_t detune = chordsIntervals[i]; //chords[chord_integral][i];
     phase_increment[i] = ComputePhaseIncrement(pitch_ + detune);
   }
 

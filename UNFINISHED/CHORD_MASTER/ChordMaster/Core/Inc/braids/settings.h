@@ -330,7 +330,8 @@ class Settings {
   
   inline int32_t adc_to_fm(int32_t fm_adc_code) const {
     fm_adc_code -= data_.fm_cv_offset;
-    fm_adc_code = fm_adc_code * 7680 >> 12;
+    //fm_adc_code = fm_adc_code * 7680 >> 12;
+    fm_adc_code = fm_adc_code * 1538 >> 9;
     if (data_.pitch_range == PITCH_RANGE_440) {
       fm_adc_code = 0;
     }

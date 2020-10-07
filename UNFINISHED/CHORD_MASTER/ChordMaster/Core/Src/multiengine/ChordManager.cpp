@@ -12,7 +12,7 @@
 
 static uint8_t calculateQuality(uint16_t param);
 static uint8_t calculateVariation(uint16_t param,uint8_t quality);
-
+static uint8_t calculateVoicing(uint16_t param);
 
 
 
@@ -29,7 +29,7 @@ void ChordManager::calculateVoicings(int32_t pitchValueIn, uint16_t qualityValue
 {
 	uint8_t quality = calculateQuality(qualityValueIn>>2);
 	uint8_t variation = calculateVariation(variationValueIn>>2,quality);
-	//uint8_t voicing = calculateVoicing(param2>>2);
+	uint8_t voicing = calculateVoicing(voicingValue);
 
 	switch(quality)
 	{
@@ -185,7 +185,73 @@ void ChordManager::calculateVoicings(int32_t pitchValueIn, uint16_t qualityValue
 	}
 
 	// calculate voicings
-	this->pitch = pitchValueIn;
+	int32_t voice0 = pitchValueIn;
+
+	switch(voicing)
+	{
+		case 1: // first OK
+		{
+			this->pitch = voice0 + 12 SEMI;
+			currentChordIntervals[0] = currentChordIntervals[0] - 12 SEMI;
+			currentChordIntervals[1] = currentChordIntervals[1] - 12 SEMI;
+			currentChordIntervals[2] = currentChordIntervals[2] - 12 SEMI;
+			break;
+		}
+		case 2: // second  OK
+		{
+			this->pitch = voice0 + 12 SEMI;
+			//currentChordIntervals[0] = currentChordIntervals[0] - 12 SEMI;
+			currentChordIntervals[1] = currentChordIntervals[1] - 12 SEMI;
+			currentChordIntervals[2] = currentChordIntervals[2] - 12 SEMI;
+			break;
+		}
+		case 3: // third OK
+		{
+			this->pitch = voice0 + 12 SEMI;
+			//currentChordIntervals[0] = currentChordIntervals[0] - 12 SEMI;
+			//currentChordIntervals[1] = currentChordIntervals[1] - 12 SEMI;
+			currentChordIntervals[2] = currentChordIntervals[2] - 12 SEMI;
+			break;
+		}
+		case 4: // drop2 OK
+		{
+			this->pitch = voice0;
+			currentChordIntervals[1] = currentChordIntervals[1] - 12 SEMI;
+			break;
+		}
+		case 5: // drop3 OK
+		{
+			this->pitch = voice0;
+			currentChordIntervals[0] = currentChordIntervals[0] - 12 SEMI;
+			break;
+		}
+		case 6: // spread OK
+		{
+			this->pitch = voice0 - 12 SEMI ;
+			currentChordIntervals[0] = currentChordIntervals[0] + 12 SEMI;
+			currentChordIntervals[1] = currentChordIntervals[1] + 12 SEMI;
+			currentChordIntervals[2] = currentChordIntervals[2] + 24 SEMI;
+			break;
+		}
+		case 7: // spread2 OK
+		{
+			this->pitch = voice0 - 12 SEMI ;
+			//currentChordIntervals[0] = currentChordIntervals[0] + 12 SEMI;
+			currentChordIntervals[1] = currentChordIntervals[1] + 12 SEMI;
+			currentChordIntervals[2] = currentChordIntervals[2] + 24 SEMI;
+			break;
+		}
+
+		default: // root OK
+		{
+			this->pitch = voice0;
+			break;
+		}
+	}
+
+
+
+
 
 }
 
@@ -206,6 +272,26 @@ int32_t ChordManager::getPitch(void)
 	return this->pitch;
 }
 
+
+
+
+static uint8_t calculateVoicing(uint16_t param)
+{
+	// voicing:
+	//     = 0 : root
+	//     = 1 : first
+	//     = 2 : Second
+	//     = 3 : third
+
+	//     = 4 : drop2
+	//     = 5 : drop3
+	//     = 6 : spread
+	//     = 7 : spread2
+	uint8_t r = param>>9;
+	if(r>=8)
+		r=7;
+	return r;
+}
 
 static uint8_t calculateQuality(uint16_t param)
 {
