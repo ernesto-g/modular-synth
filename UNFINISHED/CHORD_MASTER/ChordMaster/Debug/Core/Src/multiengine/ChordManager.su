@@ -1,6 +1,7 @@
-ChordManager.cpp:23:6:void ChordManager::init()	0	static
-ChordManager.cpp:32:6:void ChordManager::calculateVoicings(int32_t, uint16_t, uint16_t, uint16_t)	20	static
-ChordManager.cpp:262:9:int16_t ChordManager::getChord1()	0	static
-ChordManager.cpp:266:9:int16_t ChordManager::getChord2()	0	static
-ChordManager.cpp:270:9:int16_t ChordManager::getChord3()	0	static
-ChordManager.cpp:274:9:int32_t ChordManager::getPitch()	0	static
+ChordManager.cpp:30:6:void ChordManager::init()	0	static
+ChordManager.cpp:281:9:int16_t ChordManager::getChord1()	0	static
+ChordManager.cpp:285:9:int16_t ChordManager::getChord2()	0	static
+ChordManager.cpp:289:9:int16_t ChordManager::getChord3()	0	static
+ChordManager.cpp:293:9:int32_t ChordManager::getPitch()	0	static
+ChordManager.cpp:469:9:uint8_t ChordManager::calculateHarmonizedQuality(int32_t, int32_t)	12	static
+ChordManager.cpp:41:6:void ChordManager::calculateVoicings(int32_t, uint16_t, uint16_t, uint16_t, int32_t)	24	static

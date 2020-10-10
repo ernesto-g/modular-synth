@@ -13,6 +13,13 @@
 #define DELTA_HYSTERESIS_FOR_VARIAT		150
 
 
+#define QUALITY_MAJ		0
+#define QUALITY_MIN		1
+#define QUALITY_DOM		2
+#define QUALITY_DIM		3
+#define QUALITY_SUS		4
+#define QUALITY_AUG		5
+
 
 static uint8_t calculateQuality(uint16_t param);
 static uint8_t calculateVariation(uint16_t param,uint8_t quality);
@@ -26,18 +33,30 @@ void ChordManager::init(void) {
 	this->currentChordIntervals[1]=0;
 	this->currentChordIntervals[2]=0;
 	this->pitch=0;
+	this->harmonizerEnabled=1;
+	this->harmonizerScale=1;
 }
 
 
-void ChordManager::calculateVoicings(int32_t pitchValueIn, uint16_t qualityValueIn,uint16_t variationValueIn,uint16_t voicingValue)
+void ChordManager::calculateVoicings(int32_t pitchValueIn, uint16_t qualityValueIn,uint16_t variationValueIn,uint16_t voicingValue,int32_t rootValueIn)
 {
-	uint8_t quality = calculateQuality(qualityValueIn>>2);
+	uint8_t quality;
+	if(this->harmonizerEnabled==1)
+	{
+		quality = calculateHarmonizedQuality(pitchValueIn,rootValueIn);
+	}
+	else
+	{
+		quality = calculateQuality(qualityValueIn>>2); // get quality from input CV and Knob
+	}
+
+
 	uint8_t variation = calculateVariation(variationValueIn>>2,quality);
 	uint8_t voicing = calculateVoicing(voicingValue);
 
 	switch(quality)
 	{
-		case 0: // maj
+		case QUALITY_MAJ: // maj
 		{
 			switch(variation){
 				case 0:{
@@ -71,7 +90,7 @@ void ChordManager::calculateVoicings(int32_t pitchValueIn, uint16_t qualityValue
 			}
 			break;
 		}
-		case 1: // min
+		case QUALITY_MIN: // min
 		{
 			switch(variation){
 				case 0:{
@@ -105,14 +124,14 @@ void ChordManager::calculateVoicings(int32_t pitchValueIn, uint16_t qualityValue
 			}
 			break;
 		}
-		case 2: // dom
+		case QUALITY_DOM: // dom
 		{
 			currentChordIntervals[0]=4 SEMI;
 			currentChordIntervals[1]=7 SEMI;
 			currentChordIntervals[2]=10 SEMI;
 			break;
 		}
-		case 3: // dim
+		case QUALITY_DIM: // dim
 		{
 			switch(variation){
 				case 0:{
@@ -139,7 +158,7 @@ void ChordManager::calculateVoicings(int32_t pitchValueIn, uint16_t qualityValue
 			}
 			break;
 		}
-		case 4: // sus
+		case QUALITY_SUS: // sus
 		{
 			switch(variation){
 				case 0:{
@@ -159,7 +178,7 @@ void ChordManager::calculateVoicings(int32_t pitchValueIn, uint16_t qualityValue
 			}
 			break;
 		}
-		case 5: // aug
+		case QUALITY_AUG: // aug
 		{
 			switch(variation){
 				case 0:{
@@ -447,3 +466,60 @@ static uint8_t calculateVariation(uint16_t param,uint8_t quality)
 }
 
 
+uint8_t ChordManager::calculateHarmonizedQuality(int32_t pitchValueIn,int32_t rootValueIn)
+{
+	uint16_t notePositionInScale;
+	uint16_t note = pitchValueIn % (12 SEMI);
+	uint16_t root = rootValueIn % (12 SEMI);
+	if(note>=root)
+	{
+		notePositionInScale = (note - root)/(1 SEMI);
+	}
+	else
+	{
+		notePositionInScale = (( (12 SEMI)-root) + note)/(1 SEMI);
+	}
+
+	switch(this->harmonizerScale)
+	{
+		case 0: // MAJOR SCALE
+		{
+			switch(notePositionInScale)
+			{
+				case 0: return QUALITY_MAJ; //(diatonic)  I
+				case 1: return QUALITY_MAJ; //(modal interchange)
+				case 2: return QUALITY_MIN; //(diatonic)  ii
+				case 3: return QUALITY_MAJ; //(modal interchange)
+				case 4: return QUALITY_MIN; //(diatonic)  iii
+				case 5: return QUALITY_MAJ; //(diatonic)  IV
+				case 6: return QUALITY_DOM; //(modal interchange)
+				case 7: return QUALITY_DOM; //(diatonic)  V
+				case 8: return QUALITY_MAJ; //(modal interchange)
+				case 9: return QUALITY_MIN; //(diatonic)  vi
+				case 10: return QUALITY_DOM; //(modal interchange)
+				case 11: return QUALITY_DIM; //(diatonic) vii
+			}
+			break;
+		}
+		case 1: // MINOR
+		{
+			switch(notePositionInScale)
+			{
+				case 0: return QUALITY_MIN; // i
+				case 1: return QUALITY_MAJ;
+				case 2: return QUALITY_DIM; // ii
+				case 3: return QUALITY_MAJ; // III
+				case 4: return QUALITY_DIM;
+				case 5: return QUALITY_MIN; // iv
+				case 6: return QUALITY_AUG;
+				case 7: return QUALITY_DOM; // E  V DOM
+				case 8: return QUALITY_MAJ; // VI
+				case 9: return QUALITY_DIM;
+				case 10: return QUALITY_MAJ; // VII
+				case 11: return QUALITY_DIM;
+			}
+			break;
+		}
+	}
+	return QUALITY_MAJ;
+}

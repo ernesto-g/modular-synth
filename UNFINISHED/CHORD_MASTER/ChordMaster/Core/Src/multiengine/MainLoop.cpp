@@ -255,7 +255,8 @@ void MainLoop::render(uint8_t* out, uint32_t outSize)
 	  chordManager.calculateVoicings( pitch + settings.pitch_transposition(),
 			  	  	  	  	  	  	  qualityValue,
 									  variationValue,
-									  voicingValue);
+									  voicingValue,
+									  (60 + settings.quantizer_root()) << 7);
 	  osc.set_chords_parameters(chordManager.getChord1(),chordManager.getChord2(),chordManager.getChord3());
 	  osc.set_pitch(chordManager.getPitch());
 	  //_________________________________________________
