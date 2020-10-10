@@ -8,6 +8,10 @@
 #include "multiengine/ChordManager.h"
 
 #define SEMI * 128
+#define DELTA_HYSTERESIS_FOR_QUALITY	150
+#define DELTA_HYSTERESIS_FOR_VOICING	150
+#define DELTA_HYSTERESIS_FOR_VARIAT		150
+
 
 
 static uint8_t calculateQuality(uint16_t param);
@@ -277,6 +281,9 @@ int32_t ChordManager::getPitch(void)
 
 static uint8_t calculateVoicing(uint16_t param)
 {
+	uint8_t ret;
+	static uint8_t prevRet=0;
+
 	// voicing:
 	//     = 0 : root
 	//     = 1 : first
@@ -287,14 +294,53 @@ static uint8_t calculateVoicing(uint16_t param)
 	//     = 5 : drop3
 	//     = 6 : spread
 	//     = 7 : spread2
-	uint8_t r = param>>9;
-	if(r>=8)
-		r=7;
-	return r;
+	if(param>(3584+DELTA_HYSTERESIS_FOR_VOICING))
+		ret=7;
+	else if(param>(3584-DELTA_HYSTERESIS_FOR_VOICING))
+		ret=prevRet;
+
+	else if(param>(3072+DELTA_HYSTERESIS_FOR_VOICING))
+		ret=6;
+	else if(param>(3072-DELTA_HYSTERESIS_FOR_VOICING))
+		ret=prevRet;
+
+	else if(param>(2560+DELTA_HYSTERESIS_FOR_VOICING))
+		ret=5;
+	else if(param>(2560-DELTA_HYSTERESIS_FOR_VOICING))
+		ret=prevRet;
+
+	else if(param>(2048+DELTA_HYSTERESIS_FOR_VOICING))
+		ret=4;
+	else if(param>(2048-DELTA_HYSTERESIS_FOR_VOICING))
+		ret=prevRet;
+
+	else if(param>(1536+DELTA_HYSTERESIS_FOR_VOICING))
+		ret=3;
+	else if(param>(1536-DELTA_HYSTERESIS_FOR_VOICING))
+		ret=prevRet;
+
+	else if(param>(1024+DELTA_HYSTERESIS_FOR_VOICING))
+		ret=2;
+	else if(param>(1024-DELTA_HYSTERESIS_FOR_VOICING))
+		ret=prevRet;
+
+	else if(param>(512+DELTA_HYSTERESIS_FOR_VOICING))
+		ret=1;
+	else if(param>(512-DELTA_HYSTERESIS_FOR_VOICING))
+		ret=prevRet;
+
+	else
+		ret=0;
+
+	prevRet = ret;
+	return ret;
 }
 
 static uint8_t calculateQuality(uint16_t param)
 {
+	uint8_t ret;
+	static uint8_t prevRet=0;
+
 	// quality: 0 to 5
 	// 0-820     = 0
 	// 820-1640  = 1
@@ -302,48 +348,99 @@ static uint8_t calculateQuality(uint16_t param)
 	// 2460-3280 = 3
 	// 3280-4100 = 4
 	// 4100-4095 = 5
-	if(param>4100)
-		return 5;
-	if(param>3280)
-		return 4;
-	if(param>2460)
-		return 3;
-	if(param>1640)
-		return 2;
-	if(param>820)
-		return 1;
+	if(param>(4100+DELTA_HYSTERESIS_FOR_QUALITY))
+		ret= 5;
+	else if(param>(4100-DELTA_HYSTERESIS_FOR_QUALITY))
+		ret = prevRet;
 
-	return 0;
+	else if(param>(3280+DELTA_HYSTERESIS_FOR_QUALITY))
+		ret= 4;
+	else if(param>(3280-DELTA_HYSTERESIS_FOR_QUALITY))
+		ret= prevRet;
+
+	else if(param>(2460+DELTA_HYSTERESIS_FOR_QUALITY))
+		ret= 3;
+	else if(param>(2460-DELTA_HYSTERESIS_FOR_QUALITY))
+		ret= prevRet;
+
+
+	else if(param>(1640+DELTA_HYSTERESIS_FOR_QUALITY))
+		ret= 2;
+	else if(param>(1640-DELTA_HYSTERESIS_FOR_QUALITY))
+		ret= prevRet;
+
+	else if(param>(820+DELTA_HYSTERESIS_FOR_QUALITY))
+		ret= 1;
+	else if(param>(820-DELTA_HYSTERESIS_FOR_QUALITY))
+		ret= prevRet;
+
+	else
+		ret=0;
+
+	prevRet = ret;
+	return ret;
 }
 static uint8_t calculateVariation(uint16_t param,uint8_t quality)
 {
+	uint8_t ret;
+	static uint8_t prevRet01=0;
+	static uint8_t prevRet35=0;
+	static uint8_t prevRet4=0;
+
 	if(quality==0 ||quality==1)
 	{
 		// 0 - 3
-		if(param>3072)
-			return 3;
-		if(param>2048)
-			return 2;
-		if(param>1024)
-			return 1;
-		return 0;
+		if(param>(3072+DELTA_HYSTERESIS_FOR_VARIAT))
+			ret=3;
+		else if(param>(3072-DELTA_HYSTERESIS_FOR_VARIAT))
+			ret= prevRet01;
+
+		else if(param>(2048+DELTA_HYSTERESIS_FOR_VARIAT))
+			ret= 2;
+		else if(param>(2048-DELTA_HYSTERESIS_FOR_VARIAT))
+			ret= prevRet01;
+
+		else if(param>(1024+DELTA_HYSTERESIS_FOR_VARIAT))
+			ret= 1;
+		else if(param>(1024-DELTA_HYSTERESIS_FOR_VARIAT))
+			ret= prevRet01;
+		else
+			ret=0;
+
+		prevRet01 = ret;
+		return ret;
 	}
 
 	if(quality==3 ||quality==5)
 	{
 		// 0 - 2
-		if(param>2730)
-			return 2;
-		if(param>1365)
-			return 1;
-		return 0;
+		if(param>(2730+DELTA_HYSTERESIS_FOR_VARIAT))
+			ret=2;
+		else if(param>(2730-DELTA_HYSTERESIS_FOR_VARIAT))
+			ret=prevRet35;
+
+		else if(param>(1365+DELTA_HYSTERESIS_FOR_VARIAT))
+			ret=1;
+		else if(param>(1365-DELTA_HYSTERESIS_FOR_VARIAT))
+			ret=prevRet35;
+		else
+			ret=0;
+
+		prevRet35 = ret;
+		return ret;
 	}
 	if(quality==4)
 	{
 		// 0 - 1
-		if(param<2048)
-			return 0;
-		return 1;
+		if(param>(2048+DELTA_HYSTERESIS_FOR_VARIAT))
+			ret = 1;
+		else if(param>(2048-DELTA_HYSTERESIS_FOR_VARIAT))
+			ret = prevRet4;
+		else
+			ret=0;
+
+		prevRet4 = ret;
+		return ret;
 	}
 
 	return 0;
