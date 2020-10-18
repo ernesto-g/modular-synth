@@ -1,727 +1,461 @@
-1600613906198
-Resistors_ThroughHole
-R_Array_SIP4
+1596590322824
+Diodes_ThroughHole
+D_5KPW_P7.62mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Array_SIP5
+Diodes_ThroughHole
+D_5KPW_P7.62mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Array_SIP6
+Diodes_ThroughHole
+D_5KPW_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Array_SIP7
+Diodes_ThroughHole
+D_5KP_P7.62mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Array_SIP8
+Diodes_ThroughHole
+D_5KP_P7.62mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Array_SIP9
+Diodes_ThroughHole
+D_5KP_P10.16mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Array_SIP10
+Diodes_ThroughHole
+D_5KP_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Array_SIP11
+Diodes_ThroughHole
+D_5W_P5.08mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Array_SIP12
+Diodes_ThroughHole
+D_5W_P5.08mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Array_SIP13
+Diodes_ThroughHole
+D_5W_P10.16mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Array_SIP14
+Diodes_ThroughHole
+D_5W_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0204_L3.6mm_D1.6mm_P1.90mm_Vertical
+Diodes_ThroughHole
+D_A-405_P2.54mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical
+Diodes_ThroughHole
+D_A-405_P2.54mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal
+Diodes_ThroughHole
+D_A-405_P5.08mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Vertical
+Diodes_ThroughHole
+D_A-405_P5.08mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal
+Diodes_ThroughHole
+D_A-405_P7.62mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0207_L6.3mm_D2.5mm_P2.54mm_Vertical
+Diodes_ThroughHole
+D_A-405_P10.16mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0207_L6.3mm_D2.5mm_P5.08mm_Vertical
+Diodes_ThroughHole
+D_A-405_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal
+Diodes_ThroughHole
+D_DO-15_P2.54mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal
+Diodes_ThroughHole
+D_DO-15_P2.54mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0207_L6.3mm_D2.5mm_P15.24mm_Horizontal
+Diodes_ThroughHole
+D_DO-15_P5.08mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0309_L9.0mm_D3.2mm_P2.54mm_Vertical
+Diodes_ThroughHole
+D_DO-15_P5.08mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0309_L9.0mm_D3.2mm_P5.08mm_Vertical
+Diodes_ThroughHole
+D_DO-15_P10.16mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal
+Diodes_ThroughHole
+D_DO-15_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0309_L9.0mm_D3.2mm_P15.24mm_Horizontal
+Diodes_ThroughHole
+D_DO-15_P15.24mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0309_L9.0mm_D3.2mm_P20.32mm_Horizontal
+Diodes_ThroughHole
+D_DO-27_P5.08mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0309_L9.0mm_D3.2mm_P25.40mm_Horizontal
+Diodes_ThroughHole
+D_DO-27_P5.08mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0411_L9.9mm_D3.6mm_P5.08mm_Vertical
+Diodes_ThroughHole
+D_DO-27_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0411_L9.9mm_D3.6mm_P7.62mm_Vertical
+Diodes_ThroughHole
+D_DO-27_P15.24mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal
+Diodes_ThroughHole
+D_DO-35_SOD27_P2.54mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0411_L9.9mm_D3.6mm_P15.24mm_Horizontal
+Diodes_ThroughHole
+D_DO-35_SOD27_P2.54mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0411_L9.9mm_D3.6mm_P20.32mm_Horizontal
+Diodes_ThroughHole
+D_DO-35_SOD27_P5.08mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0411_L9.9mm_D3.6mm_P25.40mm_Horizontal
+Diodes_ThroughHole
+D_DO-35_SOD27_P5.08mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0414_L11.9mm_D4.5mm_P5.08mm_Vertical
+Diodes_ThroughHole
+D_DO-35_SOD27_P7.62mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0414_L11.9mm_D4.5mm_P7.62mm_Vertical
+Diodes_ThroughHole
+D_DO-35_SOD27_P10.16mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0414_L11.9mm_D4.5mm_P15.24mm_Horizontal
+Diodes_ThroughHole
+D_DO-35_SOD27_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal
+Diodes_ThroughHole
+D_DO-41_SOD81_P2.54mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0414_L11.9mm_D4.5mm_P25.40mm_Horizontal
+Diodes_ThroughHole
+D_DO-41_SOD81_P2.54mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0516_L15.5mm_D5.0mm_P5.08mm_Vertical
+Diodes_ThroughHole
+D_DO-41_SOD81_P5.08mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0516_L15.5mm_D5.0mm_P7.62mm_Vertical
+Diodes_ThroughHole
+D_DO-41_SOD81_P5.08mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0516_L15.5mm_D5.0mm_P20.32mm_Horizontal
+Diodes_ThroughHole
+D_DO-41_SOD81_P7.62mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0516_L15.5mm_D5.0mm_P25.40mm_Horizontal
+Diodes_ThroughHole
+D_DO-41_SOD81_P10.16mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0516_L15.5mm_D5.0mm_P30.48mm_Horizontal
+Diodes_ThroughHole
+D_DO-41_SOD81_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0614_L14.3mm_D5.7mm_P5.08mm_Vertical
+Diodes_ThroughHole
+D_DO-201AD_P5.08mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0614_L14.3mm_D5.7mm_P7.62mm_Vertical
+Diodes_ThroughHole
+D_DO-201AD_P5.08mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0614_L14.3mm_D5.7mm_P15.24mm_Horizontal
+Diodes_ThroughHole
+D_DO-201AD_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0614_L14.3mm_D5.7mm_P20.32mm_Horizontal
+Diodes_ThroughHole
+D_DO-201AD_P15.24mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0614_L14.3mm_D5.7mm_P25.40mm_Horizontal
+Diodes_ThroughHole
+D_DO-201_P5.08mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0617_L17.0mm_D6.0mm_P5.08mm_Vertical
+Diodes_ThroughHole
+D_DO-201_P5.08mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0617_L17.0mm_D6.0mm_P7.62mm_Vertical
+Diodes_ThroughHole
+D_DO-201_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0617_L17.0mm_D6.0mm_P20.32mm_Horizontal
+Diodes_ThroughHole
+D_DO-201_P15.24mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0617_L17.0mm_D6.0mm_P25.40mm_Horizontal
+Diodes_ThroughHole
+D_P600_R-6_P7.62mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0617_L17.0mm_D6.0mm_P30.48mm_Horizontal
+Diodes_ThroughHole
+D_P600_R-6_P7.62mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0918_L18.0mm_D9.0mm_P7.62mm_Vertical
+Diodes_ThroughHole
+D_P600_R-6_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0918_L18.0mm_D9.0mm_P22.86mm_Horizontal
+Diodes_ThroughHole
+D_P600_R-6_P20.00mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0918_L18.0mm_D9.0mm_P25.40mm_Horizontal
+Diodes_ThroughHole
+D_T-1_P2.54mm_Vertical_AnodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0918_L18.0mm_D9.0mm_P30.48mm_Horizontal
+Diodes_ThroughHole
+D_T-1_P2.54mm_Vertical_KathodeUp
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0922_L20.0mm_D9.0mm_P7.62mm_Vertical
+Diodes_ThroughHole
+D_T-1_P5.08mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0922_L20.0mm_D9.0mm_P25.40mm_Horizontal
+Diodes_ThroughHole
+D_T-1_P10.16mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_DIN0922_L20.0mm_D9.0mm_P30.48mm_Horizontal
+Diodes_ThroughHole
+D_T-1_P12.70mm_Horizontal
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_Power_L20.0mm_W6.4mm_P5.08mm_Vertical
+Diodes_ThroughHole
+Diode_Bridge_15.7x15.7
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_Power_L20.0mm_W6.4mm_P7.62mm_Vertical
+Diodes_ThroughHole
+Diode_Bridge_16.7x16.7
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_Power_L20.0mm_W6.4mm_P22.40mm
+Diodes_ThroughHole
+Diode_Bridge_18.5x5.5
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_Power_L20.0mm_W6.4mm_P25.40mm
+Diodes_ThroughHole
+Diode_Bridge_DIP-4_W7.62mm_P5.08mm
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_Power_L20.0mm_W6.4mm_P30.48mm
+Diodes_ThroughHole
+Diode_Bridge_Round_D8.9mm
 
 
 0
 0
 0
-Resistors_ThroughHole
-R_Axial_Power_L25.0mm_W6.4mm_P27.94mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L25.0mm_W6.4mm_P30.48mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L25.0mm_W9.0mm_P7.62mm_Vertical
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L25.0mm_W9.0mm_P10.16mm_Vertical
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L25.0mm_W9.0mm_P27.94mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L25.0mm_W9.0mm_P30.48mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L38.0mm_W6.4mm_P40.64mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L38.0mm_W6.4mm_P45.72mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L38.0mm_W9.0mm_P40.64mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L38.0mm_W9.0mm_P45.72mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L48.0mm_W12.5mm_P7.62mm_Vertical
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L48.0mm_W12.5mm_P10.16mm_Vertical
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L48.0mm_W12.5mm_P55.88mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L48.0mm_W12.5mm_P60.96mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L50.0mm_W9.0mm_P55.88mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L50.0mm_W9.0mm_P60.96mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L60.0mm_W14.0mm_P10.16mm_Vertical
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L60.0mm_W14.0mm_P66.04mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L60.0mm_W14.0mm_P71.12mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L75.0mm_W9.0mm_P81.28mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Power_L75.0mm_W9.0mm_P86.36mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Shunt_L22.2mm_W8.0mm_PS14.30mm_P25.40mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Shunt_L22.2mm_W9.5mm_PS14.30mm_P25.40mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Shunt_L35.3mm_W9.5mm_PS25.40mm_P38.10mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Shunt_L47.6mm_W9.5mm_PS34.93mm_P50.80mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Axial_Shunt_L47.6mm_W12.7mm_PS34.93mm_P50.80mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Bare_Metal_Element_L12.4mm_W4.8mm_P11.40mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Bare_Metal_Element_L16.3mm_W4.8mm_P15.30mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Bare_Metal_Element_L21.3mm_W4.8mm_P20.30mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Box_L8.4mm_W2.5mm_P5.08mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Box_L13.0mm_W4.0mm_P9.00mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Box_L14.0mm_W5.0mm_P9.00mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Box_L26.0mm_W5.0mm_P20.00mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Radial_Power_L7.0mm_W8.0mm_Px2.40mm_Py2.30mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Radial_Power_L9.0mm_W10.0mm_Px2.70mm_Py2.30mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Radial_Power_L11.0mm_W7.0mm_P5.00mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Radial_Power_L12.0mm_W8.0mm_P5.00mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Radial_Power_L13.0mm_W9.0mm_P5.00mm
-
-
-0
-0
-0
-Resistors_ThroughHole
-R_Radial_Power_L16.1mm_W9.0mm_P7.37mm
+Diodes_ThroughHole
+Diode_Bridge_Round_D9.8mm
 
 
 0
