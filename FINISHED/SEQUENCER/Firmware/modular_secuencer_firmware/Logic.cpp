@@ -24,15 +24,19 @@
 #include "Memory.h"
 
 // Defines
-#define LOGIC_STATE_SHOW_STEPS    0
-#define LOGIC_STATE_SHOW_OPTION   1
+#define LOGIC_STATE_SHOW_STEPS          0
+#define LOGIC_STATE_SHOW_OPTION         1
+#define LOGIC_STATE_SHOW_OPTION_BINARY  2
 #define BPM_MIN   30
 #define BPM_MAX   600
-#define TIMEOUT_SHOW_OPTION   3000;
+
+#define TIMEOUT_SHOW_OPTION         3000;
+#define TIMEOUT_SHOW_OPTION_BINARY  5000;
 
 
 // Private functions
 static void showOption(int optionValue);
+static void showOptionBinary(int optionValue);
 static int imShowingOption(void);
 static int nextMode(void);
 
@@ -47,9 +51,24 @@ static int currentMode;
 static unsigned char flagConfiguringMidiChannel=0;
 static unsigned char flagConfiguringClkSrc=0;
 static unsigned char flagConfiguringRstMode=0;
+static unsigned char flagConfiguringRootNote=0;
 static volatile unsigned int timeoutPendingWriteTempoInMemory=0;
 static volatile unsigned char flagPendingWriteTempoInMemory=0;
 
+static unsigned char NOTE_IN_LEDS_TABLE[12]={
+  0b00000001, // C
+  0b10000001, // C#
+  0b00000010, // D
+  0b10000010, // D#
+  0b00000100, // E
+  0b00001000, // F
+  0b10001000, // F#
+  0b00010000, // G
+  0b10010000, // G#
+  0b00100000, // A
+  0b10100000, // A#
+  0b01000000, // B  
+  };
 
 void logic_tick1ms(void)
 {
@@ -156,26 +175,35 @@ void logic_loop(void)
       if(frontp_getSwState(SW_SCALE_DIR)==FRONT_PANEL_SW_STATE_SHORT)
       {
           frontp_resetSwState(SW_SCALE_DIR);
-          if(flagShift==0)
+          if(flagConfiguringRootNote==1)
           {
-            if(currentMode!=LOGIC_MODE_3_EUCLIDEAN_PLUS_3TRACKS)
-            {
-              if(imShowingOption())
-                  showOption(rthm_nextDirection()); 
-              else
-                  showOption(rthm_getCurrentDirection());
-            }
+              // change root note
+              int note = track_nextRootNote();
+              showOptionBinary(NOTE_IN_LEDS_TABLE[note]);
           }
           else
           {
-            if(imShowingOption())
-            {
-                unsigned char scale = track_nextScale();
-                mem_saveScale(scale);
-                showOption(scale); 
-            }
-            else
-                showOption(track_getCurrentScale());
+              if(flagShift==0)
+              {
+                if(currentMode!=LOGIC_MODE_3_EUCLIDEAN_PLUS_3TRACKS)
+                {
+                  if(imShowingOption())
+                      showOption(rthm_nextDirection()); 
+                  else
+                      showOption(rthm_getCurrentDirection());
+                }
+              }
+              else
+              {
+                if(imShowingOption())
+                {
+                    unsigned char scale = track_nextScale();
+                    mem_saveScale(scale);
+                    showOption(scale); 
+                }
+                else
+                    showOption(track_getCurrentScale());
+              }
           }
       }
 
@@ -263,6 +291,13 @@ void logic_loop(void)
           flagConfiguringRstMode=1;
           showOption(rthm_getRstMode());          
       }
+      if(frontp_getSwState(SW_SCALE_DIR)==FRONT_PANEL_SW_STATE_LONG)
+      {
+          frontp_resetSwState(SW_SCALE_DIR);
+          // set root note
+          flagConfiguringRootNote=1;
+          showOptionBinary(NOTE_IN_LEDS_TABLE[track_getCurrentRootNote()]);
+      }      
       //____________________________________________
       
 
@@ -390,6 +425,21 @@ void logic_loop(void)
               flagConfiguringMidiChannel=0;
               flagConfiguringClkSrc=0;
               flagConfiguringRstMode=0;
+              flagConfiguringRootNote=0;
+            }
+            break;
+        }
+        case LOGIC_STATE_SHOW_OPTION_BINARY:
+        {
+            frontp_showBinaryInLedBlinking(currentOption,1);
+            if(timeoutShowCurrentOption==0)
+            {
+              logicState = LOGIC_STATE_SHOW_STEPS;
+              // reset all config states
+              flagConfiguringMidiChannel=0;
+              flagConfiguringClkSrc=0;
+              flagConfiguringRstMode=0;
+              flagConfiguringRootNote=0;
             }
             break;
         }
@@ -427,10 +477,16 @@ static void showOption(int optionValue)
     logicState = LOGIC_STATE_SHOW_OPTION;
     timeoutShowCurrentOption = TIMEOUT_SHOW_OPTION;
 }
+static void showOptionBinary(int optionValue)
+{
+    currentOption = optionValue;
+    logicState = LOGIC_STATE_SHOW_OPTION_BINARY;
+    timeoutShowCurrentOption = TIMEOUT_SHOW_OPTION_BINARY;
+}
 
 static int imShowingOption(void)
 {
-  if(logicState == LOGIC_STATE_SHOW_OPTION)
+  if(logicState == LOGIC_STATE_SHOW_OPTION || logicState == LOGIC_STATE_SHOW_OPTION_BINARY)
       return 1;
   return 0;
 }

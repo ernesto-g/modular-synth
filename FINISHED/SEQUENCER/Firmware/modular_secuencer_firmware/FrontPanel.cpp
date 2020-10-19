@@ -213,6 +213,27 @@ void frontp_showStepInLedBlinking(int stepIndex, int flagTurnOffOthers)
       ledsState[stepIndex]=LED_STATE_BLINK;      
 }
 
+void frontp_showBinaryInLedBlinking(int value, int flagTurnOffOthers)
+{
+    if(flagTurnOffOthers)
+    {
+      int i;
+      for(i=0; i<LEDS_LEN; i++)
+        ledsState[i]=LED_STATE_OFF;
+    }
+    if(value>=0 && value<=255)
+    {
+      if((value&0x01)!=0) ledsState[0]=LED_STATE_BLINK;        
+      if((value&0x02)!=0) ledsState[1]=LED_STATE_BLINK;        
+      if((value&0x04)!=0) ledsState[2]=LED_STATE_BLINK;        
+      if((value&0x08)!=0) ledsState[3]=LED_STATE_BLINK;        
+      if((value&0x10)!=0) ledsState[4]=LED_STATE_BLINK;        
+      if((value&0x20)!=0) ledsState[5]=LED_STATE_BLINK;        
+      if((value&0x40)!=0) ledsState[6]=LED_STATE_BLINK;        
+      if((value&0x80)!=0) ledsState[7]=LED_STATE_BLINK;        
+    }
+}
+
 unsigned int frontp_readAnalogStepValue(int index)
 {
     switch(index) // map physically analog inputs to match leds steps

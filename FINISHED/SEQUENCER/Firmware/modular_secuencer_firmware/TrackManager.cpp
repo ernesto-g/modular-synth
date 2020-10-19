@@ -59,7 +59,7 @@ static unsigned char gateState[TRACK_LEN];
 static volatile unsigned int timeoutGate[TRACK_LEN];
 static unsigned char gateRepeatitionsCounter[TRACK_LEN];
 
-static unsigned int currentNoteProbValue[TRACK_LEN][STEPS_LEN]; // Current prob assigned to each step CAMBIAR NOMBRE A PROBABILITY!!!!!!!!!!!!!!!!
+static unsigned int currentNoteProbValue[TRACK_LEN][STEPS_LEN]; // Current prob assigned to each step
 static unsigned int analogStepPrevValue[TRACK_LEN][STEPS_LEN]; // Last value read from potentiometer for each step
 static unsigned int currentRepeatitionsValue[TRACK_LEN][STEPS_LEN];
 static unsigned char gateRepeatitionsMax[TRACK_LEN];
@@ -68,6 +68,8 @@ static unsigned char flagRepeatProbability;
 static unsigned char euclideanSteps[STEPS_LEN];
 static unsigned char euclideanStepsOn;
 static int euclideanStepsOffset;
+
+static signed int scaleRootNote = 0 ; // 0:C - 9:A - 11:B
 
 
 // Private functions
@@ -90,13 +92,20 @@ static void reloadEuclideanSteps(void);
 
 
 //Scale tables
-static const PROGMEM unsigned int CHROM_TABLE[60] = {68,137,205,273,341,410,478,546,614,682,751,819,887,956,1024,1092,1160,1229,1297,1365,1433,1501,1570,1638,1706,1775,1843,1911,1979,2048,2116,2184,2252,2320,2389,2457,2525,2594,2662,2730,2798,2867,2935,3003,3071,3139,3208,3276,3344,3413,3481,3549,3617,3686,3754,3822,3890,3958,4027,4095};
-static const PROGMEM unsigned int MAJOR_TABLE[35] = {68,205,341,410,546,682,819,887,1024,1160,1229,1365,1501,1638,1706,1843,1979,2048,2184,2320,2457,2525,2662,2798,2867,3003,3139,3276,3344,3481,3617,3686,3822,3958,4095};
-static const PROGMEM unsigned int MINOR_TABLE[35] = {68,205,273,410,546,614,751,887,1024,1092,1229,1365,1433,1570,1706,1843,1911,2048,2184,2252,2389,2525,2662,2730,2867,3003,3071,3208,3344,3481,3549,3686,3822,3890,4027};
-static const PROGMEM unsigned int BLUES_TABLE[30] = {68,273,410,478,546,751,887,1092,1229,1297,1365,1570,1706,1911,2048,2116,2184,2389,2525,2730,2867,2935,3003,3208,3344,3549,3686,3754,3822,4027};
-static const PROGMEM unsigned int PHRY_TABLE[35] = {68,137,273,410,546,614,751,887,956,1092,1229,1365,1433,1570,1706,1775,1911,2048,2184,2252,2389,2525,2594,2730,2867,3003,3071,3208,3344,3413,3549,3686,3822,3890,4027};
-static const PROGMEM unsigned int LYDI_TABLE[35] = {68,205,341,478,546,682,819,887,1024,1160,1297,1365,1501,1638,1706,1843,1979,2116,2184,2320,2457,2525,2662,2798,2935,3003,3139,3276,3344,3481,3617,3754,3822,3958,4095};
-static const PROGMEM unsigned int DORI_TABLE[35] = {68,205,273,410,546,682,751,887,1024,1092,1229,1365,1501,1570,1706,1843,1911,2048,2184,2320,2389,2525,2662,2730,2867,3003,3139,3208,3344,3481,3549,3686,3822,3958,4027};
+static const PROGMEM unsigned int CHROM_TABLE[60] = 
+{
+  68,137,205,273,341,410,478,546,614,682,751,819,
+  887,956,1024,1092,1160,1229,1297,1365,1433,1501,1570,1638,
+  1706,1775,1843,1911,1979,2048,2116,2184,2252,2320,2389,2457,
+  2525,2594,2662,2730,2798,2867,2935,3003,3071,3139,3208,3276,
+  3344,3413,3481,3549,3617,3686,3754,3822,3890,3958,4027,4095
+};
+static const PROGMEM unsigned char MAJOR_TABLE[12] = {1,0,1,0,1,1,0,1,0,1,0,1};
+static const PROGMEM unsigned char MINOR_TABLE[12] = {1,0,1,1,0,1,0,1,1,0,1,0};
+static const PROGMEM unsigned char BLUES_TABLE[12] = {1,0,0,1,0,1,1,1,0,0,1,0};
+static const PROGMEM unsigned char PHRY_TABLE[12]  = {1,1,0,1,0,1,0,1,1,0,1,0};
+static const PROGMEM unsigned char LYDI_TABLE[12]  = {1,0,1,0,1,0,1,1,0,1,0,1};
+static const PROGMEM unsigned char DORI_TABLE[12]  = {1,0,1,1,0,1,0,1,0,1,1,0};
 
 void track_tick1ms(void)
 {
@@ -403,6 +412,19 @@ int track_nextScale(void)
   return currentScaleMode;
 }
 
+int track_nextRootNote(void)
+{
+    scaleRootNote++;
+    if(scaleRootNote>=12)
+      scaleRootNote=0;
+
+    return scaleRootNote;
+}
+int track_getCurrentRootNote(void)
+{
+    return scaleRootNote;
+}
+
 int track_getCurrentTrack(void)
 {
   return currentTrack;
@@ -453,21 +475,42 @@ static void updateCVout(void)
     }    
 }
 
+static int getDACvalueFromADCUsingScale(unsigned int val255,unsigned char* pScaleTable)
+{
+    // Calculate indexes for tables
+    unsigned int index = (val255*34)/255; // index chromatic
+    signed int noteIndex = index%12; // note index
+    
+    if(noteIndex>=scaleRootNote)
+        noteIndex = noteIndex - scaleRootNote;
+    else
+      noteIndex = noteIndex + (12-scaleRootNote);
+    //_____________________________
+
+    // if noteIndex does not belong to the scale, decrement index and try again
+    while(  pgm_read_byte(&(pScaleTable[noteIndex]))==0  )
+    {
+        noteIndex--;
+        index--;            
+    }
+    return pgm_read_word(&(CHROM_TABLE[index]));       
+}
 
 static int calculateValueForCV(unsigned int val255)
-{    
+{                    
     switch(currentScaleMode)
     {
         case SCALE_MODE_MICRO: {
           return val255*16;
         }
-        case SCALE_MODE_CHROM: return pgm_read_word(&(CHROM_TABLE[(val255*59)/255])); 
-        case SCALE_MODE_MAJOR: return pgm_read_word(&(MAJOR_TABLE[(val255*34)/255])); 
-        case SCALE_MODE_MINOR: return pgm_read_word(&(MINOR_TABLE[(val255*34)/255]));
-        case SCALE_MODE_BLUES: return pgm_read_word(&(BLUES_TABLE[(val255*29)/255]));
-        case SCALE_MODE_PHRY : return pgm_read_word(&(PHRY_TABLE[(val255*34)/255]));
-        case SCALE_MODE_LYDI : return pgm_read_word(&(LYDI_TABLE[(val255*34)/255]));
-        case SCALE_MODE_DORI : return pgm_read_word(&(DORI_TABLE[(val255*34)/255]));
+        case SCALE_MODE_CHROM: return pgm_read_word(&(CHROM_TABLE[(val255*59)/255]));   
+              
+        case SCALE_MODE_MAJOR: return getDACvalueFromADCUsingScale(val255,MAJOR_TABLE);
+        case SCALE_MODE_MINOR: return getDACvalueFromADCUsingScale(val255,MINOR_TABLE);
+        case SCALE_MODE_BLUES: return getDACvalueFromADCUsingScale(val255,BLUES_TABLE);
+        case SCALE_MODE_PHRY : return getDACvalueFromADCUsingScale(val255,PHRY_TABLE);
+        case SCALE_MODE_LYDI : return getDACvalueFromADCUsingScale(val255,LYDI_TABLE);
+        case SCALE_MODE_DORI : return getDACvalueFromADCUsingScale(val255,DORI_TABLE);
     }
 
     return 0;

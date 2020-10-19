@@ -43,6 +43,7 @@ void frontp_setEncoderPosition(int pos);
 void frontp_setLed(int led, int value);
 void frontp_showStepInLed(int stepIndex, int flagTurnOffOthers);
 void frontp_showStepInLedBlinking(int stepIndex, int flagTurnOffOthers);
+void frontp_showBinaryInLedBlinking(int stepIndex, int flagTurnOffOthers);
 
 
 unsigned int frontp_readAnalogStepValue(int index);

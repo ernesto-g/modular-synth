@@ -29,6 +29,9 @@ int track_getCurrentScale(void);
 int track_nextProbRptMode(void);
 int track_getCurrentProbRptMode(void);
 
+int track_nextRootNote(void);
+int track_getCurrentRootNote(void);
+
 unsigned char track_prevEuclideanStep(void);
 unsigned char track_nextEuclideanStep(void);
 unsigned char track_getCurrentEuclideanStepsOn(void);
