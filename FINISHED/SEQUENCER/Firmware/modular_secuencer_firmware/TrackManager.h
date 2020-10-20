@@ -15,7 +15,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */    
 
-void track_init(unsigned char initTrack,unsigned char initScale);
+void track_init(unsigned char initTrack,unsigned char initScale,unsigned char initRootNote);
 void track_playStep(int indexStep,int trackIndex);
 void track_loop(void);
 int track_nextScale(void);

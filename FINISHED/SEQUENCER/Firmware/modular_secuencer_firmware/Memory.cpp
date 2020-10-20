@@ -48,6 +48,22 @@
 #define MEM_ADDR_EUCLID_STEPS_ON        22
 #define MEM_ADDR_EUCLID_STEPS_OFFSET    23
 
+#define MEM_ADDR_CURRENT_ROOT_NOTE      24
+
+
+unsigned char mem_getRootNote(void)
+{
+    unsigned char val;
+    val=EEPROM.read(MEM_ADDR_CURRENT_ROOT_NOTE);
+    if(val<12)
+      return val;
+    return 0;
+}
+
+void mem_saveRootNote(unsigned char val)
+{
+  EEPROM.update(MEM_ADDR_CURRENT_ROOT_NOTE, val);
+}
 
 void mem_saveClkDiv(unsigned char clkDiv,unsigned char trackIndex)
 {

@@ -91,7 +91,7 @@ void logic_init(void)
     ios_init();
     frontp_init();
     rthm_init(mem_getTempo());
-    track_init(mem_getCurrentTrack(),mem_getScale());
+    track_init(mem_getCurrentTrack(),mem_getScale(),mem_getRootNote());
     midi_init();
 
     
@@ -180,6 +180,7 @@ void logic_loop(void)
               // change root note
               int note = track_nextRootNote();
               showOptionBinary(NOTE_IN_LEDS_TABLE[note]);
+              mem_saveRootNote((unsigned char)note);
           }
           else
           {

@@ -121,7 +121,7 @@ void track_tick1ms(void)
 }
 
 
-void track_init(unsigned char initTrack,unsigned char initScale)
+void track_init(unsigned char initTrack,unsigned char initScale,unsigned char initRootNote)
 {
     int i;
     int j;
@@ -135,9 +135,13 @@ void track_init(unsigned char initTrack,unsigned char initScale)
 
     if(initScale>SCALE_MODE_DORI)
       initScale = SCALE_MODE_MICRO;
+
+    if(initRootNote>=12)
+      initRootNote=0;
   
     flagRepeatProbability=0; // init on probability mode    
     currentScaleMode=initScale;
+    scaleRootNote=initRootNote;
     
     for(i=0; i<TRACK_LEN; i++)
     {

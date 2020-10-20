@@ -42,3 +42,6 @@ int mem_getEuclideanStepsOffset(void);
 void mem_saveEuclideanStepsOffset(int offset);
 void mem_saveEuclideanStepsOn(unsigned char steps);
 unsigned char mem_getEuclideanStepsOn(void);
+
+void mem_saveRootNote(unsigned char val);
+unsigned char mem_getRootNote(void);
