@@ -82,14 +82,12 @@ uint8_t fp_getModeSwitch(void)
   if(val>=0 && val<340)
       return 0;  // mode Phase
 
-  return 1; // provisorio porque no tengo la llave de 3 posiciones
-  /*    
   if(val>=340 && val<680)
       return 1;  // mode sequencer
   
   if(val>=680)
       return 2; // mode free
-  */    
+      
 }
 
 void fp_showLfoInLeds(uint8_t lfoIndex)
