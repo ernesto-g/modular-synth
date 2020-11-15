@@ -19,6 +19,7 @@ Characteristics:
   - [Sound Source](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/SOUND_SOURCE): Macro-oscillator based on Mutable Instruments Braids.
   - [LFOx3](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/LFOx3): Low frequency oscillator and sequencer.
   - [ATV & Mixer](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/ATVMixer): Atenuverter X3 and 3-channel mixer.
+  - [Simple Sequencer](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/SIMPLE_SEQUENCER): 4-step sequencer.
   
 
 # Unfinished work
