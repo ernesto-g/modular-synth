@@ -1,5 +1,7 @@
 # Modular synthesizer
 
+![alt text](https://raw.githubusercontent.com/ernesto-g/modular-synth/master/FINISHED/Files/all_modules.png)
+
 Characteristics:
 
   - Eurorack form factor modules
@@ -16,6 +18,7 @@ Characteristics:
   - [Slew limiter](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/SLEW_LIMITER): Slew limiter and LFO
   - [IOs](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/IOS): Audio line and Eurorack level adapter.
   - [Power Supply](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/POWER_SUPPLY): Power Supply Board for modules.
+  - [Tree](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/TREE): Banana jack splitter.
   - [Sound Source](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/SOUND_SOURCE): Macro-oscillator based on Mutable Instruments Braids.
   - [LFOx3](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/LFOx3): Low frequency oscillator and sequencer.
   - [ATV & Mixer](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/ATVMixer): Atenuverter X3 and 3-channel mixer.
