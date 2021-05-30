@@ -41,11 +41,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  18 .debug_line   0000ef6b  00000000  00000000  00079500  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .debug_str    0007943c  00000000  00000000  0008846b  2**0
+ 19 .debug_str    0007943a  00000000  00000000  0008846b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 20 .comment      0000007b  00000000  00000000  001018a7  2**0
+ 20 .comment      0000007b  00000000  00000000  001018a5  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00002b80  00000000  00000000  00101924  2**2
+ 21 .debug_frame  00002b80  00000000  00000000  00101920  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -4884,16 +4884,16 @@ void Ui::loop(void) {
  80021a6:	f000 f96d 	bl	8002484 <_ZN7Display8showBankEh>
 
 				}
-				if(flagPendingSetCurrentOscillator)
+				if(flagPendingWriteValueInEEPROM)
  80021aa:	f894 3030 	ldrb.w	r3, [r4, #48]	; 0x30
  80021ae:	b153      	cbz	r3, 80021c6 <_ZN2Ui4loopEv+0x9e>
 				{
-					flagPendingSetCurrentOscillator=0;
+					flagPendingWriteValueInEEPROM=0;
  80021b0:	2100      	movs	r1, #0
 					//settings.SetValue(SETTING_OSCILLATOR_SHAPE, LIMITED_OSCILLATORS[currentOscillator].osc);
 					display.showConfig(0);
  80021b2:	4620      	mov	r0, r4
-					flagPendingSetCurrentOscillator=0;
+					flagPendingWriteValueInEEPROM=0;
  80021b4:	f884 1030 	strb.w	r1, [r4, #48]	; 0x30
 					display.showConfig(0);
  80021b8:	f000 f97d 	bl	80024b6 <_ZN7Display10showConfigEh>
@@ -4954,7 +4954,7 @@ void Ui::loop(void) {
  8002206:	f000 f9d8 	bl	80025ba <_ZN7Encoder7pressedEv>
  800220a:	b110      	cbz	r0, 8002212 <_ZN2Ui4loopEv+0xea>
 			{
-				flagPendingSetCurrentOscillator=1;
+				flagPendingWriteValueInEEPROM=1;
  800220c:	2301      	movs	r3, #1
  800220e:	f884 3030 	strb.w	r3, [r4, #48]	; 0x30
 			}

@@ -4333,7 +4333,7 @@ OUTPUT(SoundSource.elf elf32-littlearm)
  .debug_line    0x000000000000c718     0x1a7c Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.o
  .debug_line    0x000000000000e194      0x87b Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
 
-.debug_str      0x0000000000000000    0x78fec
+.debug_str      0x0000000000000000    0x78fea
  .debug_str     0x0000000000000000     0xd52f Core/Src/braids/analog_oscillator.o
                                        0xd90b (size before relaxing)
  .debug_str     0x000000000000d52f     0x5100 Core/Src/braids/digital_oscillator.o
@@ -4356,31 +4356,31 @@ OUTPUT(SoundSource.elf elf32-littlearm)
                                       0x6454e (size before relaxing)
  .debug_str     0x000000000007557c       0xc2 Core/Src/system_stm32f1xx.o
                                       0x64598 (size before relaxing)
- .debug_str     0x000000000007563e     0x1ada Core/Src/multiengine/MainLoop.o
-                                      0x11bee (size before relaxing)
- .debug_str     0x0000000000077118      0x112 Core/Src/multiengine/Ui.o
-                                       0x74ad (size before relaxing)
- .debug_str     0x000000000007722a       0xab Core/Src/multiengine/hal/Display.o
+ .debug_str     0x000000000007563e     0x1ad8 Core/Src/multiengine/MainLoop.o
+                                      0x11bec (size before relaxing)
+ .debug_str     0x0000000000077116      0x112 Core/Src/multiengine/Ui.o
+                                       0x74ab (size before relaxing)
+ .debug_str     0x0000000000077228       0xab Core/Src/multiengine/hal/Display.o
                                        0x427a (size before relaxing)
- .debug_str     0x00000000000772d5       0xb9 Core/Src/multiengine/hal/Encoder.o
+ .debug_str     0x00000000000772d3       0xb9 Core/Src/multiengine/hal/Encoder.o
                                        0x433c (size before relaxing)
- .debug_str     0x000000000007738e       0x4a Core/Src/multiengine/hal/Memory.o
+ .debug_str     0x000000000007738c       0x4a Core/Src/multiengine/hal/Memory.o
                                        0x42e6 (size before relaxing)
- .debug_str     0x00000000000773d8      0x589 Core/Src/multiengine/hal/MultiEngineHAL.o
+ .debug_str     0x00000000000773d6      0x589 Core/Src/multiengine/hal/MultiEngineHAL.o
                                       0x656c7 (size before relaxing)
- .debug_str     0x0000000000077961       0x3c Core/Src/stmlib/random.o
+ .debug_str     0x000000000007795f       0x3c Core/Src/stmlib/random.o
                                        0x5b7e (size before relaxing)
- .debug_str     0x000000000007799d       0x36 Core/Startup/startup_stm32f103c8tx.o
+ .debug_str     0x000000000007799b       0x36 Core/Startup/startup_stm32f103c8tx.o
                                          0x98 (size before relaxing)
- .debug_str     0x00000000000779d3      0x3a0 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
+ .debug_str     0x00000000000779d1      0x3a0 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
                                       0x64ba9 (size before relaxing)
- .debug_str     0x0000000000077d73      0x25c Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
+ .debug_str     0x0000000000077d71      0x25c Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
                                       0x64bb7 (size before relaxing)
- .debug_str     0x0000000000077fcf      0x2cd Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
+ .debug_str     0x0000000000077fcd      0x2cd Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
                                       0x648e2 (size before relaxing)
- .debug_str     0x000000000007829c      0xb1e Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.o
+ .debug_str     0x000000000007829a      0xb1e Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_i2c.o
                                       0x6550e (size before relaxing)
- .debug_str     0x0000000000078dba      0x232 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
+ .debug_str     0x0000000000078db8      0x232 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
                                       0x6491b (size before relaxing)
 
 .comment        0x0000000000000000       0x7b

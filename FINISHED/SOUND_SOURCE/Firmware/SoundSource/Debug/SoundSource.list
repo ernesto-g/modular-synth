@@ -41,11 +41,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  18 .debug_line   0000ea0f  00000000  00000000  00078888  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .debug_str    00078fec  00000000  00000000  00087297  2**0
+ 19 .debug_str    00078fea  00000000  00000000  00087297  2**0
                   CONTENTS, READONLY, DEBUGGING
- 20 .comment      0000007b  00000000  00000000  00100283  2**0
+ 20 .comment      0000007b  00000000  00000000  00100281  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00002ac4  00000000  00000000  00100300  2**2
+ 21 .debug_frame  00002ac4  00000000  00000000  001002fc  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -12164,11 +12164,11 @@ void Ui::loop(void) {
  8005192:	f000 f975 	bl	8005480 <_ZN7Display8showBankEh>
 
 				}
-				if(flagPendingSetCurrentOscillator)
+				if(flagPendingWriteValueInEEPROM)
  8005196:	f894 3030 	ldrb.w	r3, [r4, #48]	; 0x30
  800519a:	b193      	cbz	r3, 80051c2 <_ZN2Ui4loopEv+0xb2>
 				{
-					flagPendingSetCurrentOscillator=0;
+					flagPendingWriteValueInEEPROM=0;
  800519c:	2100      	movs	r1, #0
 					settings.SetValue(SETTING_OSCILLATOR_SHAPE, LIMITED_OSCILLATORS[currentOscillator].osc);
  800519e:	f994 3010 	ldrsb.w	r3, [r4, #16]
@@ -12176,7 +12176,7 @@ void Ui::loop(void) {
  80051a4:	eb03 0343 	add.w	r3, r3, r3, lsl #1
  80051a8:	5cd2      	ldrb	r2, [r2, r3]
  80051aa:	4ba3      	ldr	r3, [pc, #652]	; (8005438 <_ZN2Ui4loopEv+0x328>)
-					flagPendingSetCurrentOscillator=0;
+					flagPendingWriteValueInEEPROM=0;
  80051ac:	f884 1030 	strb.w	r1, [r4, #48]	; 0x30
  80051b0:	701a      	strb	r2, [r3, #0]
 					display.showConfig(0);
@@ -12239,7 +12239,7 @@ void Ui::loop(void) {
  8005202:	f000 f9de 	bl	80055c2 <_ZN7Encoder7pressedEv>
  8005206:	b110      	cbz	r0, 800520e <_ZN2Ui4loopEv+0xfe>
 			{
-				flagPendingSetCurrentOscillator=1;
+				flagPendingWriteValueInEEPROM=1;
  8005208:	2301      	movs	r3, #1
  800520a:	f884 3030 	strb.w	r3, [r4, #48]	; 0x30
 			}
