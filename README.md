@@ -23,6 +23,7 @@ Characteristics:
   - [LFOx3](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/LFOx3): Low frequency oscillator and sequencer.
   - [ATV & Mixer](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/ATVMixer): Atenuverter X3 and 3-channel mixer.
   - [Simple Sequencer](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/SIMPLE_SEQUENCER): 4-step sequencer.
+  - [Low Pass VCF](https://github.com/ernesto-g/modular-synth/tree/master/FINISHED/VCF): Vactrol VCF.
   
 
 # Unfinished work
