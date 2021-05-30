@@ -1,0 +1,35 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# LM336
+#
+DEF LM336 IC 0 40 Y N 1 L N
+F0 "IC" -200 150 50 H V L BNN
+F1 "LM336" 100 -301 50 H V L BNN
+$FPLIST
+ TO92
+ SO08
+$ENDFPLIST
+DRAW
+P 2 0 0 10 -200 100 200 100 N
+P 2 0 0 10 200 100 200 0 N
+P 2 0 0 10 200 0 200 -200 N
+P 2 0 0 10 200 -200 -200 -200 N
+P 2 0 0 10 -200 -200 -200 0 N
+P 2 0 0 10 -200 0 -200 100 N
+P 2 0 0 6 200 0 -200 0 N
+P 2 0 0 6 10 50 40 50 N
+P 2 0 0 6 40 50 40 -50 N
+P 2 0 0 6 40 -50 70 -50 N
+P 2 0 0 6 0 -80 0 -25 N
+T 0 -70 -165 60 0 0 0 ADJ Normal 0 L B
+P 3 0 0 6 40 0 -35 50 -35 -50 F
+X A 3 -300 0 100 R 40 40 0 0 I 
+X C 2 300 0 100 L 40 40 0 0 P 
+X ADJ 1 0 -300 100 U 40 40 0 0 I 
+ENDDRAW
+ENDDEF
+#
+# End Library
